@@ -11,7 +11,7 @@
         .onest-font { font-family: 'Onest', sans-serif; }
         .roboto-flex { font-family: 'Roboto Flex', sans-serif; }
         .bg-custom {
-            background-image: url("/Main_bg.png"); /* Set your background image path */
+            background-image: url('/Main_bg_blue.png'); /* Set your background image path */
             background-size: cover;
             background-position: center;
         }
@@ -23,27 +23,17 @@
 <body class="bg-custom flex items-center justify-center min-h-screen px-4">
     <div class="flex flex-col lg:flex-row items-center justify-center space-x-100">
         <!-- College Logo -->
-        <img src="scoe_logo.png" alt="College Logo" class="w-70 h-50  ">
+        <img src="/scoe_logo.png" alt="College Logo" class="w-70 h-50">
 
         <!-- Login Box -->
-        <div class="bg-white  p-8 w-[529px] h-[509px] shadow-lg rounded-lg flex flex-col">
+        <div class="bg-white p-8 w-[529px] h-[509px] shadow-lg rounded-lg flex flex-col">
             <div class="w-full flex justify-between items-center mb-10">
-               <div> <h1 class="onest-font text-4xl font-semibold text-left mb-2 pt-13">Sign In</h1>
-                <div class="flex items-center gap-x-">
-                    <a href="#" class="roboto-flex text-sm ">
-                        New user?
-                    </a> 
-                    <a href="#" class="roboto-flex text-sm text-[#3939DB]">
-    Create an account                </a>
-                </div> </div>
-                <a href="/tpo_login" class="roboto-flex text-sm text-[#1E93C6] w-[121px] h-[35px] flex items-center justify-center pt-26" >
-                    Switch to TPO
+                <h1 class="onest-font text-4xl font-semibold text-left mb-16 mt-6">TPO LOGIN</h1>
+                <a href="/stud_login" class="roboto-flex text-sm text-[#1E93C6] w-[121px] h-[35px] flex items-center justify-center">
+                    Switch to Student
                 </a>
-               
             </div>
-       
-            
-            <form class="w-full flex flex-col items-center">
+            <form class="mt-8 w-full flex flex-col items-center">
                 <input type="text" placeholder="Email address or username"
                     class="roboto-flex input-box w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm">
                 <input type="password" placeholder="Password"
