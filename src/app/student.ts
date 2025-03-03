@@ -18,6 +18,7 @@ export enum Gender {
     firstName!: string;
     middleName?: string;
     lastName!: string;
+    year!:number;
     dateOfBirth!: Date;
     gender!: Gender;
     phoneNumber!: string;

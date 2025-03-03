@@ -7,14 +7,17 @@ import { AppComponent } from './app.component';
 import { StudLoginComponent } from './stud-login/stud-login.component';
 import { TpoLoginComponent } from './tpo-login/tpo-login.component';
 import { SignupStudComponent } from './signup-stud/signup-stud.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptorService } from './auth-interceptor.service';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     StudLoginComponent,
     TpoLoginComponent,
-    SignupStudComponent
+    SignupStudComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -22,7 +25,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,FormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -56,22 +56,22 @@
                     <div class="grid grid-cols-3 gap-4 ">
                         <div>
                             <label class="block text-sm font-medium text-gray-500">First Name</label>
-                            <input type="text" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <input type="text"[(ngModel)]="student.firstName" name="firstName" required class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-500">Middle Name</label>
-                            <input type="text" class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <input type="text"[(ngModel)]="student.middleName" name="middleName" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-500">Last Name</label>
-                            <input type="text" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <input type="text" [(ngModel)]="student.lastName"required  name="lastName" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                     </div>
 
                     <!-- Date of Birth -->
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Date of Birth</label>
-                        <input type="date" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="date" [(ngModel)]="student.dateOfBirth"required  name="dateOfBirth" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
 
                     <!-- Gender Selection -->
@@ -79,15 +79,15 @@
                         <label class="block text-sm font-medium text-gray-500">Gender</label>
                         <div class="flex space-x-4 mt-2">
                             <label class="flex items-center space-x-2">
-                                <input type="radio" name="gender" value="Male" class="accent-blue-500">
+                                <input type="radio" name="gender"[(ngModel)]="student.gender" value="Male" class="accent-blue-500">
                                 <span>Male</span>
                             </label>
                             <label class="flex items-center space-x-2">
-                                <input type="radio" name="gender" value="Female" class="accent-blue-500">
+                                <input type="radio" name="gender" value="Female" [(ngModel)]="student.gender"class="accent-blue-500">
                                 <span>Female</span>
                             </label>
                             <label class="flex items-center space-x-2">
-                                <input type="radio" name="gender" value="Other" class="accent-blue-500">
+                                <input type="radio" name="gender" value="Other" [(ngModel)]="student.gender"class="accent-blue-500">
                                 <span>Other</span>
                             </label>
                         </div>
@@ -96,36 +96,36 @@
                     <!-- Contact Information -->
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Phone Number</label>
-                        <input type="tel" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="tel"[(ngModel)]="student.phoneNumber"  name="phoneNumber" required class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Address</label>
-                        <input type="text" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="text" [(ngModel)]="student.address"required  name="address" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
 
                     <!-- Academic Details -->
                     <div class="grid grid-cols-2 gap-4 w-full">
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium text-gray-500">Department</label>
-                            <input type="text" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <input type="text" [(ngModel)]="student.department"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium text-gray-500">Year of Studying</label>
-                            <input type="text" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <input type="text"[(ngModel)]="student.year" name="year" required class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-500">SSC Marks</label>
-                        <input type="number" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="number"[(ngModel)]="student.sscMarks" name="sscMarks" required class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-500">HSC Marks</label>
-                        <input type="number" class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="number"[(ngModel)]="student.hscMarks" name="hscMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Diploma Marks</label>
-                        <input type="number" class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="number"[(ngModel)]="student.diplomaMarks"  name="diplomaMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
 
                     <div class="flex justify-center mt-6">
@@ -152,35 +152,34 @@
                         <!-- Row 1 -->
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-1 Marks</label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="number"[(ngModel)]="student.sem1Marks" name="sem1Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-2 Marks</label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="number"[(ngModel)]="student.sem2Marks" name="sem2Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-3 Marks</label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="number"[(ngModel)]="student.sem3Marks"  name="sem3Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                     
                         <!-- Row 2 -->
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-4 Marks</label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="number"[(ngModel)]="student.sem4Marks"  name="sem4Marks" name="sem4Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-5 Marks</label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="number"[(ngModel)]="student.sem5Marks" name="sem5Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-6 Marks</label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="number"[(ngModel)]="student.sem6Marks" name="sem6Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         
                         <!-- Row 3 -->
                         <div class="flex flex-col col-span-3">
-                            <label class="text-sm font-medium text-gray-500">Phone No</label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                           
                             <label class="text-sm font-medium text-gray-500">Backlog</label>
                             <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
                             <label class="block text-sm font-medium text-gray-500">Upload Resume</label>
@@ -190,7 +189,7 @@
 
                                 <button type="button" (click)="prevStep()"
                                     class="px-4 py-2 bg-[#062027] text-white rounded">Prev</button>
-                                    <button type="button" (click)="onSubmit()"
+                                    <button type="button" (click)="submitStudent()"
                                     class="px-4 py-2 bg-[#062027] text-white rounded">Register</button>
                                     
                             </div>

@@ -51,21 +51,33 @@ constructor(private fb: FormBuilder, private studentService: StudentService) {
   });
 }
 
-submitStudent(): void {
-  if (this.studentForm.valid) {
-    this.student = this.studentForm.value; // Assign form values to Student object
+submitStudent(): void {  
 
-    this.studentService.createStudent(this.student).subscribe({
-      next: () => {
-        alert('Student created successfully!');
-        this.studentForm.reset(); // Reset the form
-        this.student = new Student(); // Reset the object
-      },
-      error: (err) => {
-        console.error('Error creating student', err);
-        alert('Failed to create student');
-      }
-    });
+  this.studentService.createStudent(this.student).subscribe({
+    next: () => {
+      alert('Student created successfully!');
+      this.studentForm.reset(); // Reset the form
+      this.student = new Student(); // Reset the object
+    },
+    error: (err) => {
+      console.error('Error creating student', err);
+      alert('Failed to create student');
+    }
+   });
+  // if (this.studentForm.valid) {
+  //   console.log("valid")
+  //   this.student = this.studentForm.value; // Assign form values to Student object
+
+  //   this.studentService.createStudent(this.student).subscribe({
+  //     next: () => {
+  //       alert('Student created successfully!');
+  //       this.studentForm.reset(); // Reset the form
+  //       this.student = new Student(); // Reset the object
+  //     },
+  //     error: (err) => {
+  //       console.error('Error creating student', err);
+  //       alert('Failed to create student');
+  //     }
+  //   });
   }
-}
 }

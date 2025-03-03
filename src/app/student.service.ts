@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Student } from './student';
 import { Observable } from 'rxjs';
@@ -7,13 +7,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class StudentService {
-  private apiUrl = 'http://localhost:8080/api/students'; // Update with your backend API URL
-
+  private apiUrl = 'http://localhost:8080/api1/Student'; // Update with your backend API URL
+   token = localStorage.getItem("authtoken");
+   headers = new HttpHeaders({
+    'Authorization': `${this.token}`
+  });
   constructor(private http: HttpClient) {}
 
   // Create a new student
   createStudent(student: Student): Observable<Student> {
-    return this.http.post<Student>(this.apiUrl, student);
+    return this.http.post<Student>(`${this.apiUrl}`, student);
   }
 
   // Get all students
