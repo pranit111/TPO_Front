@@ -12,14 +12,18 @@ import { ErrorService } from '../error.service';
 export class ErrorComponent {
   error$;
   showError = false;
-duration=5000;
+  duration = 5000;
+  color = 'bg-red-600'; // Default color
+
   constructor(private errorService: ErrorService) {
-    this.error$ = this.errorService.error$; // ✅ Works fine
+    this.error$ = this.errorService.error$;
   }
+
   ngOnInit() {
-    this.error$.subscribe(message => {
-      if (message) {
+    this.error$.subscribe(state => {
+      if (state.message) {
         this.showError = true;
+        this.color = state.color; // Set the color dynamically
         setTimeout(() => this.closeError(), this.duration);
       }
     });

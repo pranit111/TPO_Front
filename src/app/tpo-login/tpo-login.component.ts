@@ -18,17 +18,25 @@ export class TpoLoginComponent {
     this.tpologin.login(this.user).subscribe({
       next: (response: any) => {
         console.log("Full Response from API:", response); // Debugging step
-  
+        console.log(response.role)
         // Ensure response is an object before accessing properties
-        if (response && typeof response === 'object' && 'token' in response) {
+        if (response && typeof response === 'object' && 'token' in response && response.role!="STUDENT") {
           const token = response.token; // Extract token
   
           localStorage.setItem('authtoken', token); // Store token
           console.log("Login successful, Token:", token);
           
           // Perform redirection or other actions
-        } else {
+        } 
+        else if(response.role="STUDENT"){
           console.error("Unexpected response structure:", response);
+          
+          this.errorservice.setError("Student Can't Login as TPO");
+
+        }
+        else {
+          console.error("Unexpected response structure:", response);
+          
           this.errorservice.setError("Unexpected response from server.");
         }
       },

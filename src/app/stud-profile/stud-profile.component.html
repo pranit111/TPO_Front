@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .onest-font {
+      font-family: 'Onest', sans-serif;
+    }
+
+    .roboto-flex {
+      font-family: 'Roboto Flex', sans-serif;
+    }
+
+    .bg-custom {
+      background-image: url("/Main_bg.png");
+      /* Set your background image path */
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+
+<body class="bg-custom flex items-center justify-center min-h-screen p-4">
+
+  <div class="bg-white p-8 w-full max-w-7xl h-150 shadow-lg rounded-lg">
+    <!-- Profile Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="onest-font text-3xl font-semibold">Your Profile</h1>
+
+    </div>
+
+    <!-- Profile Details Section -->
+    <div class="grid grid-cols-3 gap-6 items-center">
+      <!-- Profile Image -->
+      <div class="flex justify-center">
+        <img [src]="profileImageUrl" alt="Profile Image" class="w-32 h-32 rounded-full border border-gray-300" />
+      </div>
+    
+      <!-- Basic Info -->
+      <div class="space-y-2">
+        <div class="space-y-2">
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-40">Name :</span>
+            <span class="roboto-flex">{{ profileData.firstName || 'N/A' }} {{ profileData.lastName || 'N/A'}}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-40">Class:</span>
+            <span class="roboto-flex">{{ profileData.academicYear || 'N/A' }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-40">GR No.:</span>
+            <span class="roboto-flex">{{ profileData.gr_No || 'N/A' }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-40">Department:</span>
+            <span class="roboto-flex">{{ profileData.department }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-40">Email:</span>
+            <span class="roboto-flex">{{ profileData.user?.email }}</span>
+          </div>
+          <div class="flex">
+            <a href="/forgot_password" class="roboto-flex text-sm text-[#3939DB]">Change Password</a>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Percentage Circle -->
+      <div class="flex justify-center">
+        <div class="relative w-32 h-32 flex items-center justify-center">
+          <!-- Outer Circle -->
+          <div class="w-full h-full rounded-full" [style.background]="progressStyle"></div>
+    
+          <!-- Inner White Circle -->
+          <div class="absolute w-20 h-20 bg-white rounded-full flex flex-col items-center justify-center">
+            <span class="text-xs text-gray-600">Average </span>
+            <span class="text-xs text-gray-600">Percentage</span>
+            <span class="text-xl font-bold text-teal-700">{{ profileData.avgMarks }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <hr class="mt-12 my-6 border-gray-300" />
+
+    <!-- Personal Information & Skills Section -->
+    <div class="flex gap-x-35 ">
+      <div class="ml-20">
+        <h3 class="onest-font text-lg font-semibold mb-4">PERSONAL INFORMATION</h3>
+        <div class="space-y-2">
+          <div class="flex">
+            <span class="roboto-flex  text-gray-600 w-40">Gender :</span>
+            <span class="roboto-flex">{{ profileData.gender }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex  text-gray-600 w-40">Date of Birth :</span>
+            <span class="roboto-flex">{{ profileData.dateOfBirth }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex  text-gray-600 w-40">Address :</span>
+            <span class="roboto-flex">{{ profileData.address }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex  text-gray-600 w-40">Phone Number :</span>
+            <span class="roboto-flex">{{ profileData.phoneNumber }}</span>
+          </div>
+        </div>
+
+      </div>
+      <div>
+        <!-- Academic Info -->
+        <h3 class="onest-font text-lg font-semibold mb-4">Academic Information</h3>
+        <div class="space-y-2">
+          <div class="flex">
+            <span class="roboto-flex  text-gray-600 w-40">SSC :</span>
+            <span class="roboto-flex">{{ profileData.sscMarks }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex  text-gray-600 w-40"> HSC :</span>
+            <span class="roboto-flex">{{ profileData.hscMarks }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex  text-gray-600 w-40">Diploma :</span>
+            <span class="roboto-flex">{{ profileData.diplomaMarks }}</span>
+          </div>
+
+        </div>
+      </div>
+      <div class="ml-20">
+        <h3 class="onest-font text-lg font-semibold mb-4">Current Result</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-15">Sem1:</span>
+            <span class="roboto-flex">{{ profileData.sem1Marks }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-15">Sem2:</span>
+            <span class="roboto-flex">{{ profileData.sem2Marks }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-15">Sem3:</span>
+            <span class="roboto-flex">{{ profileData.sem3Marks }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-15">Sem4:</span>
+            <span class="roboto-flex">{{ profileData.sem4Marks }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-15">Sem5:</span>
+            <span class="roboto-flex">{{ profileData.sem5Marks }}</span>
+          </div>
+          <div class="flex">
+            <span class="roboto-flex text-gray-600 w-15">Sem6:</span>
+            <span class="roboto-flex">{{ profileData.sem6Marks }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+    <!-- Skills -->
+
+  </div>
+
+
+</body>
+
+</html>

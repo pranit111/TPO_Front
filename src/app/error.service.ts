@@ -5,15 +5,17 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class ErrorService {
-  private errorMessage = new BehaviorSubject<string | null>(null);
-  error$ = this.errorMessage.asObservable();
+  private errorState = new BehaviorSubject<{ message: string | null, color: string }>({ message: null, color: 'bg-red-600' });
+  error$ = this.errorState.asObservable();
+  private timeoutId: any;
 
-  setError(message: string) {
-    this.errorMessage.next(message);
-    setTimeout(() => this.clearError(), 5000); // Auto clear after 5 sec
+  setError(message: string, color: string = 'bg-red-600', duration: number = 5000) {
+    this.errorState.next({ message, color });
+    clearTimeout(this.timeoutId); // Clear previous timeout
+    this.timeoutId = setTimeout(() => this.clearError(), duration);
   }
 
   clearError() {
-    this.errorMessage.next(null);
+    this.errorState.next({ message: null, color: 'bg-red-600' });
   }
 }

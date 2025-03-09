@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { User } from '../user';
 import { StudloginService } from '../studlogin.service';
 import { ErrorService } from '../error.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-stud-login',
@@ -10,45 +11,53 @@ import { ErrorService } from '../error.service';
   styleUrl: './stud-login.component.css'
 })
 export class StudLoginComponent {
-  constructor(private studlogin: StudloginService,private errorservice:ErrorService ){}
+  constructor(private studlogin: StudloginService,private error:ErrorService,private router:Router ){}
   user:User =new User
+  ngOnInit(){
+    const token=localStorage.getItem('authtoken')
+    if(token){
+      this.error.setError("User is logged in logout first","bg-blue-600")
+      this.router.navigate(['/logout'])
+    }
+
+  }
   onlogin() {
     this.user.role = 'STUDENT';
-  
+    if (!this.user.username || !this.user.password || !this.user.email) {
+      this.error.setError('Email and Password is required!')
+      return; 
+    }
     this.studlogin.login(this.user).subscribe({
+      
       next: (response: any) => {
         console.log("Full Response from API:", response); // Debugging step
-  
-        // Ensure response is an object before accessing properties
-        if (response && typeof response === 'object' && 'token' in response) {
+
+        if (response.status === 'success') {
           const token = response.token; // Extract token
-  
           localStorage.setItem('authtoken', token); // Store token
-          console.log("Login successful, Token:", token);
-          
-          // Perform redirection or other actions
+          this.error.setError("Login Successful","bg-green-600")
+          this.router.navigate(['/stud_profile'])
+          // Redirect or perform other actions
         } else {
-          console.error("Unexpected response structure:", response);
-          this.errorservice.setError("Unexpected response from server.");
+          this.error.setError(response.message || "Unexpected error.");
         }
       },
       error: (error: any) => {
         console.error("Login failed:", error);
         this.handleLoginError(error);
       }
-    });
-  }
+    });}
   
   
   private handleLoginError(error: any) {
     if (error.status === 401) {
-      this.errorservice.setError("Invalid credentials. Please try again.");
+      this.error.setError("Invalid credentials. Please try again.");
     } else if (error.status === 500) {
-      this.errorservice.setError("Invalid credentials.");
+      this.error.setError("Invalid credentials.");
     } else if (error.status === 502) {
-      this.errorservice.setError("Server error. Please try again later.");
+      this.error.setError("Server error. Please try again later.");
     } else {
-      this.errorservice.setError("An unexpected error occurred.");
+      this.error.setError("An unexpected error occurred.");
     }
   }
   

@@ -10,6 +10,11 @@ import { SignupStudComponent } from './signup-stud/signup-stud.component';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptorService } from './auth-interceptor.service';
 import { ErrorComponent } from './error/error.component';
+import { StudProfileComponent } from './stud-profile/stud-profile.component';
+
+import { UserRegComponent } from './user-reg/user-reg.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +22,12 @@ import { ErrorComponent } from './error/error.component';
     StudLoginComponent,
     TpoLoginComponent,
     SignupStudComponent,
-    ErrorComponent
+    ErrorComponent,
+    StudProfileComponent,
+
+    UserRegComponent,
+      ForgotPasswordComponent,
+      LogoutComponent
   ],
   imports: [
     BrowserModule,

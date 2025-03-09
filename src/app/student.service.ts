@@ -15,8 +15,8 @@ export class StudentService {
   constructor(private http: HttpClient) {}
 
   // Create a new student
-  createStudent(student: Student): Observable<Student> {
-    return this.http.post<Student>(`${this.apiUrl}`, student);
+  createStudent(formData: FormData): Observable<any> {
+    return this.http.post(this.apiUrl, formData);
   }
 
   // Get all students
@@ -28,7 +28,9 @@ export class StudentService {
   getStudentById(id: number): Observable<Student> {
     return this.http.get<Student>(`${this.apiUrl}/${id}`);
   }
-
+  getprofile(): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/profile`)
+  }
   // Update a student
   updateStudent(id: number, student: Student): Observable<Student> {
     return this.http.put<Student>(`${this.apiUrl}/${id}`, student);

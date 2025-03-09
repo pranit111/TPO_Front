@@ -1,7 +1,7 @@
 export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHER = 'OTHER'
+    MALE = 'Male',
+    FEMALE = 'Female',
+    OTHER = 'Other'
   }
   
   export class JobApplication {
@@ -18,6 +18,7 @@ export enum Gender {
     firstName!: string;
     middleName?: string;
     lastName!: string;
+    email!:string;
     year!:number;
     dateOfBirth!: Date;
     gender!: Gender;
@@ -34,6 +35,8 @@ export enum Gender {
     sem5Marks!: number;
     sem6Marks!: number;
     noOfBacklogs!: number;
+    Gr_No!:String;
+    avgMarks!:number;
     jobApplications!: JobApplication[];
   
     constructor(data?: Partial<Student>) {

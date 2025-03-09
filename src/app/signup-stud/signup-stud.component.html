@@ -92,11 +92,18 @@
                             </label>
                         </div>
                     </div>
+                    
 
                     <!-- Contact Information -->
-                    <div>
+                    <div class="grid grid-cols-2 gap-4 w-full">
+                        <div class="flex flex-col">
+                            <label class="block text-sm font-medium text-gray-500">GR No</label>
+                            <input type="text" [(ngModel)]="student.Gr_No"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
+                        </div>
+                        <div class="flex flex-col">
                         <label class="block text-sm font-medium text-gray-500">Phone Number</label>
                         <input type="tel"[(ngModel)]="student.phoneNumber"  name="phoneNumber" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                        </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Address</label>
@@ -183,7 +190,11 @@
                             <label class="text-sm font-medium text-gray-500">Backlog</label>
                             <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
                             <label class="block text-sm font-medium text-gray-500">Upload Resume</label>
-                            <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelectedresume($event)">
+                        
+                            <label class="block text-sm font-medium text-gray-500">Upload Profile Picture</label>
+                            <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelectedprof($event)">
+                        
 
                             <div class="flex justify-center mt-6 space-x-10">
 

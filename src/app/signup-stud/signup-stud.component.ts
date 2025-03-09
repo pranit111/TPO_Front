@@ -14,7 +14,36 @@ import { HttpClientModule } from '@angular/common/http';
  
 })
 export class SignupStudComponent {
-  step=1
+  step = 1;
+  studentForm: FormGroup;
+  student: Student = new Student();
+  
+  genders = Object.values(Gender); // Gender options for radio buttons
+  resume: File | null = null; // Store the uploaded file
+  profile_pic:File |null=null
+  constructor(private fb: FormBuilder, private studentService: StudentService) {
+    this.studentForm = this.fb.group({
+      firstName: ['', Validators.required],
+      middleName: [''],
+      lastName: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      gender: [null, Validators.required],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      address: ['', Validators.required],
+      department: ['', Validators.required],
+      sscMarks: ['', Validators.required],
+      hscMarks: [''],
+      diplomaMarks: [''],
+      sem1Marks: [''],
+      sem2Marks: [''],
+      sem3Marks: [''],
+      sem4Marks: [''],
+      sem5Marks: [''],
+      sem6Marks: [''],
+      noOfBacklogs: ['', Validators.required]
+    });
+  }
+
   nextStep() {
     if (this.step < 3) this.step++;
   }
@@ -22,62 +51,52 @@ export class SignupStudComponent {
   prevStep() {
     if (this.step > 1) this.step--;
   }
-onSubmit() {
-throw new Error('Method not implemented.');
-}studentForm: FormGroup; // Form group for reactive form
-student: Student = new Student(); // Object for storing form data
-genders = Object.values(Gender); // Convert Gender enum to an array for radio buttons
 
-constructor(private fb: FormBuilder, private studentService: StudentService) {
-  this.studentForm = this.fb.group({
-    firstName: [this.student.firstName, Validators.required],
-    middleName: [this.student.middleName],
-    lastName: [this.student.lastName, Validators.required],
-    dateOfBirth: [this.student.dateOfBirth, Validators.required],
-    gender: [this.student.gender, Validators.required], // Gender enum field
-    phoneNumber: [this.student.phoneNumber, [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-    address: [this.student.address, Validators.required],
-    department: [this.student.department, Validators.required],
-    sscMarks: [this.student.sscMarks, Validators.required],
-    hscMarks: [this.student.hscMarks],
-    diplomaMarks: [this.student.diplomaMarks],
-    sem1Marks: [this.student.sem1Marks],
-    sem2Marks: [this.student.sem2Marks],
-    sem3Marks: [this.student.sem3Marks],
-    sem4Marks: [this.student.sem4Marks],
-    sem5Marks: [this.student.sem5Marks],
-    sem6Marks: [this.student.sem6Marks],
-    noOfBacklogs: [this.student.noOfBacklogs, Validators.required]
-  });
-}
-
-submitStudent(): void {  
-
-  this.studentService.createStudent(this.student).subscribe({
-    next: () => {
-      alert('Student created successfully!');
-      this.studentForm.reset(); // Reset the form
-      this.student = new Student(); // Reset the object
-    },
-    error: (err) => {
-      console.error('Error creating student', err);
-      alert('Failed to create student');
+  // Capture file input
+  onFileSelectedresume(event: any): void {
+    if (event.target.files.length > 0) {
+      this.resume = event.target.files[0];
     }
-   });
-  // if (this.studentForm.valid) {
-  //   console.log("valid")
-  //   this.student = this.studentForm.value; // Assign form values to Student object
+  }
+  onFileSelectedprof(event: any): void {
+    if (event.target.files.length > 0) {
+      this.profile_pic = event.target.files[0];
+    }
+  }
 
-  //   this.studentService.createStudent(this.student).subscribe({
-  //     next: () => {
-  //       alert('Student created successfully!');
-  //       this.studentForm.reset(); // Reset the form
-  //       this.student = new Student(); // Reset the object
-  //     },
-  //     error: (err) => {
-  //       console.error('Error creating student', err);
-  //       alert('Failed to create student');
-  //     }
-  //   });
+  // Submit Student Data
+  submitStudent(): void {
+    console.log(this.student.gender)
+    const formData = new FormData();
+    formData.append('student', new Blob([JSON.stringify(this.student)], { type: 'application/json' }));
+    // Append JSON data
+    // Object.keys(this.studentForm.controls).forEach((key) => {
+    //   const value = this.studentForm.get(key)?.value;
+    //   if (value !== null && value !== undefined) {
+    //     formData.append(key, value);
+    //   }
+    // });
+
+    // Append file if available
+    if (this.resume) {
+      formData.append('resume', this.resume);
+    }
+    if(this.profile_pic){
+      formData.append('prof_img',this.profile_pic)
+    }
+
+    // Call service to send data
+    this.studentService.createStudent(formData).subscribe({
+      next: () => {
+        alert('Student created successfully!');
+        this.studentForm.reset(); // Reset form
+        this.student = new Student(); // Reset object
+        this.resume = null; // Clear file input
+      },
+      error: (err) => {
+        console.error('Error creating student', err);
+        alert('Failed to create student');
+      }
+    });
   }
 }

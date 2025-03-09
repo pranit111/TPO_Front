@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPO Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import "tailwindcss";
+        @import url('https://fonts.googleapis.com/css2?family=Onest:wght@600&family=Roboto+Flex:wght@400&display=swap');
+        .onest-font { font-family: 'Onest', sans-serif; }
+        .roboto-flex { font-family: 'Roboto Flex', sans-serif; }
+        .bg-custom {
+            background-image: url("/Main_bg.png"); /* Set your background image path */
+            background-size: cover;
+            background-position: center;
+        }
+        .input-box::placeholder {
+            color: #BFB4B4;
+        }
+    </style>
+</head>
+<body class="bg-custom flex items-center justify-center min-h-screen px-4">
+    <div class="flex flex-col lg:flex-row items-center justify-center space-x-100">
+        <!-- College Logo -->
+      
+        <!-- Login Box -->
+        <div class="bg-white  p-8 w-[529px] h-[509px] shadow-lg rounded-lg flex flex-col">
+        
+                <button type="submit"(click)="onLogout()"  class="w-[127px] h-[35px] bg-[#1E1E1E] text-white rounded-full mt-46 self-center">
+                    Logout
+                </button>
+               
+          
+            
+      
+                
+ 
+        </div>
+    </div>
+</body>
+</html>
