@@ -15,6 +15,8 @@ import { StudProfileComponent } from './stud-profile/stud-profile.component';
 import { UserRegComponent } from './user-reg/user-reg.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LogoutComponent } from './logout/logout.component';
+import { PostListingComponent } from './post-listing/post-listing.component';
+import { JobApplyComponent } from './job-apply/job-apply.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { LogoutComponent } from './logout/logout.component';
 
     UserRegComponent,
       ForgotPasswordComponent,
-      LogoutComponent
+      LogoutComponent,
+      PostListingComponent,
+      JobApplyComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Offers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import "tailwindcss";
+        @import url('https://fonts.googleapis.com/css2?family=Onest:wght@600&family=Roboto+Flex:wght@400&display=swap');
+        .onest-font { font-family: 'Onest', sans-serif; }
+        .roboto-flex { font-family: 'Roboto Flex', sans-serif; }
+        .bg-custom {
+            background-image: url('/Main_bg.png'); /* Set your background image path */
+            background-size: cover;
+            background-position: center;
+        }
+        .input-box::placeholder {
+            color: #BFB4B4;
+        }
+    </style>
+</head>
+<body class="bg-custom flex items-center justify-center min-h-screen px-4">
+    <div class="flex flex-col lg:flex-row items-center justify-center min-h-screen    space-x-100">
+        <div class="container mx-auto p-6 bg-white rounded-lg shadow-md w-350 h-full max-w-9xl">
+            <h1 class="text-3xl font-semibold mb-4 text-gray-900">Placement Offers</h1>
+            <hr class="mb-6 border-green-900" />
+
+            <!-- Show when jobPosts is empty -->
+            <p *ngIf="jobPosts.length === 0" class="text-center text-gray-500 text-lg">
+                No placement offers available at the moment. Check back later!
+            </p>
+
+            <!-- Job Listings -->
+            <div *ngIf="jobPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-15 ml-15">
+                <div *ngFor="let job of jobPosts" class="bg-gray-100 p-6 w-75 h-85 rounded-lg shadow-lg text-gray-900 bg-opacity-90">
+                    <h2 class="text-xl font-semibold flex items-center">
+                        <img alt="Company Logo" class="w-5 h-5 mr-2" />
+                        {{ job.jobDesignation }}
+                    </h2>
+                    <p class="text-sm text-green-600">{{ job.company.name }}</p>
+                    <hr class="my-2 border-green-900" />
+                    <p class="mt-6"><strong>Location:</strong> {{ job.location }}</p>
+                    <p class="mt-6"><strong>Salary:</strong> {{ job.packageAmount }}</p>
+                    <p class="mt-6"><strong>Type:</strong> {{ job.jobType }}</p>
+                    <button class="bg-teal-600 text-white px-4 py-2 rounded mt-10 ml-17 w-30 hover:bg-teal-700">
+                        Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

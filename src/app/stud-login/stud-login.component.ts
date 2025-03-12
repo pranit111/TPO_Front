@@ -23,7 +23,7 @@ export class StudLoginComponent {
   }
   onlogin() {
     this.user.role = 'STUDENT';
-    if (!this.user.username || !this.user.password || !this.user.email) {
+    if ( !this.user.password || !this.user.email) {
       this.error.setError('Email and Password is required!')
       return; 
     }

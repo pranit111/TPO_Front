@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Onest:wght@600&family=Roboto+Flex:wght@400&display=swap');
+
+        .onest-font { font-family: 'Onest', sans-serif; }
+        .roboto-flex { font-family: 'Roboto Flex', sans-serif; }
+        .bg-custom {
+            background-image: url('/Main_bg.png'); /* Replace with actual image path */
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-custom flex items-center justify-center min-h-screen px-4">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b pb-2">
+            <div class="flex items-center space-x-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google Logo" class="w-10 h-10">
+                <h1 class="text-2xl onest-font text-gray-800">Google</h1>
+            </div>
+            <p class="text-gray-600 font-semibold onest-font">Last Date: <span class="roboto-flex text-gray-800">17-03-2025</span></p>
+        </div>
+
+        <!-- Basic Details -->
+        <div class="mt-4">
+            <h2 class="text-xl onest-font text-teal-700">Basic Details</h2>
+            <hr class="border-gray-300 my-2">
+            <p class="onest-font">Designation: <span class="roboto-flex text-gray-600">Web Dev</span></p>
+            <p class="onest-font">Job Type: <span class="roboto-flex text-gray-600">Full-Time</span></p>
+            <p class="onest-font">Location: <span class="roboto-flex text-gray-600">Bandra</span></p>
+            <p class="onest-font">CTC: <span class="roboto-flex text-gray-600">20 LPA</span></p>
+            <p class="onest-font">Job description:</p>
+            <p class="roboto-flex text-gray-600">
+                Join Google as a Web Developer and be part of a team that builds innovative, user-friendly web applications used by millions worldwide. In this role, you will design, develop, and maintain high-performance web solutions, collaborate with cross-functional teams, and contribute to cutting-edge projects that shape the future of the web.
+            </p>
+        </div>
+
+        <!-- Schedule -->
+        <div class="mt-6">
+            <h2 class="text-xl onest-font text-teal-700">Schedule</h2>
+            <hr class="border-gray-300 my-2">
+            <p class="onest-font">Mode: <span class="roboto-flex text-gray-600">Round Wise</span></p>
+            <p class="onest-font">No of Rounds: <span class="roboto-flex text-gray-600">3</span></p>
+            <p class="onest-font">Aptitude: <span class="roboto-flex text-gray-600">Yes</span></p>
+        </div>
+
+        <!-- Important Dates -->
+        <div class="mt-6">
+            <h2 class="text-xl onest-font text-teal-700">Important Dates</h2>
+            <hr class="border-gray-300 my-2">
+            <p class="onest-font">Application Last Date: <span class="roboto-flex text-gray-600">17-03-2025</span></p>
+            <p class="onest-font">Selection Start Date: <span class="roboto-flex text-gray-600">21-03-2025</span></p>
+            <p class="onest-font">Aptitude Exam Date: <span class="roboto-flex text-gray-600">23-03-2025</span></p>
+        </div>
+    </div>
+</body>
+</html>
