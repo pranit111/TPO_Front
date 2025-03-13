@@ -1,0 +1,42 @@
+<nav class="bg-[#0f2a36] text-white fixed top-0 left-0 w-full flex items-center justify-between px-6 py-4 shadow-lg z-50">
+    <div class="flex items-center">
+      <img src="assets/logo.png" alt="Logo" class="h-10 w-10 mr-3" />
+      <span class="text-lg font-semibold">Hello, Pranit Bhopi</span>
+    </div>
+  
+    <!-- Navigation Links -->
+    <ul class="flex space-x-6">
+      <li>
+        <a routerLink="/home" 
+           routerLinkActive="text-green-700 font-bold" 
+           class="hover:text-gray-300">Home</a>
+      </li>
+      <li>
+        <a routerLink="/dashboard" 
+           routerLinkActive="text-green-700 font-bold" 
+           class="hover:text-gray-300">Dashboard</a>
+      </li>
+      <li>
+        <a routerLink="/profile" 
+           routerLinkActive="text-green-700 " 
+           class="hover:text-gray-300">Profile</a>
+      </li>
+      <li>
+        <a routerLink="/notification"  
+           routerLinkActive="text-green-700 " 
+           class=" hover:text-gray-300">Notification</a>
+      </li>
+      <button class="w-15 bg-red-700 rounded h-7">
+        <a routerLink="/logout"  
+           routerLinkActive="text-green-700 " 
+           class="  hover:text-gray-300">Logout</a>
+      </button>
+    </ul>
+  </nav>
+  
+  <!-- Loads child components dynamically -->
+   <div class="pt-18">
+    <app-error></app-error>
+
+    <router-outlet ></router-outlet></div>
+  

@@ -36,7 +36,7 @@ export class StudLoginComponent {
           const token = response.token; // Extract token
           localStorage.setItem('authtoken', token); // Store token
           this.error.setError("Login Successful","bg-green-600")
-          this.router.navigate(['/stud_profile'])
+          this.router.navigate(['/profile'])
           // Redirect or perform other actions
         } else {
           this.error.setError(response.message || "Unexpected error.");

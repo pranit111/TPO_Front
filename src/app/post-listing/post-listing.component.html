@@ -41,9 +41,9 @@
                     <p class="text-sm text-green-600">{{ job.company.name }}</p>
                     <hr class="my-2 border-green-900" />
                     <p class="mt-6"><strong>Location:</strong> {{ job.location }}</p>
-                    <p class="mt-6"><strong>Salary:</strong> {{ job.packageAmount }}</p>
+                    <p class="mt-6"><strong>Salary:</strong> {{ job.packageAmount }}-LPA</p>
                     <p class="mt-6"><strong>Type:</strong> {{ job.jobType }}</p>
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded mt-10 ml-17 w-30 hover:bg-teal-700">
+                    <button class="bg-teal-600 text-white px-4 py-2 rounded mt-10 ml-17 w-30 hover:bg-teal-700" (click)="navigateToJobDetails(job.id)">
                         Apply
                     </button>
                 </div>

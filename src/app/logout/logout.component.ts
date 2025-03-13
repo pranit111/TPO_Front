@@ -12,7 +12,7 @@ export class LogoutComponent {
 constructor(private router:Router){}
   onLogout() {
 localStorage.removeItem("authtoken")
-this.router.navigate([''])
+this.router.navigate(['login'])
 }
 
 }

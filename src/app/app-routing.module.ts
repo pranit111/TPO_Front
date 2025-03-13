@@ -9,16 +9,25 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { LogoutComponent } from './logout/logout.component';
 import { PostListingComponent } from './post-listing/post-listing.component';
 import { JobApplyComponent } from './job-apply/job-apply.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { StudDashboardComponent } from './stud-dashboard/stud-dashboard.component';
 const routes: Routes = [
-  {path:"", component :StudLoginComponent},
+  {
+    path: '', component: NavbarComponent, children: [
+      {path:"profile", component :StudProfileComponent},
+      {path:"notification", component :PostListingComponent},
+      {path:"job_details/:id", component :JobApplyComponent},
+      {path:"dashboard", component :StudDashboardComponent}
+    ]
+  },
+  {path:"login", component :StudLoginComponent},
   {path:"tpo_login", component :TpoLoginComponent},
   {path:"signup", component :SignupStudComponent},
-  {path:"stud_profile", component :StudProfileComponent},
+
   {path:"user_registration", component :UserRegComponent},
   {path:"forgot_password", component :ForgotPasswordComponent},
   {path:"logout", component :LogoutComponent},
-  {path:"post_listing", component :PostListingComponent},
-  {path:"apply_post", component :JobApplyComponent}
+
 ];
 
 

@@ -17,6 +17,8 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { LogoutComponent } from './logout/logout.component';
 import { PostListingComponent } from './post-listing/post-listing.component';
 import { JobApplyComponent } from './job-apply/job-apply.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { StudDashboardComponent } from './stud-dashboard/stud-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { JobApplyComponent } from './job-apply/job-apply.component';
       ForgotPasswordComponent,
       LogoutComponent,
       PostListingComponent,
-      JobApplyComponent
+      JobApplyComponent,
+      NavbarComponent,
+      StudDashboardComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Onest:wght@400;700&display=swap');
+
+    .font-onest {
+      font-family: 'Onest', sans-serif;
+    }
+
+    .font-inter {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-cover bg-center min-h-screen"
+  style="background-image: url('Main_bg.png');">
+<div class="pt-10"></div>
+
+
+  <!-- User Dashboard Box -->
+  <div
+    class="mx-auto mt-6 md:mt-10 bg-white shadow-lg p-4 md:p-10 w-[95%] md:w-[80%] rounded-lg relative overflow-x-auto">
+
+    <!-- Heading -->
+    <h1 class="text-[28px] md:text-[48px] lg:text-[64px] text-[#053C47] font-onest">User Dashboard</h1>
+
+    <!-- Thicker Underline -->
+    <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 md:mb-8 border-[#053C47] w-full"></div>
+
+    <!-- Table-like Layout -->
+    <div class="bg-[#F3F3F3] w-full min-w-[700px] md:min-w-0 p-4 md:p-8 rounded-md">
+
+      <!-- Column Headers -->
+      <div
+        class="grid grid-cols-6 gap-4 mb-4 text-[#156C7D] text-[16px] md:text-[20px] font-onest">
+        <span class="text-left">Job Title</span>
+        <span class="text-left">Status</span>
+        <span class="text-left">Applied On</span>
+        <span class="text-left">Interview Date</span>
+        <span class="text-left">Resume</span>
+        <span class="text-left">Response</span>
+      </div>
+
+      <!-- Divider Line -->
+      <div class="border-b-[3px] border-[#053C47] mb-6 w-full"></div>
+
+      <!-- Job Rows -->
+      <div class="space-y-6">
+
+        <!-- Row 1 -->
+        <div *ngFor=" let application of applications"
+          class="grid grid-cols-6 gap-4 items-center bg-[#F3F3F3] p-4 text-[#6F6F6F] text-[14px] md:text-[20px] font-onest rounded-md shadow-sm">
+          <span class="text-left">{{application.designation}}</span>
+          <div class="flex items-center space-x-2 text-left">
+            <span>{{application.status}}</span>
+            <div class="w-[10px] h-[10px] rounded-full bg-[#60C6E2]"></div>
+          </div>
+          <span class="text-left">{{application.applicationDate}}</span>
+          <span class="text-left">{{application.interviewDate}}</span>
+          <a href="#" class="text-[#1E93C6] hover:text-[#156C7D] no-underline">View</a>
+          <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline" (click)="openModal(application)" >View</a>
+        </div><div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
+            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Application </h2>
+            <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>
+ 
+            <p class="text-[#6F6F6F] text-[16px] md:text-[20px]"><strong>Response:</strong> {{ selectedApplication.feedback }}</p>
+        
+            <div class="mt-6 flex justify-end">
+              <button (click)="closeModal()" class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Close</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+
+
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
+

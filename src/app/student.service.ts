@@ -7,13 +7,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class StudentService {
+
   private apiUrl = 'http://localhost:8080/api1/Student'; // Update with your backend API URL
    token = localStorage.getItem("authtoken");
    headers = new HttpHeaders({
     'Authorization': `${this.token}`
   });
   constructor(private http: HttpClient) {}
-
+  
   // Create a new student
   createStudent(formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData);

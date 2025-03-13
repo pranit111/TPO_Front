@@ -34,7 +34,9 @@ export class Company {
     applicationEndDate: string;
     selectionStartDate: string;
     selectionEndDate: string;
-    applicationStatus: string='';
+    aptitudeStartingDate:string;
+    status: string='';
+    aptitude:string=""
   
     constructor(data: Partial<JobPost> = {}) {
       this.id = data.id || 0;
@@ -55,7 +57,9 @@ export class Company {
       this.applicationEndDate = data.applicationEndDate || '';
       this.selectionStartDate = data.selectionStartDate || '';
       this.selectionEndDate = data.selectionEndDate || '';
-      this.applicationStatus = data.applicationStatus || '';
+      this.status = data.status || '';
+      this.aptitude = data.aptitude || '';
+      this.aptitudeStartingDate=data.aptitudeStartingDate ||'';
     }
   }
   

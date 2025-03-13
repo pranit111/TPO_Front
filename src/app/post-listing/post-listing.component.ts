@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PostListingService } from '../post-listing.service';
 import { ErrorService } from '../error.service';
 import { JobPost } from '../job-post';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-post-listing',
@@ -10,7 +11,7 @@ import { JobPost } from '../job-post';
   styleUrl: './post-listing.component.css'
 })
 export class PostListingComponent {
-constructor(private postlistng:PostListingService,private error:ErrorService){}
+constructor(private postlistng:PostListingService,private error:ErrorService,private router:Router){}
 ngOnInit() {
   this.postlistng.getJobPosts().subscribe({
     next: (response: JobPost[]) => {
@@ -24,4 +25,8 @@ ngOnInit() {
 }
   jobPosts: JobPost[] = [];
 
+  navigateToJobDetails(jobId: number) {
+    this.router.navigate(['/job_details', jobId]);  // Passing ID in URL
+  }
 }
+
