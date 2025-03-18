@@ -35,8 +35,7 @@
 <body class="bg-custom flex  justify-end min-h-screen px-4">
     <div class="flex flex-col lg:flex-row items-center justify-center space-x-10">
         <!-- College Logo -->
-        <img src="/scoe_logo.png" alt="College Logo" class="w-70 h-50 mr-10">
-
+       
         <!-- Registration Box -->
         <div class="bg-white p-8 w-[1000px] h-full shadow-lg rounded-lg flex flex-col ">
             <!-- <h1 class="onest-font text-4xl font-semibold text-left mb-6 mt-4">Student Registration</h1> -->
@@ -53,87 +52,102 @@
                         <!-- Right Circle -->
                         <div class="w-3 h-3 bg-gray-500 rounded-full ml-1"></div>
                     </div>
-                    
+                   <!-- Background Overlay -->
+<div *ngIf="showCropModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+    <!-- Modal Box -->
+    <div class="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">Crop Your Image</h2>
+        
+        <!-- Image Cropping Section -->
+        <div class="relative flex justify-center bg-gray-200 p-2 rounded-lg">
+            <img #imageCropper [src]="imageUrl" class="max-w-full rounded-md shadow-md">
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-between mt-4">
+            <button (click)="cropImage()" 
+                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
+                ✅ Crop
+            </button>
+            <button (click)="cancelCrop()" 
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
+                ❌ Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
                     <!-- Name Fields -->
+                    <div class="flex justify-center">
+                        <img [src]="profileImageUrl" alt="Profile Image" class="w-32 h-32 rounded-full border border-gray-300" />
+                      </div>
+                      <div class="flex justify-center mt-4" *ngIf="imageUrl">
+                        <img [src]="imageUrl" class="w-32 h-32 rounded-full border border-gray-300" />
+                    </div>
+                     
+                    <div><label class="block text-sm font-medium text-gray-500">Upload Profile Picture</label>
+                        <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelected($event)"></div>
                     <div class="grid grid-cols-3 gap-4 ">
+                   
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">First Name</label>
-                            <input type="text" [(ngModel)]="student.firstName" name="firstName" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">First Name : <em>{{Current_profile.firstName}}</em> </label>
+                            <input type="text"[(ngModel)]="student.firstName" name="firstName" required class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">Middle Name</label>
-                            <input type="text" [(ngModel)]="student.middleName" name="middleName" class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">Middle Name : <em>{{Current_profile.middleName}}</em></label>
+                            <input type="text"[(ngModel)]="student.middleName" name="middleName" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">Last Name</label>
+                            <label class="block text-sm font-medium text-gray-500">Last Name : <em>{{Current_profile.lastName}}</em></label>
                             <input type="text" [(ngModel)]="student.lastName"required  name="lastName" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                     </div>
 
                     <!-- Date of Birth -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-500">Date of Birth</label>
+                        <label class="block text-sm font-medium text-gray-500">Date of Birth : <em>{{Current_profile.dateOfBirth}}</em></label>
                         <input type="date" [(ngModel)]="student.dateOfBirth"required  name="dateOfBirth" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
 
                     <!-- Gender Selection -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-500">Gender</label>
-                        <div class="flex space-x-4 mt-2">
-                            <label class="flex items-center space-x-2">
-                                <input type="radio" name="gender"[(ngModel)]="student.gender" value="Male" class="accent-blue-500">
-                                <span>Male</span>
-                            </label>
-                            <label class="flex items-center space-x-2">
-                                <input type="radio" name="gender" value="Female" [(ngModel)]="student.gender"class="accent-blue-500">
-                                <span>Female</span>
-                            </label>
-                            <label class="flex items-center space-x-2">
-                                <input type="radio" name="gender" value="Other" [(ngModel)]="student.gender"class="accent-blue-500">
-                                <span>Other</span>
-                            </label>
-                        </div>
-                    </div>
+                  
                     
 
                     <!-- Contact Information -->
                     <div class="grid grid-cols-2 gap-4 w-full">
                         <div class="flex flex-col">
-                            <label class="block text-sm font-medium text-gray-500">GR No</label>
+                            <label class="block text-sm font-medium text-gray-500">GR No : <em>{{Current_profile.Gr_No}}</em></label>
                             <input type="text" [(ngModel)]="student.Gr_No"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div class="flex flex-col">
-                        <label class="block text-sm font-medium text-gray-500">Phone Number</label>
+                        <label class="block text-sm font-medium text-gray-500">Phone Number : <em>{{Current_profile.phoneNumber}}</em></label>
                         <input type="tel"[(ngModel)]="student.phoneNumber"  name="phoneNumber" required class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-500">Address</label>
+                        <label class="block text-sm font-medium text-gray-500">Address  : <em>{{Current_profile.address}}</em></label>
                         <input type="text" [(ngModel)]="student.address"required  name="address" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
 
                     <!-- Academic Details -->
                     <div class="grid grid-cols-2 gap-4 w-full">
+                        
                         <div class="flex flex-col">
-                            <label class="block text-sm font-medium text-gray-500">Department</label>
-                            <input type="text" [(ngModel)]="student.department"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="block text-sm font-medium text-gray-500">Year of Studying</label>
-                            <input type="text"[(ngModel)]="student.academicyear" name="year" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">Year of Studying  : <em>{{Current_profile.academicYear}}</em></label>
+                            <input type="text"[(ngModel)]="student.academicyear" name="academicYear" required class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-500">SSC Marks</label>
+                        <label class="block text-sm font-medium text-gray-500">SSC Marks : <em>{{Current_profile.sscMarks}}</em></label>
                         <input type="number"[(ngModel)]="student.sscMarks" name="sscMarks" required class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-500">HSC Marks</label>
+                        <label class="block text-sm font-medium text-gray-500">HSC Marks : <em>{{Current_profile.hscMarks}}</em></label>
                         <input type="number"[(ngModel)]="student.hscMarks" name="hscMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-500">Diploma Marks</label>
+                        <label class="block text-sm font-medium text-gray-500">Diploma Marks : <em>{{Current_profile.diplomaMarks}}</em></label>
                         <input type="number"[(ngModel)]="student.diplomaMarks"  name="diplomaMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
 
@@ -160,53 +174,49 @@
                       
                         <!-- Row 1 -->
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-1 Marks</label>
+                            <label class="text-sm font-medium text-gray-500">Sem-1 Marks : <em>{{Current_profile.sem1Marks}}</em></label>
                             <input type="number"[(ngModel)]="student.sem1Marks" name="sem1Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-2 Marks</label>
+                            <label class="text-sm font-medium text-gray-500">Sem-2 Marks : <em>{{Current_profile.sem2Marks}}</em></label>
                             <input type="number"[(ngModel)]="student.sem2Marks" name="sem2Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-3 Marks</label>
+                            <label class="text-sm font-medium text-gray-500">Sem-3 Marks : <em>{{Current_profile.sem3Marks}}</em></label>
                             <input type="number"[(ngModel)]="student.sem3Marks"  name="sem3Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                     
                         <!-- Row 2 -->
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-4 Marks</label>
+                            <label class="text-sm font-medium text-gray-500">Sem-4 Marks : <em>{{Current_profile.sem4Marks}}</em></label>
                             <input type="number"[(ngModel)]="student.sem4Marks"  name="sem4Marks" name="sem4Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-5 Marks</label>
+                            <label class="text-sm font-medium text-gray-500">Sem-5 Marks : <em>{{Current_profile.sem5Marks}}</em></label>
                             <input type="number"[(ngModel)]="student.sem5Marks" name="sem5Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-6 Marks</label>
+                            <label class="text-sm font-medium text-gray-500">Sem-6 Marks : <em>{{Current_profile.sem6Marks}}</em></label>
                             <input type="number"[(ngModel)]="student.sem6Marks" name="sem6Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                         </div>
                         
                         <!-- Row 3 -->
                         <div class="flex flex-col col-span-3">
                            
-                            <label class="text-sm font-medium text-gray-500">Backlog</label>
+                            <label class="text-sm font-medium text-gray-500">Backlog : <em>{{Current_profile.noOfBacklogs}}</em></label>
                             <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
                             <label class="block text-sm font-medium text-gray-500">Upload Resume</label>
                             <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelectedresume($event)">
                         
-                            <label class="block text-sm font-medium text-gray-500">Upload Profile Picture</label>
-                            <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelectedprof($event)">
+                         
                         
-                            <div class="flex justify-center mt-4" *ngIf="imageUrl" class="flex flex-col items-center">
-                                <label class="block text-sm font-medium text-gray-500">Preview</label>
-                                <img [src]="imageUrl" class="w-32 h-32 rounded-full border border-gray-300" />
-                            </div>
+
                             <div class="flex justify-center mt-6 space-x-10">
 
                                 <button type="button" (click)="prevStep()"
                                     class="px-4 py-2 bg-[#062027] text-white rounded">Prev</button>
-                                    <button type="button" (click)="submitStudent()"
-                                    class="px-4 py-2 bg-[#062027] text-white rounded">Register</button>
+                                    <button type="button"
+                                    class="px-4 py-2 bg-[#062027] text-white rounded"(click)="showConfirmation()">Update</button>
                                     
                             </div>
                         </div>
@@ -215,38 +225,30 @@
 
                 </div>
             </form>
-           
-        </div>
-
-    </div>
-
-    <!-- Background Overlay -->
-    <div *ngIf="showCropModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-        <!-- Modal Box -->
-        <div class="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
-            <h2 class="text-lg font-semibold text-gray-700 mb-4">Crop Your Image</h2>
+            <div *ngIf="showPopup" class="fixed inset-0 flex items-center backdrop-blur justify-center bg- bg-opacity-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+                    <h2 class="text-xl font-semibold mb-2">Confirm Changes</h2>
+                    <p class="text-gray-600 mb-4">You are about to make the following changes:</p>
+                    
+                    <ul class="list-disc pl-5 text-sm text-gray-700 mb-4">
+                        <li *ngFor="let change of changesList">
+                            <strong>{{ change.key }}:</strong> 
+                            <span class="text-red-600 line-through">{{ change.oldValue }}</span> → 
+                            <span class="text-green-600">{{ change.newValue }}</span>
+                        </li>
+                    </ul>
             
-            <!-- Image Cropping Section -->
-            <div class="relative flex justify-center bg-gray-200 p-2 rounded-lg">
-                <img #imageCropper [src]="imageUrl" class="max-w-full rounded-md shadow-md">
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex justify-between mt-4">
-                <button (click)="cropImage()" 
-                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
-                    ✅ Crop
-                </button>
-                <button (click)="cancelCrop()" 
-                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
-                    ❌ Cancel
-                </button>
+                    <div class="flex justify-end space-x-4">
+                        <button (click)="hideConfirmation()"
+                            class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
+                        <button (click)="confirmChanges()"
+                            class="px-4 py-2 bg-[#062027] text-white rounded">Confirm</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Add preview of cropped image -->
-   
+    </div>
 
 </body>
 

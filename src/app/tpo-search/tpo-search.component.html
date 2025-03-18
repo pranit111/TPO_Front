@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TPO Student Filtering Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Onest:wght@400;700&family=Roboto+Flex:wght@400;700&display=swap');
+
+    .font-onest {
+      font-family: 'Onest', sans-serif;
+    }
+
+    .font-roboto-flex {
+      font-family: 'Roboto Flex', sans-serif;
+    }
+
+    .font-inter {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-cover bg-center min-h-screen" style="background-image: url('Main_bg_blue.png');">
+
+  <!-- Main White Frame -->
+  <div
+    class="mx-auto mt-4 sm:mt-6 md:mt-8 lg:mt-10 bg-white rounded-xl shadow-lg w-[95%] sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[1343px] min-h-[850px] p-4 sm:p-6 relative">
+    <!-- Search Bar -->
+    <div
+      class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto bg-white shadow-md relative z-10">
+      <input [(ngModel)]="filters.firstName" type="text" placeholder="Search for Student"
+        class="text-[#878787] text-[16px] sm:text-[18px] md:text-[20px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+      <img src="Search.png" alt="Search Icon"
+        class="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] md:w-[38px] md:h-[39px] object-contain cursor-pointer ml-2 sm:ml-4"
+        (click)="loadStudents()" />
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] 
+    w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto 
+    bg-[#4073BF] shadow-md relative z-10">
+
+    
+      <!-- Academic Year Dropdown -->
+      <select [(ngModel)]="filters.academicYear"
+        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+        <option value="" >Year</option>
+        <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
+      </select>
+
+      <!-- Department Dropdown -->
+      <select [(ngModel)]="filters.department"
+        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+        <option value="" >Department</option>
+        <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+      </select>
+
+      <!-- Min Avg Marks Dropdown -->
+      <select [(ngModel)]="filters.minAvgMarks"
+        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+        <option [ngValue]="undefined">Min Avg Marks</option>
+        <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
+      </select>
+
+      <!-- Max Avg Marks Dropdown -->
+      <select [(ngModel)]="filters.maxAvgMarks"
+        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+        <option [ngValue]="undefined">Max Avg Marks</option>
+        <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
+      </select>
+
+      <!-- Year of Passing Dropdown -->
+      <select [(ngModel)]="filters.yearOfPassing"
+        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+        <option [ngValue]="undefined">Year of Passing</option>
+        <option *ngFor="let year of passingYears" [ngValue]="year">{{year}}</option>
+      </select>
+
+    </div>
+
+    <!-- Line Under Columns -->
+    <div class="border-b w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] mx-auto" style="border-color: #053C47; height: 0;">
+    </div>
+
+    <!-- Column Headers -->
+    <div
+      class="hidden sm:flex justify-between px-2 sm:px-4 py-2 text-[#053C47] text-[12px] sm:text-[14px] md:text-[16px] font-onest font-bold items-center w-full overflow-x-auto">
+      <span class="w-1/12 min-w-[80px]">First Name</span>
+      <span class="w-1/12 min-w-[80px]">Middle Name</span>
+      <span class="w-1/12 min-w-[80px]">Last Name</span>
+      <span class="w-1/12 min-w-[60px]">Gender</span>
+      <span class="w-1/12 min-w-[80px]">DOB</span>
+      <span class="w-1/12 min-w-[60px]">GR No.</span>
+      <span class="w-1/12 min-w-[60px]">SSC %</span>
+      <span class="w-1/12 min-w-[60px]">HSC %</span>
+      <span class="w-1/12 min-w-[80px]">Diploma %</span>
+      <span class="w-1/12 min-w-[80px]">Average %</span>
+      <span class="w-1/12 min-w-[100px]">Department</span>
+      <span class="w-1/12 min-w-[60px]">Year</span>
+      <span class="w-1/12 min-w-[60px]">Backlogs</span>
+      <span class="w-1/12 min-w-[60px]">Actions</span>
+      <button (click)="downloadExcel()" >
+        <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+      </button>
+    </div>
+
+    <!-- Mobile Column Headers -->
+    <div class="sm:hidden grid grid-cols-2 gap-2 px-2 py-2 text-[#053C47] text-[12px] font-onest font-bold">
+      <span>First Name</span>
+      <span>Last Name</span>
+      <span>Gender</span>
+      <span>GR No.</span>
+      <span>Department</span>
+      <span>Year</span>
+    </div>
+
+    <!-- Example Student Row -->
+    <div *ngFor="let student of students"
+      class="flex flex-col sm:flex-row justify-between px-2 sm:px-4 py-2 sm:py-4 text-black text-[12px] sm:text-[14px] font-onest items-start sm:items-center w-full border-b border-gray-200">
+      <!-- Mobile View -->
+      <div class="sm:hidden grid grid-cols-2 gap-2 w-full">
+        <span>{{student.firstName}}</span>
+        <span>{{student.lastName}}</span>
+        <span>{{student.gender}}</span>
+        <span>{{student.Gr_No}}</span>
+        <span>{{student.department}}</span>
+        <span>{{student.academicyear}}</span> 
+      </div>
+
+      <!-- Desktop View -->
+      <div class="hidden sm:flex justify-between w-full">
+        <span class="w-1/12 min-w-[80px]">{{student.firstName}}</span>
+        <span class="w-1/12 min-w-[80px]">{{student.middleName}}</span>
+        <span class="w-1/12 min-w-[80px]">{{student.lastName}}</span>
+        <span class="w-1/12 min-w-[60px]">{{student.gender}}</span>
+        <span class="w-1/12 min-w-[80px]">{{student.dateOfBirth}}</span>
+        <span class="w-1/12 min-w-[60px]">{{student.Gr_No}}</span>
+        <span class="w-1/12 min-w-[60px]">{{student.sscMarks}}%</span>
+        <span class="w-1/12 min-w-[60px]">{{student.hscMarks || '-'}}</span>
+        <span class="w-1/12 min-w-[80px]">{{student.diplomaMarks || '-'}}</span>
+        <span class="w-1/12 min-w-[80px]">{{student.avgMarks || '-'}}</span>
+        <span class="w-1/12 min-w-[100px]">{{student.department}}</span>
+        <span class="w-1/12 min-w-[60px]">{{student.academicyear}}</span>
+        <span class="w-1/12 min-w-[60px]">{{student.noOfBacklogs}}</span>
+        <div class="flex items-center space-x-2 w-1/12 min-w-[60px]">
+          <button (click)="(student)">
+            <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

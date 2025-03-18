@@ -7,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  isMenuOpen = false;
+  username="";
+ ngOnInit(){
+  this.username= localStorage.getItem("username")|| "USER"
+
+ }
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
 
 }

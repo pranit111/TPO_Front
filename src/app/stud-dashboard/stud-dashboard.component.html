@@ -44,7 +44,7 @@
         <span class="text-left">Status</span>
         <span class="text-left">Applied On</span>
         <span class="text-left">Interview Date</span>
-        <span class="text-left">Resume</span>
+        <span class="text-left">Company</span>
         <span class="text-left">Response</span>
       </div>
 
@@ -60,13 +60,16 @@
           <span class="text-left">{{application.designation}}</span>
           <div class="flex items-center space-x-2 text-left">
             <span>{{application.status}}</span>
-            <div class="w-[10px] h-[10px] rounded-full bg-[#60C6E2]"></div>
+            <div class="w-[10px] h-[10px] rounded-full " [ngClass]="getStatusColor(application.status)"></div>
           </div>
           <span class="text-left">{{application.applicationDate}}</span>
-          <span class="text-left">{{application.interviewDate}}</span>
-          <a href="#" class="text-[#1E93C6] hover:text-[#156C7D] no-underline">View</a>
+          <span class="text-left">{{application.interviewDate || "-"}} </span>
+          <span class="text-left">{{application.jobPost.company.name}} </span>
+       
+
           <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline" (click)="openModal(application)" >View</a>
-        </div><div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        </div>
+        <div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
             <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Application </h2>
             <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>

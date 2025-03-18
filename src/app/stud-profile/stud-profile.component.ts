@@ -25,7 +25,8 @@ export class StudProfileComponent {
       next: (response: any) => {
         console.log("Full Response from API:", response);
         this.profileData = response; // Assign the API response to profileData
-
+        
+          localStorage.setItem("username",response.firstName+" " +response.lastName)
         // Convert Base64 image if available
         if (response.profileImageBase64) {
           this.profileImageUrl = `data:image/png;base64,${response.profileImageBase64}`;

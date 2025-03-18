@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserRegService } from '../user-reg.service';
 import { User } from '../user';
 import { ErrorService } from '../error.service';
@@ -11,14 +11,30 @@ import { AppRoutingModule } from '../app-routing.module';
   templateUrl: './user-reg.component.html',
   styleUrl: './user-reg.component.css'
 })
-export class UserRegComponent {
-
-constructor(private useregservice:UserRegService,private error:ErrorService,private router:Router
-){}
-  step=1
+export class UserRegComponent implements OnInit {
+  constructor(private useregservice:UserRegService,private error:ErrorService,private router:Router){}
+  
+  step=1;
   user = { username: '', email: '', password: '', confirmPassword: '',role:'' };
+  users: User[] = []; // Array to store users
+  otp:string="";
+  
+  ngOnInit() {
+    this.loadUsers();
+  }
 
-  otp:string=""
+  loadUsers() {
+    this.useregservice.getUsers().subscribe({
+      next: (response: any) => {
+        this.users = response;
+        console.log('Users loaded:', this.users);
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+        this.error.setError('Failed to load users');
+      }
+    });
+  }
   
   next() {
     this.step=2
@@ -66,7 +82,7 @@ constructor(private useregservice:UserRegService,private error:ErrorService,priv
           next: (response: any) => {
             console.log("Full Response from API:", response); // Debugging step
             if(response.message && response.message.includes("User Verified")){
-              this.router.navigate(['/stud_login'])
+              this.router.navigate(['/login'])
               this.error.setError("User Verified","bg-green-600")
             }
             if(response.error){

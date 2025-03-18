@@ -21,7 +21,7 @@ export class StudLoginComponent {
     }
 
   }
-  onlogin() {
+  onlogin(form:any) {
     this.user.role = 'STUDENT';
     if ( !this.user.password || !this.user.email) {
       this.error.setError('Email and Password is required!')
@@ -34,9 +34,16 @@ export class StudLoginComponent {
 
         if (response.status === 'success') {
           const token = response.token; // Extract token
-          localStorage.setItem('authtoken', token); // Store token
+          localStorage.setItem('authtoken', token);
+           // Store token
           this.error.setError("Login Successful","bg-green-600")
-          this.router.navigate(['/profile'])
+          if(response.HasProfile=='Yes'){
+            this.router.navigate(['/profile'])
+          }
+          else{
+              this.router.navigate(['create_profile'])
+          }
+       
           // Redirect or perform other actions
         } else {
           this.error.setError(response.message || "Unexpected error.");

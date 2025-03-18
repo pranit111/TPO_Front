@@ -29,13 +29,17 @@
         <div class="bg-white p-8 w-[529px] h-[509px] shadow-lg rounded-lg flex flex-col">
             <div class="w-full flex justify-between items-center mb-10">
                 <h1 class="onest-font text-4xl font-semibold text-left pt-6 mb-10 mt-6">TPO LOGIN</h1>
-                <a href="/stud_login" class="roboto-flex text-sm text-[#1E93C6] w-[121px] h-[35px] flex items-center justify-center">
+                <a href="/login" class="roboto-flex text-sm text-[#1E93C6] w-[121px] h-[35px] flex items-center justify-center">
                     Switch to Student
                 </a>
             </div>
             <form class="mt-8 w-full flex flex-col items-center">
-                <input type="text" placeholder="Email address or username"[(ngModel)]="user.email"name="username"
+                <input type="text" placeholder="Email address or username"[(ngModel)]="user.email"name="username" #email="ngModel"
                     class="roboto-flex input-box w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm">
+                    <div *ngIf="email.invalid && email.touched" class="text-red-500 text-sm mt-1">
+                        <small *ngIf="email.errors?.['required']">Email is required</small>
+                        <small *ngIf="email.errors?.['email']">Invalid email format</small>
+                    </div>
                 <input type="password" placeholder="Password"[(ngModel)]="user.password" name="password"
                     class="roboto-flex input-box w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
                 <div class="w-[408px] flex justify-end mt-2">

@@ -19,6 +19,10 @@ import { PostListingComponent } from './post-listing/post-listing.component';
 import { JobApplyComponent } from './job-apply/job-apply.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StudDashboardComponent } from './stud-dashboard/stud-dashboard.component';
+import { ProfileEditComponent } from './profile-edit/profile-edit.component';
+import { ImageCropperModule } from 'ngx-img-cropper';
+import { TpoSearchComponent } from './tpo-search/tpo-search.component';
+import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 
 @NgModule({
   declarations: [
@@ -35,13 +39,17 @@ import { StudDashboardComponent } from './stud-dashboard/stud-dashboard.componen
       PostListingComponent,
       JobApplyComponent,
       NavbarComponent,
-      StudDashboardComponent
+      StudDashboardComponent,
+      ProfileEditComponent,
+      TpoSearchComponent,
+      TpoNavbarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    ImageCropperModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
   bootstrap: [AppComponent]

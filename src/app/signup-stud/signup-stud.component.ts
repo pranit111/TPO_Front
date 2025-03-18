@@ -1,10 +1,10 @@
-
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators,FormsModule } from '@angular/forms';
 import { StudentService } from '../student.service';
 import { Student, Gender } from '../student';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { CropperService } from '../cropper.service';
 
 @Component({
   selector: 'app-signup-stud',
@@ -20,8 +20,19 @@ export class SignupStudComponent {
   
   genders = Object.values(Gender); // Gender options for radio buttons
   resume: File | null = null; // Store the uploaded file
-  profile_pic:File |null=null
-  constructor(private fb: FormBuilder, private studentService: StudentService) {
+  profile_pic: File | null = null;
+  
+  // Cropper properties
+  @ViewChild('imageCropper') imageElement!: ElementRef;
+  imageUrl: string | null = null;
+  croppedImage!: Blob;
+  showCropModal: boolean = false;
+
+  constructor(
+    private fb: FormBuilder, 
+    private studentService: StudentService,
+    private cropperService: CropperService
+  ) {
     this.studentForm = this.fb.group({
       firstName: ['', Validators.required],
       middleName: [''],
@@ -58,10 +69,41 @@ export class SignupStudComponent {
       this.resume = event.target.files[0];
     }
   }
+
+  // Handle file selection for profile picture
   onFileSelectedprof(event: any): void {
-    if (event.target.files.length > 0) {
-      this.profile_pic = event.target.files[0];
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageUrl = reader.result as string;
+        this.showCropModal = true;
+        setTimeout(() => {
+          this.cropperService.initializeCropper(this.imageElement.nativeElement);
+        }, 100);
+      };
+      reader.readAsDataURL(file);
     }
+  }
+
+  // Crop the image using service
+  async cropImage() {
+    try {
+      this.croppedImage = await this.cropperService.cropImage();
+      this.profile_pic = new File([this.croppedImage], 'profile_pic.jpg', { type: 'image/jpeg' });
+      this.imageUrl = URL.createObjectURL(this.croppedImage);
+      this.showCropModal = false;
+      this.cropperService.destroyCropper();
+    } catch (error) {
+      console.error('Crop error:', error);
+    }
+  }
+
+  // Cancel cropping
+  cancelCrop() {
+    this.showCropModal = false;
+    this.imageUrl = null;
+    this.cropperService.destroyCropper();
   }
 
   // Submit Student Data

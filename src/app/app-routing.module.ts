@@ -11,6 +11,9 @@ import { PostListingComponent } from './post-listing/post-listing.component';
 import { JobApplyComponent } from './job-apply/job-apply.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { StudDashboardComponent } from './stud-dashboard/stud-dashboard.component';
+import { ProfileEditComponent } from './profile-edit/profile-edit.component';
+import { TpoSearchComponent } from './tpo-search/tpo-search.component';
+import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 const routes: Routes = [
   {
     path: '', component: NavbarComponent, children: [
@@ -21,13 +24,20 @@ const routes: Routes = [
     ]
   },
   {path:"login", component :StudLoginComponent},
+  {path:"profile_edit", component :ProfileEditComponent},
   {path:"tpo_login", component :TpoLoginComponent},
-  {path:"signup", component :SignupStudComponent},
+  {path:"create_profile", component :SignupStudComponent},
 
   {path:"user_registration", component :UserRegComponent},
   {path:"forgot_password", component :ForgotPasswordComponent},
   {path:"logout", component :LogoutComponent},
 
+  {
+    path: 'tpo', component: TpoNavbarComponent, children: [
+     
+      {path:"search", component :TpoSearchComponent},
+    ]
+  }
 ];
 
 

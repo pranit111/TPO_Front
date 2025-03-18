@@ -19,7 +19,7 @@ export enum Gender {
     middleName?: string;
     lastName!: string;
     email!:string;
-    year!:number;
+    academicyear!:string;
     dateOfBirth!: Date;
     gender!: Gender;
     phoneNumber!: string;
@@ -27,7 +27,7 @@ export enum Gender {
     department!: string;
     sscMarks!: number;
     hscMarks!: number;
-    diplomaMarks?: number;
+    diplomaMarks!: number;
     sem1Marks!: number;
     sem2Marks!: number;
     sem3Marks!: number;
