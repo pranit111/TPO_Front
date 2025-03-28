@@ -5,6 +5,7 @@ import { Student, Gender } from '../student';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { CropperService } from '../cropper.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup-stud',
@@ -17,7 +18,8 @@ export class SignupStudComponent {
   step = 1;
   studentForm: FormGroup;
   student: Student = new Student();
-  
+  departments: string[] = ['CSE', 'DS', 'AIML', 'CIVIL', 'ECE'];
+academicYears: string[] = ['FE', 'SE', 'TE', 'BE'];
   genders = Object.values(Gender); // Gender options for radio buttons
   resume: File | null = null; // Store the uploaded file
   profile_pic: File | null = null;
@@ -31,7 +33,8 @@ export class SignupStudComponent {
   constructor(
     private fb: FormBuilder, 
     private studentService: StudentService,
-    private cropperService: CropperService
+    private cropperService: CropperService,
+    private router:Router
   ) {
     this.studentForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -131,6 +134,7 @@ export class SignupStudComponent {
     this.studentService.createStudent(formData).subscribe({
       next: () => {
         alert('Student created successfully!');
+        this.router.navigate(['/profile'])
         this.studentForm.reset(); // Reset form
         this.student = new Student(); // Reset object
         this.resume = null; // Clear file input

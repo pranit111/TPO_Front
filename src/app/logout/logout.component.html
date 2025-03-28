@@ -3,39 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TPO Login</title>
+    <title>TPO Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import "tailwindcss";
-        @import url('https://fonts.googleapis.com/css2?family=Onest:wght@600&family=Roboto+Flex:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&family=Roboto+Flex:wght@400;500;600&display=swap');
         .onest-font { font-family: 'Onest', sans-serif; }
         .roboto-flex { font-family: 'Roboto Flex', sans-serif; }
+        
         .bg-custom {
-            background-image: url("/Main_bg.png"); /* Set your background image path */
+            background-image: url("/Main_bg.png");
             background-size: cover;
             background-position: center;
         }
-        .input-box::placeholder {
-            color: #BFB4B4;
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body class="bg-custom flex items-center justify-center min-h-screen px-4">
-    <div class="flex flex-col lg:flex-row items-center justify-center space-x-100">
-        <!-- College Logo -->
-      
-        <!-- Login Box -->
-        <div class="bg-white  p-8 w-[529px] h-[509px] shadow-lg rounded-lg flex flex-col">
-        
-                <button type="submit"(click)="onLogout()"  class="w-[127px] h-[35px] bg-[#1E1E1E] text-white rounded-full mt-46 self-center">
-                    Logout
-                </button>
-               
-          
-            
-      
+    <div class="glass-effect p-8 w-[529px] rounded-2xl shadow-2xl">
+        <div class="flex flex-col items-center space-y-8">
+            <!-- Profile Section -->
+            <div class="flex flex-col items-center space-y-4">
+                <div class="w-24 h-24 bg-[#4073BF] rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold onest-font text-[#1E1E1E]">Account Settings</h2>
+            </div>
+
+            <!-- Divider -->
+            <div class="w-full h-px bg-gray-200"></div>
+
+            <!-- Logout Section -->
+            <div class="flex flex-col items-center space-y-4 w-full">
+                <p class="text-gray-600 roboto-flex text-center">
+                    Are you sure you want to logout from the TPO Portal?
+                </p>
                 
- 
+                <div class="flex space-x-4">
+                    <button 
+                        (click)="onLogout()" 
+                        class="px-8 py-3 bg-[#4073BF] hover:bg-[#2c5aa0] text-white rounded-xl font-semibold onest-font transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 shadow-lg hover:shadow-xl"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                    
+                    <button 
+                        routerLink="/dashboard" 
+                        class="px-8 py-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl font-semibold onest-font transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

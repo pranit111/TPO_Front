@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-@Injectable({
+import { environment } from '../environments/environment';
+  @Injectable({
   providedIn: 'root'
 })
 export class ForgotPasswordService {
 
-  apiurl='http://localhost:8080/api0/auth';
+  apiurl=environment.apiUrls.userService+'/auth';
 
   sendotp(email:string):Observable<any> {
     

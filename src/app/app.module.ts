@@ -23,6 +23,7 @@ import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { ImageCropperModule } from 'ngx-img-cropper';
 import { TpoSearchComponent } from './tpo-search/tpo-search.component';
 import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
+import { PostJobComponent } from './post-job/post-job.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
       StudDashboardComponent,
       ProfileEditComponent,
       TpoSearchComponent,
-      TpoNavbarComponent
+      TpoNavbarComponent,
+      PostJobComponent
   ],
   imports: [
     BrowserModule,

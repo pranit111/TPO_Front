@@ -26,7 +26,7 @@ export class StudDashboardComponent {
 ngOnInit(){
   this.applicationservice.getapplications().subscribe({
     next: (response) => {
-          this.applications = response; // Store fetched job posts
+          this.applications = response.results; // Access the results array from PaginatedResponse
           console.log(this.applications); // Log to check if data is received correctly
         },
         error: (err) => {

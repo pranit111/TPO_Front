@@ -14,6 +14,7 @@ import { StudDashboardComponent } from './stud-dashboard/stud-dashboard.componen
 import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { TpoSearchComponent } from './tpo-search/tpo-search.component';
 import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
+import { PostJobComponent } from './post-job/post-job.component';
 const routes: Routes = [
   {
     path: '', component: NavbarComponent, children: [
@@ -36,6 +37,7 @@ const routes: Routes = [
     path: 'tpo', component: TpoNavbarComponent, children: [
      
       {path:"search", component :TpoSearchComponent},
+      {path:"post_job", component :PostJobComponent},
     ]
   }
 ];

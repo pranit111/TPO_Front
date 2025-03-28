@@ -35,7 +35,7 @@ export enum Gender {
     sem5Marks!: number;
     sem6Marks!: number;
     noOfBacklogs!: number;
-    Gr_No!:String;
+    gr_No!:String;
     avgMarks!:number;
     jobApplications!: JobApplication[];
   

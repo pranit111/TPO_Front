@@ -100,11 +100,21 @@
                     <div class="grid grid-cols-2 gap-4 w-full">
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium text-gray-500">GR No</label>
-                            <input type="text" [(ngModel)]="student.Gr_No"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <input type="text" [(ngModel)]="student.gr_No"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div class="flex flex-col">
-                        <label class="block text-sm font-medium text-gray-500">Phone Number</label>
-                        <input type="tel"[(ngModel)]="student.phoneNumber"  name="phoneNumber" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">Phone Number</label>
+                            <input type="tel" 
+                                [(ngModel)]="student.phoneNumber" 
+                                name="phoneNumber" 
+                                required 
+                                pattern="[0-9]{10}"
+                                #phone="ngModel"
+                                class="p-2 w-full rounded border border-gray-300 text-sm"
+                                [class.border-red-500]="phone.invalid && (phone.dirty || phone.touched)">
+                            <span class="text-red-500 text-xs mt-1" *ngIf="phone.invalid && (phone.dirty || phone.touched)">
+                                Please enter a valid 10-digit phone number
+                            </span>
                         </div>
                     </div>
                     <div>
@@ -116,25 +126,71 @@
                     <div class="grid grid-cols-2 gap-4 w-full">
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium text-gray-500">Department</label>
-                            <input type="text" [(ngModel)]="student.department"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <select [(ngModel)]="student.department" name="department" required
+                                class="p-2 w-full rounded border border-gray-300 text-sm">
+                                <option value="">Select Department</option>
+                                <option value="CSE">CSE</option>
+                                <option value="DS">DS</option>
+                                <option value="AIML">AIML</option>
+                                <option value="CIVIL">CIVIL</option>
+                                <option value="IT">IT</option>     
+                            </select>
                         </div>
                         <div class="flex flex-col">
-                            <label class="block text-sm font-medium text-gray-500">Year of Studying</label>
-                            <input type="text"[(ngModel)]="student.academicyear" name="year" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">Year</label>
+                            <select [(ngModel)]="student.academicyear" name="academicyear" required
+                                class="p-2 w-full rounded border border-gray-300 text-sm">
+                                <option value="">Select Year</option>
+                                <option value="FE">FE</option>
+                                <option value="SE">SE</option>
+                                <option value="TE">TE</option>
+                                <option value="BE">BE</option>
+                            </select>
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-500">SSC Marks</label>
-                        <input type="number"[(ngModel)]="student.sscMarks" name="sscMarks" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="number" 
+                            [(ngModel)]="student.sscMarks" 
+                            name="sscMarks" 
+                            required 
+                            min="0" 
+                            max="100"
+                            #ssc="ngModel"
+                            class="p-2 w-full rounded border border-gray-300 text-sm"
+                            [class.border-red-500]="ssc.invalid && (ssc.dirty || ssc.touched)">
+                        <span class="text-red-500 text-xs mt-1" *ngIf="ssc.invalid && (ssc.dirty || ssc.touched)">
+                            Percentage must be between 35 and 100
+                        </span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-500">HSC Marks</label>
-                        <input type="number"[(ngModel)]="student.hscMarks" name="hscMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="number" 
+                            [(ngModel)]="student.hscMarks" 
+                            name="hscMarks" 
+                            min="0" 
+                            max="100"
+                            #hsc="ngModel"
+                            class="p-2 w-full rounded border border-gray-300 text-sm"
+                            [class.border-red-500]="hsc.invalid && (hsc.dirty || hsc.touched)">
+                        <span class="text-red-500 text-xs mt-1" *ngIf="hsc.invalid && (hsc.dirty || hsc.touched)">
+                            Percentage must be between 35 and 100
+                        </span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-500">Diploma Marks</label>
-                        <input type="number"[(ngModel)]="student.diplomaMarks"  name="diplomaMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <input type="number" 
+                            [(ngModel)]="student.diplomaMarks" 
+                            name="diplomaMarks" 
+                            min="0" 
+                            max="100"
+                            #diploma="ngModel"
+                            class="p-2 w-full rounded border border-gray-300 text-sm"
+                            [class.border-red-500]="diploma.invalid && (diploma.dirty || diploma.touched)">
+                        <span class="text-red-500 text-xs mt-1" *ngIf="diploma.invalid && (diploma.dirty || diploma.touched)">
+                            Percentage must be between 35 and 100
+                        </span>
                     </div>
 
                     <div class="flex justify-center mt-6">
@@ -160,30 +216,96 @@
                       
                         <!-- Row 1 -->
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-1 Marks</label>
-                            <input type="number"[(ngModel)]="student.sem1Marks" name="sem1Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <label class="text-sm font-medium text-gray-500">Sem-1 CGPA</label>
+                            <input type="number" 
+                                [(ngModel)]="student.sem1Marks" 
+                                name="sem1Marks" 
+                                min="0" 
+                                max="10" 
+                                step="0.01"
+                                #sem1="ngModel"
+                                class="p-2 border border-gray-300 rounded w-full text-sm"
+                                [class.border-red-500]="sem1.invalid && (sem1.dirty || sem1.touched)">
+                            <span class="text-red-500 text-xs mt-1" *ngIf="sem1.invalid && (sem1.dirty || sem1.touched)">
+                                CGPA must be between 5 and 10
+                            </span>
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-2 Marks</label>
-                            <input type="number"[(ngModel)]="student.sem2Marks" name="sem2Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <label class="text-sm font-medium text-gray-500">Sem-2 CGPA</label>
+                            <input type="number" 
+                                [(ngModel)]="student.sem2Marks" 
+                                name="sem2Marks" 
+                                min="0" 
+                                max="10" 
+                                step="0.01"
+                                #sem2="ngModel"
+                                class="p-2 border border-gray-300 rounded w-full text-sm"
+                                [class.border-red-500]="sem2.invalid && (sem2.dirty || sem2.touched)">
+                            <span class="text-red-500 text-xs mt-1" *ngIf="sem2.invalid && (sem2.dirty || sem2.touched)">
+                                CGPA must be between 5 and 10
+                            </span>
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-3 Marks</label>
-                            <input type="number"[(ngModel)]="student.sem3Marks"  name="sem3Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <label class="text-sm font-medium text-gray-500">Sem-3 CGPA</label>
+                            <input type="number" 
+                                [(ngModel)]="student.sem3Marks" 
+                                name="sem3Marks" 
+                                min="0" 
+                                max="10" 
+                                step="0.01"
+                                #sem3="ngModel"
+                                class="p-2 border border-gray-300 rounded w-full text-sm"
+                                [class.border-red-500]="sem3.invalid && (sem3.dirty || sem3.touched)">
+                            <span class="text-red-500 text-xs mt-1" *ngIf="sem3.invalid && (sem3.dirty || sem3.touched)">
+                                CGPA must be between 5 and 10
+                            </span>
                         </div>
                     
                         <!-- Row 2 -->
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-4 Marks</label>
-                            <input type="number"[(ngModel)]="student.sem4Marks"  name="sem4Marks" name="sem4Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <label class="text-sm font-medium text-gray-500">Sem-4 CGPA</label>
+                            <input type="number" 
+                                [(ngModel)]="student.sem4Marks" 
+                                name="sem4Marks" 
+                                min="0" 
+                                max="10" 
+                                step="0.01"
+                                #sem4="ngModel"
+                                class="p-2 border border-gray-300 rounded w-full text-sm"
+                                [class.border-red-500]="sem4.invalid && (sem4.dirty || sem4.touched)">
+                            <span class="text-red-500 text-xs mt-1" *ngIf="sem4.invalid && (sem4.dirty || sem4.touched)">
+                                CGPA must be between 5 and 10
+                            </span>
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-5 Marks</label>
-                            <input type="number"[(ngModel)]="student.sem5Marks" name="sem5Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <label class="text-sm font-medium text-gray-500">Sem-5 CGPA</label>
+                            <input type="number" 
+                                [(ngModel)]="student.sem5Marks" 
+                                name="sem5Marks" 
+                                min="0" 
+                                max="10" 
+                                step="0.01"
+                                #sem5="ngModel"
+                                class="p-2 border border-gray-300 rounded w-full text-sm"
+                                [class.border-red-500]="sem5.invalid && (sem5.dirty || sem5.touched)">
+                            <span class="text-red-500 text-xs mt-1" *ngIf="sem5.invalid && (sem5.dirty || sem5.touched)">
+                                CGPA must be between 5 and 10
+                            </span>
                         </div>
                         <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-6 Marks</label>
-                            <input type="number"[(ngModel)]="student.sem6Marks" name="sem6Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <label class="text-sm font-medium text-gray-500">Sem-6 CGPA</label>
+                            <input type="number" 
+                                [(ngModel)]="student.sem6Marks" 
+                                name="sem6Marks" 
+                                min="0" 
+                                max="10" 
+                                step="0.01"
+                                #sem6="ngModel"
+                                class="p-2 border border-gray-300 rounded w-full text-sm"
+                                [class.border-red-500]="sem6.invalid && (sem6.dirty || sem6.touched)">
+                            <span class="text-red-500 text-xs mt-1" *ngIf="sem6.invalid && (sem6.dirty || sem6.touched)">
+                                CGPA must be between 5 and 10
+                            </span>
                         </div>
                         
                         <!-- Row 3 -->

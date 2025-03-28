@@ -1,0 +1,263 @@
+<!-- Background Container -->
+<div class="min-h-screen bg-cover bg-center bg-no-repeat py-8"
+    [ngStyle]="{'background-image': 'url(/Main_bg_blue.png)'}">
+    <!-- Overlay -->
+
+
+    <!-- Content Container -->
+    <div class="relative z-10">
+        <div class="container mx-auto p-6 bg-white bg-opacity-95 rounded-lg shadow-lg max-w-4xl">
+            <h1 class="text-2xl font-bold text-blue-900 mb-6">Post Job</h1>
+            <div class="border-b-[3px] md:border-b-[2px] mt-2 mb-4 md:mb-8 border-gray-400 w-full"></div>
+            <form (ngSubmit)="onSubmit()" #jobForm="ngForm">
+                <!-- Basic Job Information -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Basic Job Information</h2>
+                    <div class="border-b-[2px] md:border-b-[2px] mt-2 mb-4 md:mb-8 border-gray-400 w-full "></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Company Name</label>
+                            <select [(ngModel)]="jobData.company.id" (change)="onCompanySelect()" name="company"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                <option [ngValue]="0">Select Company</option>
+                                <option *ngFor="let company of companies" [ngValue]="company.id">
+                                    {{company.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Job Role</label>
+                            <input type="text" [(ngModel)]="jobData.jobDesignation" name="jobDesignation" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Job Location</label>
+                            <input type="text" [(ngModel)]="jobData.location" name="jobLocation" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Job Type</label>
+                            <select [(ngModel)]="jobData.jobType" name="jobType" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                <option value="">Select Job Type</option>
+                                <option value="Full Time">Full Time</option>
+                                <option value="Part Time">Part Time</option>
+                                <option value="Internship">Internship</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Job Description</label>
+                        <textarea [(ngModel)]="jobData.description" name="jobDescription" required rows="4"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Compensation Details -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Compensation Details</h2>
+                    <div class="border-b-[2px] md:border-b-[2px] mt-2 mb-4 md:mb-8 border-gray-400 w-full"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Package</label>
+                            <input type="text" [(ngModel)]="jobData.packageAmount" name="package" required
+                                pattern="[0-9]+(\.[0-9]{1,2})?"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['package'].errors?.['required']">
+                                Package amount is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['package'].errors?.['pattern']">
+                                Please enter a valid amount (e.g., 50000 or 50000.00)
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Eligibility Criteria -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Eligibility Criteria</h2>
+                    <div class="border-b-[2px] md:border-b-[2px] mt-2 mb-4 md:mb-8 border-gray-400 w-full"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Minimum Percentage</label>
+                            <input type="number" [(ngModel)]="jobData.minPercentage" name="minimumPercentage" required
+                                min="35" max="100"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['minimumPercentage'].errors?.['required']">
+                                Minimum percentage is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['minimumPercentage'].errors?.['min']">
+                                Percentage must be between 35 and 100
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Minimum SSC</label>
+                            <input type="number" [(ngModel)]="jobData.minSsc" name="minSsc" required min="35" max="100"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['minSsc'].errors?.['required']">
+                                Minimum SSC percentage is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['minSsc'].errors?.['min']">
+                                SSC percentage must be between 35 and 100
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Minimum HSC</label>
+                            <input type="number" [(ngModel)]="jobData.minHsc" name="minHsc" required min="35" max="100"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['minHsc'].errors?.['required']">
+                                Minimum HSC percentage is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['minHsc'].errors?.['min']">
+                                HSC percentage must be between 35 and 100
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Backlog Allowance</label>
+                            <input type="number" [(ngModel)]="jobData.backlogAllowance" name="backlogAllowance" required
+                                min="0" max="10"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['backlogAllowance'].errors?.['required']">
+                                Backlog allowance is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['backlogAllowance'].errors?.['min']">
+                                Backlog allowance must be between 0 and 10
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Preferred Course</label>
+                            <input type="text" [(ngModel)]="jobData.preferredCourse" name="preferredCourse" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Skills Requirement</label>
+                        <input type="text" [(ngModel)]="jobData.skillsRequirements" name="skillRequirements" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Recruitment Process -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Recruitment Process</h2>
+                    <div class="border-b-[2px] md:border-b-[2px] mt-2 mb-4 md:mb-8 border-gray-400 w-full"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Selection Rounds</label>
+                            <input type="text" [(ngModel)]="jobData.selectionRounds" name="selectionRounds" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Mode Of Recruitment</label>
+                            <input type="text" [(ngModel)]="jobData.modeOfRecruitment" name="modeOfRecruitment" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Test Platform</label>
+                            <input type="text" [(ngModel)]="jobData.testPlatform" name="testPlatform" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Aptitude</label>
+                            <select [(ngModel)]="jobData.aptitude" name="aptitude" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                <option [ngValue]="true">Yes</option>
+                                <option [ngValue]="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Recruitment Details</label>
+                        <textarea [(ngModel)]="jobData.recruitmentDetails" name="recruitmentDetails" required rows="3"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Time Frame -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">Time Frame</h2>
+                    <div class="border-b-[2px] md:border-b-[2px] mt-2 mb-4 md:mb-8 border-gray-400 w-full"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Application Start Date</label>
+                            <input type="date" [(ngModel)]="jobData.applicationStartDate" name="applicationStartDate"
+                                required [min]="today"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['applicationStartDate'].errors?.['required']">
+                                Application start date is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['applicationStartDate'].errors?.['min']">
+                                Start date cannot be in the past
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Application End Date</label>
+                            <input type="date" [(ngModel)]="jobData.applicationEndDate" name="applicationEndDate"
+                                required [min]="jobData.applicationStartDate"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['applicationEndDate'].errors?.['required']">
+                                Application end date is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['applicationEndDate'].errors?.['min']">
+                                End date must be after start date
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Selection Start Date</label>
+                            <input type="date" [(ngModel)]="jobData.selectionStartDate" name="selectionStartDate"
+                                required [min]="jobData.applicationEndDate"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['selectionStartDate'].errors?.['required']">
+                                Selection start date is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['selectionStartDate'].errors?.['min']">
+                                Selection start date must be after application end date
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Selection End Date</label>
+                            <input type="date" [(ngModel)]="jobData.selectionEndDate" name="selectionEndDate" required
+                                [min]="jobData.selectionStartDate"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['selectionEndDate'].errors?.['required']">
+                                Selection end date is required
+                            </div>
+                            <div class="text-red-500 text-sm mt-1"
+                                *ngIf="jobForm.submitted && jobForm.controls['selectionEndDate'].errors?.['min']">
+                                Selection end date must be after selection start date
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="px-6 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        POST
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

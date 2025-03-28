@@ -20,21 +20,10 @@ export class UserRegComponent implements OnInit {
   otp:string="";
   
   ngOnInit() {
-    this.loadUsers();
+  console.log("User Registration Page");
   }
 
-  loadUsers() {
-    this.useregservice.getUsers().subscribe({
-      next: (response: any) => {
-        this.users = response;
-        console.log('Users loaded:', this.users);
-      },
-      error: (err) => {
-        console.error('Error loading users:', err);
-        this.error.setError('Failed to load users');
-      }
-    });
-  }
+
   
   next() {
     this.step=2

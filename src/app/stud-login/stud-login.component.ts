@@ -61,6 +61,9 @@ export class StudLoginComponent {
       this.error.setError("Invalid credentials. Please try again.");
     } else if (error.status === 500) {
       this.error.setError("Invalid credentials.");
+    } 
+    else if (error.status === 406) {
+    this.error.setError("User is not verified.");
     } else if (error.status === 502) {
       this.error.setError("Server error. Please try again later.");
     } else {

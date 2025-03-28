@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TPO Student Filtering Page</title>
+  <title>TPO Search Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Onest:wght@400;700&family=Roboto+Flex:wght@400;700&display=swap');
@@ -24,135 +24,363 @@
 </head>
 
 <body class="bg-cover bg-center min-h-screen" style="background-image: url('Main_bg_blue.png');">
+  <!-- Navigation Bar -->
+  <nav class="bg-[white] shadow-lg ml-100 mr-100 rounded-xl">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <!-- Logo -->
 
-  <!-- Main White Frame -->
-  <div
-    class="mx-auto mt-4 sm:mt-6 md:mt-8 lg:mt-10 bg-white rounded-xl shadow-lg w-[95%] sm:w-[90%] md:w-[85%] lg:w-[80%] xl:w-[1343px] min-h-[850px] p-4 sm:p-6 relative">
-    <!-- Search Bar -->
-    <div
-      class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto bg-white shadow-md relative z-10">
-      <input [(ngModel)]="filters.firstName" type="text" placeholder="Search for Student"
-        class="text-[#878787] text-[16px] sm:text-[18px] md:text-[20px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
-      <img src="Search.png" alt="Search Icon"
-        class="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] md:w-[38px] md:h-[39px] object-contain cursor-pointer ml-2 sm:ml-4"
-        (click)="loadStudents()" />
-    </div>
 
-    <!-- Filter Bar -->
-    <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] 
-    w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto 
-    bg-[#4073BF] shadow-md relative z-10">
-
-    
-      <!-- Academic Year Dropdown -->
-      <select [(ngModel)]="filters.academicYear"
-        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-        <option value="" >Year</option>
-        <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
-      </select>
-
-      <!-- Department Dropdown -->
-      <select [(ngModel)]="filters.department"
-        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-        <option value="" >Department</option>
-        <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
-      </select>
-
-      <!-- Min Avg Marks Dropdown -->
-      <select [(ngModel)]="filters.minAvgMarks"
-        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-        <option [ngValue]="undefined">Min Avg Marks</option>
-        <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
-      </select>
-
-      <!-- Max Avg Marks Dropdown -->
-      <select [(ngModel)]="filters.maxAvgMarks"
-        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-        <option [ngValue]="undefined">Max Avg Marks</option>
-        <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
-      </select>
-
-      <!-- Year of Passing Dropdown -->
-      <select [(ngModel)]="filters.yearOfPassing"
-        class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-        <option [ngValue]="undefined">Year of Passing</option>
-        <option *ngFor="let year of passingYears" [ngValue]="year">{{year}}</option>
-      </select>
-
-    </div>
-
-    <!-- Line Under Columns -->
-    <div class="border-b w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] mx-auto" style="border-color: #053C47; height: 0;">
-    </div>
-
-    <!-- Column Headers -->
-    <div
-      class="hidden sm:flex justify-between px-2 sm:px-4 py-2 text-[#053C47] text-[12px] sm:text-[14px] md:text-[16px] font-onest font-bold items-center w-full overflow-x-auto">
-      <span class="w-1/12 min-w-[80px]">First Name</span>
-      <span class="w-1/12 min-w-[80px]">Middle Name</span>
-      <span class="w-1/12 min-w-[80px]">Last Name</span>
-      <span class="w-1/12 min-w-[60px]">Gender</span>
-      <span class="w-1/12 min-w-[80px]">DOB</span>
-      <span class="w-1/12 min-w-[60px]">GR No.</span>
-      <span class="w-1/12 min-w-[60px]">SSC %</span>
-      <span class="w-1/12 min-w-[60px]">HSC %</span>
-      <span class="w-1/12 min-w-[80px]">Diploma %</span>
-      <span class="w-1/12 min-w-[80px]">Average %</span>
-      <span class="w-1/12 min-w-[100px]">Department</span>
-      <span class="w-1/12 min-w-[60px]">Year</span>
-      <span class="w-1/12 min-w-[60px]">Backlogs</span>
-      <span class="w-1/12 min-w-[60px]">Actions</span>
-      <button (click)="downloadExcel()" >
-        <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
-      </button>
-    </div>
-
-    <!-- Mobile Column Headers -->
-    <div class="sm:hidden grid grid-cols-2 gap-2 px-2 py-2 text-[#053C47] text-[12px] font-onest font-bold">
-      <span>First Name</span>
-      <span>Last Name</span>
-      <span>Gender</span>
-      <span>GR No.</span>
-      <span>Department</span>
-      <span>Year</span>
-    </div>
-
-    <!-- Example Student Row -->
-    <div *ngFor="let student of students"
-      class="flex flex-col sm:flex-row justify-between px-2 sm:px-4 py-2 sm:py-4 text-black text-[12px] sm:text-[14px] font-onest items-start sm:items-center w-full border-b border-gray-200">
-      <!-- Mobile View -->
-      <div class="sm:hidden grid grid-cols-2 gap-2 w-full">
-        <span>{{student.firstName}}</span>
-        <span>{{student.lastName}}</span>
-        <span>{{student.gender}}</span>
-        <span>{{student.Gr_No}}</span>
-        <span>{{student.department}}</span>
-        <span>{{student.academicyear}}</span> 
-      </div>
-
-      <!-- Desktop View -->
-      <div class="hidden sm:flex justify-between w-full">
-        <span class="w-1/12 min-w-[80px]">{{student.firstName}}</span>
-        <span class="w-1/12 min-w-[80px]">{{student.middleName}}</span>
-        <span class="w-1/12 min-w-[80px]">{{student.lastName}}</span>
-        <span class="w-1/12 min-w-[60px]">{{student.gender}}</span>
-        <span class="w-1/12 min-w-[80px]">{{student.dateOfBirth}}</span>
-        <span class="w-1/12 min-w-[60px]">{{student.Gr_No}}</span>
-        <span class="w-1/12 min-w-[60px]">{{student.sscMarks}}%</span>
-        <span class="w-1/12 min-w-[60px]">{{student.hscMarks || '-'}}</span>
-        <span class="w-1/12 min-w-[80px]">{{student.diplomaMarks || '-'}}</span>
-        <span class="w-1/12 min-w-[80px]">{{student.avgMarks || '-'}}</span>
-        <span class="w-1/12 min-w-[100px]">{{student.department}}</span>
-        <span class="w-1/12 min-w-[60px]">{{student.academicyear}}</span>
-        <span class="w-1/12 min-w-[60px]">{{student.noOfBacklogs}}</span>
-        <div class="flex items-center space-x-2 w-1/12 min-w-[60px]">
-          <button (click)="(student)">
-            <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
-          </button>
+          <!-- Navigation Links -->
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <button (click)="setActiveTab('students')" [class.border-blue-500]="activeTab === 'students'"
+              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              [class.text-gray-900]="activeTab === 'students'" [class.text-gray-500]="activeTab !== 'students'">
+              Student Search
+            </button>
+            <button (click)="setActiveTab('posts')" [class.border-blue-500]="activeTab === 'posts'"
+              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              [class.text-gray-900]="activeTab === 'posts'" [class.text-gray-500]="activeTab !== 'posts'">
+              Post Search
+            </button>
+            <button (click)="setActiveTab('applications')" [class.border-blue-500]="activeTab === 'applications'"
+              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              [class.text-gray-900]="activeTab === 'applications'" [class.text-gray-500]="activeTab !== 'applications'">
+              Application Search
+            </button>
+          </div>
         </div>
       </div>
     </div>
+  </nav>
 
+  <!-- Main Content Area -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Student Search Section -->
+    <div *ngIf="activeTab === 'students'" class="bg-white rounded-xl shadow-lg p-6">
+      <!-- Search Bar -->
+      <div
+        class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto bg-white shadow-md relative z-10">
+        <input [(ngModel)]="filters.firstName" type="text" placeholder="Search for Student"
+          class="text-[#878787] text-[16px] sm:text-[18px] md:text-[20px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+        <img src="Search.png" alt="Search Icon"
+          class="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] md:w-[38px] md:h-[39px] object-contain cursor-pointer ml-2 sm:ml-4"
+          (click)="loadStudents()" />
+      </div>
+
+      <!-- Filter Bar -->
+       <div class="flex justify-end">
+      <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] 
+      w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto 
+      bg-[#4073BF] shadow-md relative z-10">
+
+
+        <!-- Academic Year Dropdown -->
+        <select [(ngModel)]="filters.academicYear"
+          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+          <option value="">Year</option>
+          <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
+        </select>
+
+        <!-- Department Dropdown -->
+        <select [(ngModel)]="filters.department"
+          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+          <option value="">Department</option>
+          <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+        </select>
+
+        <!-- Min Avg Marks Dropdown -->
+        <select [(ngModel)]="filters.minAvgMarks"
+          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+          <option [ngValue]="undefined">Min Avg Marks</option>
+          <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
+        </select>
+
+        <!-- Max Avg Marks Dropdown -->
+        <select [(ngModel)]="filters.maxAvgMarks"
+          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+          <option [ngValue]="undefined">Max Avg Marks</option>
+          <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
+        </select>
+
+        <!-- Year of Passing Dropdown -->
+        <select [(ngModel)]="filters.yearOfPassing"
+          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
+          <option [ngValue]="undefined">Year of Passing</option>
+          <option *ngFor="let year of passingYears" [ngValue]="year">{{year}}</option>
+        </select>
+      
+
+      </div>  <button (click)="downloadExcel()" class=" text-white px-4 py-2 mb-5 rounded-lg hover:bg-blue-700">
+        <img src="Download.png" alt="Download" class="w-6 h-6 inline-block " />
+
+      </button>
+      </div>
+
+      <!-- Line Under Columns -->
+      <div class="border-b w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] mx-auto"
+        style="border-color: #053C47; height: 0;">
+      </div>
+
+      <!-- Student Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead>
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Middle Name
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GR No.</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SSC %</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSC %</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diploma %</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average %</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backlogs</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <div class="flex justify-end mt-4">
+
+          </div>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let student of students">
+              <td class="px-6 py-4 whitespace-nowrap">{{student.firstName}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.middleName}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.lastName}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.gender}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.dateOfBirth}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.gr_No}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.sscMarks}}%</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.hscMarks || '-'}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.diplomaMarks || '-'}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.avgMarks | number:'1.3-3' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.department}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.academicyear}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{student.noOfBacklogs}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <button class="text-blue-600 hover:text-blue-900">
+                  <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Download Button -->
+
+    </div>
+
+    <!-- Post Search Section -->
+    <div *ngIf="activeTab === 'posts'" class="bg-white rounded-xl shadow-lg p-6">
+      <div class="flex justify-between mb-4">
+        <!-- Post Search Bar -->
+        <div class="flex-grow mr-4">
+          <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
+            <input [(ngModel)]="postFilters.position" type="text" placeholder="Search by Position"
+              class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+            <img src="Search.png" alt="Search Icon" class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
+              (click)="loadPosts()" />
+          </div>
+        </div>
+        <!-- Download Button -->
+        <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
+        </button>
+      </div>
+
+      <!-- Post Filter Bar -->
+      <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
+        <select [(ngModel)]="postFilters.company"
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+          <option value="">Company</option>
+          <option *ngFor="let company of companies" [value]="company.name">{{company.name}}</option>
+        </select>
+        <select [(ngModel)]="postFilters.jobType"
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+          <option value="">Job Type</option>
+          <option value="Full-Time">Full Time</option>
+          <option value="Part-Time">Part Time</option>
+          <option value="Internship">Internship</option>
+        </select>
+        <select [(ngModel)]="postFilters.status"
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+          <option value="">Status</option>
+          <option value="Taking Applications">Taking Applications</option>
+          <option value="Closed">Closed</option>
+        </select>
+        <input type="number" [(ngModel)]="postFilters.minSalary" placeholder="Min Package"
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-32" />
+        <input type="number" [(ngModel)]="postFilters.maxSalary" placeholder="Max Package"
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-32" />
+      </div>
+
+      <!-- Post Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead>
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Min %</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let post of posts" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{post.company.name}}</div>
+                <div class="text-sm text-gray-500">{{post.company.email}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.company.industryType}}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{post.jobDesignation}}</div>
+                <div class="text-sm text-gray-500">{{post.description}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.location}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.jobType}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.packageAmount}} LPA</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.minPercentage}}%</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + 
+                  (post.status === 'Taking Applications' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+                  {{post.status}}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-indigo-600 hover:text-indigo-900">View Details</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Application Search Section -->
+    <div *ngIf="activeTab === 'applications'" class="bg-white rounded-xl shadow-lg p-6">
+      <div class="flex justify-between mb-4">
+        <!-- Application Search Bar -->
+        <div class="flex-grow mr-4">
+          <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
+            <input [(ngModel)]="applicationFilters.studentName" type="text" placeholder="Search by Student Name"
+              class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+            <img src="Search.png" alt="Search Icon"
+              class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
+              (click)="loadApplications()" />
+          </div>
+        </div>
+        <!-- Download Button -->
+        <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
+        </button>
+      </div>
+
+      <!-- Application Filter Bar -->
+      <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
+        <select [(ngModel)]="applicationFilters.status" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+          <option value="">Status</option>
+          <option value="APPLIED">Applied</option>
+          <option value="SHORTLISTED">Shortlisted</option>
+          <option value="INTERVIEWED">Interviewed</option>
+          <option value="SELECTED">Selected</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+        <select [(ngModel)]="applicationFilters.department" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+          <option value="">Department</option>
+          <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+        </select>
+        <input type="date" [(ngModel)]="applicationFilters.fromDate" 
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none"
+          placeholder="From Date"/>
+        <input type="date" [(ngModel)]="applicationFilters.toDate" 
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none"
+          placeholder="To Date"/>
+      </div>
+
+      <!-- Application Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interview Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let application of applications" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img *ngIf="application.student.profileImageBase64" 
+                         [src]="'data:image/jpeg;base64,' + application.student.profileImageBase64" 
+                         class="h-10 w-10 rounded-full"
+                         alt="Profile">
+                    <div *ngIf="!application.student.profileImageBase64" 
+                         class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                      <span class="text-gray-600">{{application.student.firstName[0]}}</span>
+                    </div>
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">
+                      {{application.student.firstName}} {{application.student.middleName}} {{application.student.lastName}}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      {{application.student.user.email}}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{application.jobPost.company.name}}</div>
+                <div class="text-sm text-gray-500">{{application.jobPost.company.industry}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{application.designation}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{application.student.department}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + 
+                  (application.status === 'APPLIED' ? 'bg-blue-100 text-blue-800' :
+                   application.status === 'SHORTLISTED' ? 'bg-yellow-100 text-yellow-800' :
+                   application.status === 'INTERVIEWED' ? 'bg-purple-100 text-purple-800' :
+                   application.status === 'SELECTED' ? 'bg-green-100 text-green-800' :
+                   'bg-red-100 text-red-800')">
+                  {{application.status}}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{application.applicationDate | date:'mediumDate'}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{application.interviewDate ? (application.interviewDate | date:'mediumDate') : 'Not Scheduled'}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-indigo-600 hover:text-indigo-900">View Details</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </body>
 

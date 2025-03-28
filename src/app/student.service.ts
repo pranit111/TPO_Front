@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Student } from './student';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 interface PaginatedResponse<T> {
   content: T[];
@@ -15,6 +16,12 @@ interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class StudentService {
+  private apiUrl = environment.apiUrls.studentService;
+  token = localStorage.getItem("authtoken");
+  headers = new HttpHeaders({
+    'Authorization': `${this.token}`
+  });
+
   downloadExcel(filters?: {
     firstName?: string;
     department?: string;
@@ -44,23 +51,18 @@ export class StudentService {
       params = params.set('yearOfPassing', filters.yearOfPassing.toString());
     }
 
-    return this.http.post(`${this.apiUrl}/Search/Download`, null, {
+    return this.http.post(`${this.apiUrl}/Student/Search/Download`, null, {
       params,
       responseType: 'blob',
       headers: this.headers
     });
   }
 
-  private apiUrl = 'http://localhost:8080/api1/Student'; // Update with your backend API URL
-   token = localStorage.getItem("authtoken");
-   headers = new HttpHeaders({
-    'Authorization': `${this.token}`
-  });
   constructor(private http: HttpClient) {}
   
   // Create a new student
   createStudent(formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, formData);
+    return this.http.post(`${this.apiUrl}/Student`,formData);
   }
 
   // Get all students
@@ -97,11 +99,11 @@ export class StudentService {
   }
 
   getprofile(): Observable<any>{
-    return this.http.get<any>(`${this.apiUrl}/profile`)
+    return this.http.get<any>(`${this.apiUrl}/Student/profile`)
   }
   // Update a student
   updateStudent(id: number, student: Student): Observable<Student> {
-    return this.http.put<Student>(`${this.apiUrl}`, student);
+    return this.http.put<Student>(`${this.apiUrl}/Student`, student);
   }
 
   // Delete a student
