@@ -24,6 +24,7 @@ import { ImageCropperModule } from 'ngx-img-cropper';
 import { TpoSearchComponent } from './tpo-search/tpo-search.component';
 import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 import { PostJobComponent } from './post-job/post-job.component';
+import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { PostJobComponent } from './post-job/post-job.component';
       ProfileEditComponent,
       TpoSearchComponent,
       TpoNavbarComponent,
-      PostJobComponent
+      PostJobComponent,
+      TpoadminComponent
   ],
   imports: [
     BrowserModule,

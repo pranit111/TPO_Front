@@ -95,7 +95,7 @@ export class StudentService {
       params = params.set('yearOfPassing', filters.yearOfPassing.toString());
     }
 
-    return this.http.get<PaginatedResponse<Student>>(`${this.apiUrl}/Search`, { params });
+    return this.http.get<PaginatedResponse<Student>>(`${this.apiUrl}/Student/Search`, { params });
   }
 
   getprofile(): Observable<any>{

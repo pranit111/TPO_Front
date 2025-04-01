@@ -15,6 +15,7 @@ import { ProfileEditComponent } from './profile-edit/profile-edit.component';
 import { TpoSearchComponent } from './tpo-search/tpo-search.component';
 import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 import { PostJobComponent } from './post-job/post-job.component';
+import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
 const routes: Routes = [
   {
     path: '', component: NavbarComponent, children: [
@@ -26,7 +27,7 @@ const routes: Routes = [
   },
   {path:"login", component :StudLoginComponent},
   {path:"profile_edit", component :ProfileEditComponent},
-  {path:"tpo_login", component :TpoLoginComponent},
+  {path:"tpo_admin", component :TpoadminComponent},
   {path:"create_profile", component :SignupStudComponent},
 
   {path:"user_registration", component :UserRegComponent},

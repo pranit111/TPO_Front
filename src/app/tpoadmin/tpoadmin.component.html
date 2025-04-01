@@ -1,0 +1,359 @@
+<!-- dashboard.component.html -->
+<!-- Add these fonts to your document head -->
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* Define font classes */
+  .font-onest {
+    font-family: 'Onest', sans-serif;
+  }
+  
+  .font-roboto-flex {
+    font-family: 'Roboto Flex', sans-serif;
+  }
+  
+  /* Apply fonts globally */
+  h1, h2, h3, .text-xl, .text-2xl, .text-3xl, .font-bold, .font-semibold {
+    font-family: 'Onest', sans-serif;
+  }
+  
+  p, span, button, input, select, .text-sm, .text-xs {
+    font-family: 'Roboto Flex', sans-serif;
+  }
+</style>
+<div class="flex h-screen bgimage bg-cover bg-no-repeat" style="background-image: url('Main_bg_blue.png');">
+  <nav class="w-20 bg-gradient-to-b from-blue-900 to-indigo-900 flex flex-col items-center py-6 shadow-xl">
+    <div class="mb-10">
+      <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+        <span class="text-white font-bold text-xl">P</span>
+      </div>
+    </div>
+    
+    <div class="flex flex-col items-center space-y-6 mt-6">
+      <ng-container *ngFor="let item of navItems">
+        <div class="cursor-pointer group transition-all" [ngClass]="{'text-white': item.active, 'text-indigo-300 hover:text-white': !item.active}">
+          <div class="flex items-center justify-center w-12 h-12 rounded-xl transition-all"
+               [ngClass]="{'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md': item.active, 'hover:bg-blue-800/50': !item.active}">
+            <i class="fas fa-{{item.icon}} text-lg"></i>
+          </div>
+          <div class="text-xs text-center mt-1 font-medium">{{item.title}}</div>
+        </div>
+      </ng-container>
+    </div>
+    
+    <div class="mt-auto flex flex-col items-center space-y-4">
+      <div class="w-12 h-12 rounded-xl bg-indigo-800 flex items-center justify-center cursor-pointer shadow-md hover:bg-indigo-600 transition-colors">
+        <i class="fas fa-cog text-white"></i>
+      </div>
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center cursor-pointer shadow-md">
+        <i class="fas fa-user text-white"></i>
+      </div>
+    </div>
+</nav>
+    <!-- Main Content Area -->
+    <div class="flex-1 flex">
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="bg-gray-100 rounded-xl shadow-lg p-6 mb-4">
+          <div class="flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-blue-800">Admin Panel</h1>
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-2.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+              </div>
+          
+            </div>
+          </div>
+          
+          <!-- KPI Summary -->
+          <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
+              <p class="text-sm text-gray-500 font-medium">Total Students</p>
+              <p class="text-2xl font-bold text-gray-800">{{studentData.total}}</p>
+              <div class="flex items-center mt-2 text-sm">
+                <span class="text-green-500 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg> 12%</span>
+                <span class="text-gray-500 ml-2">vs last month</span>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
+              <p class="text-sm text-gray-500 font-medium">Placement Rate</p>
+              <p class="text-2xl font-bold text-gray-800">{{studentData.placementRate}}%</p>
+              <div class="flex items-center mt-2 text-sm">
+                <span class="text-green-500 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg> 8.4%</span>
+                <span class="text-gray-500 ml-2">vs last month</span>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-amber-500">
+              <p class="text-sm text-gray-500 font-medium">Companies Registered</p>
+              <p class="text-2xl font-bold text-gray-800">{{companiesData.total}}</p>
+              <div class="flex items-center mt-2 text-sm">
+                <span class="text-green-500 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg> 4</span>
+                <span class="text-gray-500 ml-2">new this week</span>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-teal-500">
+              <p class="text-sm text-gray-500 font-medium">Avg. Package</p>
+              <p class="text-2xl font-bold text-gray-800">{{insightsData.averagePackage}}</p>
+              <div class="flex items-center mt-2 text-sm">
+                <span class="text-green-500 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg> 2.1 LPA</span>
+                <span class="text-gray-500 ml-2">vs last year</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Students Card -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">Student Placement Status</h2>
+                <div class="flex space-x-2">
+                  <button class="p-1 rounded-md hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                  </button>
+                  <button class="p-1 rounded-md hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="flex flex-row">
+                <div class="w-1/2">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-blue-50 rounded-lg p-3">
+                      <p class="text-xs text-gray-500 mb-1">Total</p>
+                      <p class="text-xl font-bold text-gray-800">{{studentData.total}}</p>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-3">
+                      <p class="text-xs text-gray-500 mb-1">Placed</p>
+                      <p class="text-xl font-bold text-green-600">{{studentData.placed}}</p>
+                    </div>
+                    <div class="bg-amber-50 rounded-lg p-3">
+                      <p class="text-xs text-gray-500 mb-1">Remaining</p>
+                      <p class="text-xl font-bold text-amber-600">{{studentData.remaining}}</p>
+                    </div>
+                    <div class="bg-teal-50 rounded-lg p-3">
+                      <p class="text-xs text-gray-500 mb-1">Rate</p>
+                      <p class="text-xl font-bold text-teal-600">{{studentData.placementRate}}%</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-1/2 flex items-center justify-center">
+                  <!-- Fixed Circular Progress Chart -->
+                  <div class="relative w-40 h-40">
+                    <svg viewBox="0 0 36 36" class="w-full h-full">
+                      <!-- Background circle -->
+                      <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="1"></circle>
+                      
+                      <!-- Data circle with proper stroke dasharray and offset calculation -->
+                      <circle 
+                        cx="18" 
+                        cy="18" 
+                        r="16" 
+                        fill="none"
+                        stroke-width="3.8"
+                        stroke-linecap="round"
+                        class="stroke-current text-blue-500"
+                        [attr.stroke-dasharray]="100.53"
+                        [attr.stroke-dashoffset]="100.53 - (studentData.placementRate / 100 * 100.53)"
+                        transform="rotate(-90 18 18)"
+                      ></circle>
+                      
+                      <!-- Center text -->
+                      <text x="18" y="18" text-anchor="middle" dominant-baseline="middle" class="fill-gray-800  font-bold"style="font-size: 8px; line-height: 32px;">{{studentData.placementRate}}%</text>
+                      <text x="18" y="23" text-anchor="middle" dominant-baseline="middle" class="fill-gray-500  "style="font-size: 2px; line-height: 32px;">Placement
+                         Rate</text>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Insights Card -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">Placement Insights</h2>
+                <div class="flex space-x-2">
+                  <button class="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-full">Weekly</button>
+                  <button class="px-3 py-1 text-xs font-medium text-gray-500 bg-gray-100 rounded-full">Monthly</button>
+                  <button class="px-3 py-1 text-xs font-medium text-gray-500 bg-gray-100 rounded-full">Yearly</button>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-800">Highest Package</span>
+                    <span class="text-sm font-bold text-blue-600">{{insightsData.highestPackage}}</span>
+                  </div>
+                  <div class="w-full bg-gray-100 rounded-full h-2.5">
+                    <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2.5 rounded-full w-2/3"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-800">Average Package</span>
+                    <span class="text-sm font-bold text-blue-600">{{insightsData.averagePackage}}</span>
+                  </div>
+                  <div class="w-full bg-gray-100 rounded-full h-2.5">
+                    <div class="bg-gradient-to-r from-teal-400 to-teal-600 h-2.5 rounded-full w-3/4"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-800">Top Hiring Company</span>
+                    <span class="text-sm font-bold text-blue-600">{{insightsData.topHiringCompany}}</span>
+                  </div>
+                  <div class="w-full bg-gray-100 rounded-full h-2.5">
+                    <div class="bg-gradient-to-r from-amber-400 to-amber-600 h-2.5 rounded-full w-2/3"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-800">Top Department</span>
+                    <span class="text-sm font-bold text-blue-600">{{insightsData.topDepartment}}</span>
+                  </div>
+                  <div class="w-full bg-gray-100 rounded-full h-2.5">
+                    <div class="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full w-5/6"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Companies Card -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">Companies</h2>
+                <button class="text-blue-600 text-sm font-medium hover:text-blue-800">View All</button>
+              </div>
+              <div class="mb-4 grid grid-cols-3 gap-2 text-center">
+                <div class="bg-blue-50 rounded-lg p-2">
+                  <p class="text-xs text-gray-500 mb-1">Total</p>
+                  <p class="text-lg font-bold text-blue-600">{{companiesData.total}}</p>
+                </div>
+                <div class="bg-green-50 rounded-lg p-2">
+                  <p class="text-xs text-gray-500 mb-1">Openings</p>
+                  <p class="text-lg font-bold text-green-600">{{companiesData.totalOpenings}}</p>
+                </div>
+                <div class="bg-amber-50 rounded-lg p-2">
+                  <p class="text-xs text-gray-500 mb-1">Remaining</p>
+                  <p class="text-lg font-bold text-amber-600">{{companiesData.remaining}}</p>
+                </div>
+              </div>
+              
+              <!-- Bar Chart with Labels -->
+              <div class="mt-6">
+                <div class="h-44 flex items-end space-x-3 pb-1 px-2">
+                  <div *ngFor="let company of companiesData.companies; let i = index" class="flex-1 flex flex-col items-center">
+                    <div [ngClass]="i === 3 ? 'bg-gradient-to-t from-teal-300 to-teal-500' : 
+                                   i === 4 ? 'bg-gradient-to-t from-slate-800 to-black' : 
+                                   'bg-gradient-to-t from-blue-300 to-blue-600'"
+                         [style.height.%]="(company.openings / 120) * 100" 
+                         class="w-full rounded-t-lg"></div>
+                    <span class="text-xs font-medium text-gray-500 mt-1">{{company.name.split(' ')[1]}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Departments Card -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">Departments</h2>
+                <div class="bg-blue-50 text-xs text-blue-600 font-medium px-2 py-1 rounded-full">
+                  {{departmentsData.totalDepartments}} Total
+                </div>
+              </div>
+              
+              <div class="space-y-4 mt-4">
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-blue-600 mr-2"></div>
+                  <span class="text-sm font-medium text-gray-800 mr-auto">Computer Science</span>
+                  <span class="text-sm font-bold text-blue-600">32%</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-teal-500 mr-2"></div>
+                  <span class="text-sm font-medium text-gray-800 mr-auto">Electronics</span>
+                  <span class="text-sm font-bold text-teal-600">28%</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-amber-500 mr-2"></div>
+                  <span class="text-sm font-medium text-gray-800 mr-auto">Mechanical</span>
+                  <span class="text-sm font-bold text-amber-600">18%</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                  <span class="text-sm font-medium text-gray-800 mr-auto">Civil</span>
+                  <span class="text-sm font-bold text-green-600">14%</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
+                  <span class="text-sm font-medium text-gray-800 mr-auto">Others</span>
+                  <span class="text-sm font-bold text-gray-600">8%</span>
+                </div>
+              </div>
+              
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-500">Eligible Students</span>
+                  <span class="text-sm font-bold text-gray-800">{{departmentsData.eligibleStudents}}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm font-medium text-gray-500">Remaining</span>
+                  <span class="text-sm font-bold text-gray-800">{{departmentsData.remaining}}</span>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Previous Year Card -->
+            <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">Previous Year</h2>
+                <select class="text-sm bg-gray-100 border-0 rounded-lg px-3 py-1 focus:ring-blue-500 focus:outline-none">
+                  <option>2023-24</option>
+                  <option>2022-23</option>
+                  <option>2021-22</option>
+                </select>
+              </div>
+              
+              <div class="flex justify-center my-4">
+                <div class="w-32 h-32 rounded-full border-8 border-blue-100 flex items-center justify-center">
+                  <div class="text-center">
+                    <p class="text-3xl font-bold text-blue-600">{{previousYearData.totalPlaced}}</p>
+                    <p class="text-xs text-gray-500">Students Placed</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="bg-blue-50 rounded-lg p-3 text-center">
+                  <p class="text-xs text-gray-500 mb-1">Highest Package</p>
+                  <p class="text-lg font-bold text-blue-600">{{previousYearData.highestPackage}}</p>
+                </div>
+                <div class="bg-teal-50 rounded-lg p-3 text-center">
+                  <p class="text-xs text-gray-500 mb-1">Total Applicants</p>
+                  <p class="text-lg font-bold text-teal-600">{{previousYearData.totalApplicants}}</p>
+                </div>
+              </div>
+              
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-gray-600">Placement Rate</span>
+                  <span class="text-sm font-bold text-green-600">78.2%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Right Navbar (moved from left to right) -->
+
+</div>
