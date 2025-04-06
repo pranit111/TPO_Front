@@ -19,9 +19,8 @@
   </style>
 </head>
 
-<body class="bg-cover bg-center min-h-screen"
-  style="background-image: url('Main_bg.png');">
-<div class="pt-10"></div>
+<body class="bg-cover bg-center min-h-screen" style="background-image: url('Main_bg.png');">
+  <div class="pt-10"></div>
 
 
   <!-- User Dashboard Box -->
@@ -38,8 +37,7 @@
     <div class="bg-[#F3F3F3] w-full min-w-[700px] md:min-w-0 p-4 md:p-8 rounded-md">
 
       <!-- Column Headers -->
-      <div
-        class="grid grid-cols-6 gap-4 mb-4 text-[#156C7D] text-[16px] md:text-[20px] font-onest">
+      <div class="grid grid-cols-6 gap-4 mb-4 text-[#156C7D] text-[16px] md:text-[20px] font-onest">
         <span class="text-left">Job Title</span>
         <span class="text-left">Status</span>
         <span class="text-left">Applied On</span>
@@ -54,33 +52,91 @@
       <!-- Job Rows -->
       <div class="space-y-6">
 
-        <!-- Row 1 -->
-        <div *ngFor=" let application of applications"
+        <!-- Row 1 --><!-- Inside *ngFor for applications -->
+        <div *ngFor="let application of applications"
           class="grid grid-cols-6 gap-4 items-center bg-[#F3F3F3] p-4 text-[#6F6F6F] text-[14px] md:text-[20px] font-onest rounded-md shadow-sm">
+
           <span class="text-left">{{application.designation}}</span>
+
           <div class="flex items-center space-x-2 text-left">
             <span>{{application.status}}</span>
-            <div class="w-[10px] h-[10px] rounded-full " [ngClass]="getStatusColor(application.status)"></div>
+            <div class="w-[10px] h-[10px] rounded-full" [ngClass]="getStatusColor(application.status)"></div>
           </div>
-          <span class="text-left">{{application.applicationDate}}</span>
-          <span class="text-left">{{application.interviewDate || "-"}} </span>
-          <span class="text-left">{{application.jobPost.company.name}} </span>
-       
 
-          <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline" (click)="openModal(application)" >View</a>
+          <span class="text-left">{{application.applicationDate}}</span>
+          <span class="text-left">{{application.interviewDate || "-"}}</span>
+          <span class="text-left">{{application.jobPost.company.name}}</span>
+
+          <div class="flex flex-col gap-2">
+            <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer"
+              (click)="openModal(application)">View</a>
+            <a *ngIf="application.status === 'INTERVIEWED'"
+              class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer"
+              (click)="openUpdateModal(application.id)">Update</a>
+          </div>
         </div>
-        <div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+
+        <!-- View Response Modal -->
+        <div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center backdrop-blur bg-opacity-50">
           <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
-            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Application </h2>
+            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Application</h2>
             <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>
- 
-            <p class="text-[#6F6F6F] text-[16px] md:text-[20px]"><strong>Response:</strong> {{ selectedApplication.feedback }}</p>
-        
+
+            <p class="text-[#6F6F6F] text-[16px] md:text-[20px]"><strong>Response:</strong> {{
+              selectedApplication.feedback }}</p>
+
             <div class="mt-6 flex justify-end">
-              <button (click)="closeModal()" class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Close</button>
+              <button (click)="closeModal()"
+                class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Close</button>
             </div>
           </div>
         </div>
+
+        <!-- Update Modal (For Interviewed Status) -->
+        <div *ngIf="showUpdateModal" class="fixed inset-0 flex items-center justify-center backdrop-blur bg-opacity-50">
+          <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
+            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Update Placement Info</h2>
+            <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 mb-4 text-[14px] md:text-[16px] rounded-md">
+              <strong>Note:</strong> Please update this form <span class="font-bold">only if the candidate is placed</span> or has accepted an offer.
+            </div>
+            <form (ngSubmit)="submitPlacementUpdate()" #updateForm="ngForm">
+              <div class="space-y-4 text-[16px] md:text-[20px] text-[#6F6F6F]">
+                <div>
+                  <label for="offerLetter">Offer Letter:</label>
+                  <input type="file" id="offerLetter" name="offerLetter" (change)="onFileSelected($event)"
+                    class="block w-full text-sm mt-1 text-gray-900 border border-gray-300 rounded-md" />
+                </div>
+
+                <div>
+                  <label for="placedPackage">Placed Date:</label>
+                  <input type="date" placeholder="" id="placedPackage" [(ngModel)]="placementDetails.placementDate"
+                    name="placedPackage" class="block w-full border border-gray-300 rounded-md p-2 mt-1" />
+                </div>
+                <div>
+                  <label for="placedDatee">Placed Package </label>
+                  <input type="number" placeholder="IN LPA" id="placedPackage" [(ngModel)]="placementDetails.placed_package"
+                    name="placedPackage" class="block w-full border border-gray-300 rounded-md p-2 mt-1" />
+                </div>
+        
+
+                <div>
+                  <label for="placementData">Placement Data(Additional):</label>
+                  <textarea id="placementData" [(ngModel)]="placementDetails.remarks" name="placementData"
+                    class="block w-full border border-gray-300 rounded-md p-2 mt-1"></textarea>
+                </div>
+              </div>
+
+              <div class="mt-6 flex justify-end">
+                <button type="button" (click)="closeUpdateModal()"
+                  class="mr-4 text-gray-600 hover:text-gray-800">Cancel</button>
+                <button type="submit"
+                  class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
 
         <!-- Row 2 -->
 
@@ -92,4 +148,3 @@
 </body>
 
 </html>
-

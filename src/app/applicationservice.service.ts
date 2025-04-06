@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 
 interface PaginatedResponse<T> {
@@ -61,12 +61,36 @@ interface Application {
   providedIn: 'root'
 })
 export class ApplicationserviceService {
+  updateToPlaced(applicationId: number | null, formData: FormData): Observable<any> {
+      return this.http.post(`${this.baseUrl}/api9/placements?applicationid=${applicationId}`, formData);
+    }
+    
+  updateApplication(selectedApplication: { id: number; status: string; feedback: string; interviewDate: string; }) {
+    return this.http.put(`${this.apiUrl}/Application?application_id=${selectedApplication.id}`, {
+      status: selectedApplication.status,
+      feedback: selectedApplication.feedback,
+      interviewDate: selectedApplication.interviewDate
+    });
+  }
+  private baseUrl = environment.apiUrls.userService;
   private apiUrl = environment.apiUrls.applicationService;
 
   constructor(private router: Router, private http: HttpClient) {}
 
   getapplications(): Observable<PaginatedResponse<Application>> {
-    return this.http.get<PaginatedResponse<Application>>(`${this.apiUrl}/Applications`);
+    return this.http.get<Application[]>(`${this.apiUrl}/Applications`).pipe(
+      map((response: Application[]) => {
+        // Transform the response to fit the PaginatedResponse structure
+        return {
+          results: response, // Map the response array to the results field
+          content: response, // Optionally map to content if needed
+          pageable: null,    // Set other fields as null or default values
+          last: true,
+          totalPages: 1,
+          totalElements: response.length
+        } as PaginatedResponse<Application>;
+      })
+    );
   }
 
   getapplicationssearch(filters: {

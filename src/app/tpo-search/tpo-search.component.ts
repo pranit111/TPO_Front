@@ -100,6 +100,7 @@ type Application = {
   styleUrl: './tpo-search.component.css'
 })
 export class TpoSearchComponent implements OnInit {
+
   // Active tab tracking
   activeTab: 'students' | 'posts' | 'applications' = 'students';
 
@@ -277,4 +278,43 @@ export class TpoSearchComponent implements OnInit {
   onFilterChange(): void {
     this.loadStudents();
   }
+  selectedApplication= {
+    id:0,
+    status:"",
+    feedback:"",
+    interviewDate:"",
+
+  };
+  showEditApplicationModal=false;
+  onApplicationedit(id:number) {
+    this.selectedApplication.id=id;
+    this.showEditApplicationModal=true;
+    }
+    onUpdateApplication() {
+    this.applicationservice.updateApplication({
+      ...this.selectedApplication,
+      interviewDate: this.selectedApplication.interviewDate
+    }).subscribe({
+      next: (response) => {
+        console.log('Application updated successfully:', response);
+        this.loadApplications();
+        this.selectedApplication={
+          id:0,
+          status:"",
+          feedback:"",
+          interviewDate:"",
+        };
+      },
+      error: (error) => {
+        console.error('Error updating application:', error);
+      }
+    });
+    this.showEditApplicationModal=false;
+    }
+  onApplicationEditCancel() {
+    this.showEditApplicationModal=false;
+    }
+    onPostEdit() {
+    throw new Error('Method not implemented.');
+    }
 }

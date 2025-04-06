@@ -16,29 +16,36 @@ export class TpoLoginComponent {
   onlogin() {
     this.user.role = 'TPO';
   
-    this.tpologin.login(this.user).subscribe({
+    this.tpologin.tpo_login(this.user).subscribe({
       next: (response: any) => {
         console.log("Full Response from API:", response); // Debugging step
-        console.log(response.role)
-        // Ensure response is an object before accessing properties
-        if (response && typeof response === 'object' && 'token' in response && response.role!="STUDENT") {
+        
+        // Check if response is valid
+        if (response && typeof response === 'object' && 'token' in response) {
           const token = response.token; // Extract token
-  
           localStorage.setItem('authtoken', token); // Store token
-          console.log("Login successful, Token:", token);
-          this.router.navigate(['/tpo/search']);
-          // Perform redirection or other actions
-        } 
-        else if(response.role="STUDENT"){
-          console.error("Unexpected response structure:", response);
           
-          this.errorservice.setError("Student Can't Login as TPO");
-
-        }
+          // Handle different roles
+          if (response.role === "ADMIN") {
+            console.log("Admin login successful");
+            this.router.navigate(['/tpo_admin']);
+          } 
+          else if (response.role === "TPO_USER") {
+            console.log("TPO login successful");
+            this.router.navigate(['/tpo/search']);
+          }
+          else if (response.role === "STUDENT") {
+            console.error("Student tried to login as TPO");
+            this.errorservice.setError("Students cannot login as TPO");
+          }
+          else {
+            console.error("Unknown role:", response.role);
+            this.errorservice.setError("Invalid user role for TPO login");
+          }
+        } 
         else {
           console.error("Unexpected response structure:", response);
-          
-          this.errorservice.setError("Unexpected response from server.");
+          this.errorservice.setError("Unexpected response from server");
         }
       },
       error: (error: any) => {

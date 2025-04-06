@@ -1,9 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
+
+  constructor(private router: Router) {}
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Retrieve the token from localStorage
     const token = localStorage.getItem('authtoken');
@@ -12,13 +23,23 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (token) {
       req = req.clone({
         setHeaders: {
-          Authorization: token // Token is already in 'Bearer your_jwt_token_here' format
+          Authorization: token // Assuming it's already in 'Bearer <token>' format
         }
       });
     }
 
-    // Pass the modified request to the next handler
-    return next.handle(req);
+    return next.handle(req).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 403) {
+          // Token expired or unauthorized
+          localStorage.removeItem('authtoken'); // optional cleanup
+
+          // Redirect to login with a query param
+          this.router.navigate(['/login'], { queryParams: { sessionExpired: true } });
+        }
+
+        return throwError(() => error);
+      })
+    );
   }
 }
-

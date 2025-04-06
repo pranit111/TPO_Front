@@ -17,8 +17,12 @@ import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 import { PostJobComponent } from './post-job/post-job.component';
 import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
 const routes: Routes = [
+  {path:'home',  redirectTo:'', pathMatch:'full'},
+
   {
+
     path: '', component: NavbarComponent, children: [
+      
       {path:"profile", component :StudProfileComponent},
       {path:"notification", component :PostListingComponent},
       {path:"job_details/:id", component :JobApplyComponent},
@@ -29,7 +33,7 @@ const routes: Routes = [
   {path:"profile_edit", component :ProfileEditComponent},
   {path:"tpo_admin", component :TpoadminComponent},
   {path:"create_profile", component :SignupStudComponent},
-
+  {path:"tpo_login", component :TpoLoginComponent},
   {path:"user_registration", component :UserRegComponent},
   {path:"forgot_password", component :ForgotPasswordComponent},
   {path:"logout", component :LogoutComponent},

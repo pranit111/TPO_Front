@@ -259,7 +259,7 @@
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button class="text-indigo-600 hover:text-indigo-900">View Details</button>
+                <button class="text-indigo-600 hover:text-indigo-900" (click)="onPostEdit()"> <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" /></button>
               </td>
             </tr>
           </tbody>
@@ -289,12 +289,14 @@
       <!-- Application Filter Bar -->
       <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
         <select [(ngModel)]="applicationFilters.status" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
-          <option value="">Status</option>
-          <option value="APPLIED">Applied</option>
-          <option value="SHORTLISTED">Shortlisted</option>
-          <option value="INTERVIEWED">Interviewed</option>
-          <option value="SELECTED">Selected</option>
-          <option value="REJECTED">Rejected</option>
+          <option selected value="APPLIED">APPLIED</option>
+          <option value="UNDER_REVIEW">UNDER REVIEW</option>
+          <option value="SHORTLISTED">SHORTLISTED</option>
+
+            <option value="INTERVIEWED">INTERVIEWED</option>
+          <option value="REJECTED">REJECTED</option>
+          <option value="OFFERED">OFFERED</option>
+          <option value="HIRED">HIRED</option>
         </select>
         <select [(ngModel)]="applicationFilters.department" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
           <option value="">Department</option>
@@ -356,13 +358,14 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{application.student.department}}
+               
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + 
                   (application.status === 'APPLIED' ? 'bg-blue-100 text-blue-800' :
                    application.status === 'SHORTLISTED' ? 'bg-yellow-100 text-yellow-800' :
                    application.status === 'INTERVIEWED' ? 'bg-purple-100 text-purple-800' :
-                   application.status === 'SELECTED' ? 'bg-green-100 text-green-800' :
+                   application.status === 'HIRED' ? 'bg-green-100 text-green-800' :
                    'bg-red-100 text-red-800')">
                   {{application.status}}
                 </span>
@@ -374,11 +377,65 @@
                 {{application.interviewDate ? (application.interviewDate | date:'mediumDate') : 'Not Scheduled'}}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button class="text-indigo-600 hover:text-indigo-900">View Details</button>
+                <button class="text-indigo-600 hover:text-indigo-900" (click)="onApplicationedit(application.id)"> <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" /></button>
               </td>
             </tr>
           </tbody>
         </table>
+        <div *ngIf="showEditApplicationModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">Edit Application</h3>
+              <button (click)="showEditApplicationModal=false" class="text-gray-400 hover:text-gray-500">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <form #editApplicationForm="ngForm" (ngSubmit)="onUpdateApplication()" class="space-y-4">
+              <!-- Status -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Change Status</label>
+                <select [(ngModel)]="selectedApplication.status" name="status" required #status="ngModel"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  <option selected value="APPLIED">APPLIED</option>
+                  <option value="UNDER_REVIEW">UNDER REVIEW</option>
+                  <option value="SHORTLISTED">SHORTLISTED</option>
+       
+                    <option value="INTERVIEWED">INTERVIEWED</option>
+                  <option value="REJECTED">REJECTED</option>
+                  <option value="OFFERED">OFFERED</option>
+                  <option value="HIRED">HIRED</option>
+                </select>
+              </div>
+              <!-- Interview Date -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Interview Date</label>
+                <input type="date" [(ngModel)]="selectedApplication.interviewDate" name="interview_date" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              </div>
+              <!-- Feedback -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Feedback</label>
+                <textarea [(ngModel)]="selectedApplication.feedback" name="feedback"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+              </div>
+              <!-- Buttons -->
+              <div class="flex justify-end space-x-3 mt-5">
+                <button type="button" (click)="showEditApplicationModal=false"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                  Cancel
+                </button>
+                <button type="submit" [disabled]="!selectedApplication.status"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Update Application
+              </button>
+              
+              </div>
+            </form>
+          </div>
+        </div>
+        
       </div>
     </div>
   </div>

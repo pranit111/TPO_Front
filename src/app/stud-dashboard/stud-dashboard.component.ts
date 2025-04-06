@@ -37,7 +37,31 @@ ngOnInit(){
 
 
 }
+placementDetails = {
+  placementDate:'',
+  placed_package: '',
 
+  remarks: '',
+  
+};
+file: File | null = null; 
+// Update Application
+onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    this.file = file;
+  }
+}
+showUpdateModal= false;
+  selectedupdateApplicationId: number | null = null;
+  openUpdateModal(applicationId: number) {
+    this.selectedupdateApplicationId = applicationId;
+    this.showUpdateModal = true;
+  }
+  closeUpdateModal() {
+    this.showUpdateModal = false;
+    this.selectedApplication = null;
+  }
 showModal = false;
 selectedApplication: any = null;
   openModal(application: any) {
@@ -49,4 +73,27 @@ selectedApplication: any = null;
     this.showModal = false;
     this.selectedApplication = null;
   }
-}
+  submitPlacementUpdate() {
+      const formData = new FormData();
+      if (this.file) {
+        if (this.file) {
+          formData.append('file', this.file);
+        }
+      }
+      formData.append('placed_package', this.placementDetails.placed_package);
+      formData.append('placementDate', this.placementDetails.placementDate);
+      formData.append('remarks', this.placementDetails.remarks);
+    
+      this.applicationservice.updateToPlaced(this.selectedupdateApplicationId, formData).subscribe({
+        next: (response) => {
+          console.log('Application updated successfully:', response);
+          this.error.setError('Application updated successfully!');
+          this.closeUpdateModal();
+        },
+        error: (error) => {
+          console.error('Error updating application:', error);
+          this.error.setError('Error updating application!');
+        }
+      });
+    }
+  }

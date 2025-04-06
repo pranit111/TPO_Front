@@ -21,7 +21,7 @@ this.f_p_service.sendotp(this.email).subscribe({
     console.log("OTP Response:", response); // Debugging
 
     if (response.message) { 
-      this.error.setError(response.message); // Show success message if API returns it
+      this.error.setError(response.message,"bg-green-600"); // Show success message if API returns it
       this.next();  // Navigate to OTP entry
     }
   },
@@ -48,7 +48,7 @@ changepass(){
   
       if (response.message) { 
         this.error.setError(response.message,"bg-green-600");
-        this.router.navigate([""]) // Show success message if API returns it
+        this.router.navigate(["login"]) // Show success message if API returns it
          // Navigate to OTP entry
       }
     },
