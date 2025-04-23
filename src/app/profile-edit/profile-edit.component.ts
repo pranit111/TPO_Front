@@ -3,6 +3,8 @@ import { Student } from '../student';
 import { StudentService } from '../student.service';
 import { CropperService } from '../cropper.service';
 import { Router } from '@angular/router';
+import { FormBuilder } from '@angular/forms';
+import { ErrorService } from '../error.service';
 
 @Component({
   selector: 'app-profile-edit',
@@ -30,6 +32,8 @@ export class ProfileEditComponent implements OnInit {
     private service: StudentService,
     private cropperService: CropperService,
     private router: Router
+    ,private fb: FormBuilder,
+    private error: ErrorService
   ) {}
 
   ngOnInit(): void {
@@ -82,7 +86,19 @@ export class ProfileEditComponent implements OnInit {
   }
 
   confirmChanges(): void {
-    this.service.updateStudent(this.Current_profile.id, this.student).subscribe({
+    const formData = new FormData();
+    formData.append('student', new Blob([JSON.stringify(this.student)], { type: 'application/json' }));
+    if (this.resume) {
+      formData.append('resume', this.resume);
+    }
+    if (this.profile_pic) {
+      formData.append('prof_img', this.profile_pic);
+    }
+    if (this.croppedImage) {
+      formData.append('profile_img', this.croppedImage);
+    }
+   
+    this.service.updateStudent(this.Current_profile.id, formData).subscribe({
       next: (response: any) => {
         console.log('Updated Student:', response);
         this.router.navigate(['/profile']);
@@ -108,7 +124,19 @@ export class ProfileEditComponent implements OnInit {
   onFileSelectedresume(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
+
       this.resume = input.files[0];
+      if (this.resume.type !== 'application/pdf') {
+        this.error.setError("Only PDF files are allowed.", "bg-red-600");
+        input.value = '';  // Clear the input
+        this.resume = null;
+        return;
+      }
+      if(this.resume.size > 2 * 1024 * 1024) {
+        this.error.setError("File size should not be more than 1MB.", "bg-red-600");  ;
+        this.resume = null;
+      input.value = ''; // Clear the input value
+      }
     }
   }
 
@@ -116,6 +144,7 @@ export class ProfileEditComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.profile_pic = input.files[0];
+      
     }
   }
 
@@ -124,6 +153,17 @@ export class ProfileEditComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const reader = new FileReader();
+      if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+        this.error.setError("Only PNG and JPEG files are allowed.", "bg-red-600");
+        input.value = '';  // Clear the input
+        this.profile_pic = null;
+        return;
+      }
+      if(file.size > 2 * 1024 * 1024) {
+        this.error.setError("File size should not be more than 1MB.", "bg-red-600");
+        this.profile_pic = null;
+        input.value = ''; // Clear the input value
+      }
       
       reader.onload = () => {
         this.imageUrl = reader.result as string;

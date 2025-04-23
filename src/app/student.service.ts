@@ -102,7 +102,7 @@ export class StudentService {
     return this.http.get<any>(`${this.apiUrl}/Student/profile`)
   }
   // Update a student
-  updateStudent(id: number, student: Student): Observable<Student> {
+  updateStudent(id: number, student: FormData): Observable<Student> {
     return this.http.put<Student>(`${this.apiUrl}/Student`, student);
   }
 

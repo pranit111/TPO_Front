@@ -16,6 +16,7 @@ import { TpoSearchComponent } from './tpo-search/tpo-search.component';
 import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 import { PostJobComponent } from './post-job/post-job.component';
 import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
+import { DownloadResumeComponent } from './download-resume/download-resume.component';
 const routes: Routes = [
   {path:'home',  redirectTo:'', pathMatch:'full'},
 
@@ -37,6 +38,9 @@ const routes: Routes = [
   {path:"user_registration", component :UserRegComponent},
   {path:"forgot_password", component :ForgotPasswordComponent},
   {path:"logout", component :LogoutComponent},
+  { path: "download/:type/:id/:course", component: DownloadResumeComponent }
+,
+
 
   {
     path: 'tpo', component: TpoNavbarComponent, children: [

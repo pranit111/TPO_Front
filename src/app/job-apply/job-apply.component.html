@@ -69,6 +69,24 @@
             <p class="onest-font">Aptitude: <span class="roboto-flex text-gray-600">{{jobpost.aptitude ?
                     "Yes":"No"}}</span></p>
         </div>
+           <!-- Portal Link -->
+        <div class="mt-6" *ngIf="jobpost.portalLink">
+            <h2 class="text-xl onest-font text-teal-700">Application Link</h2>
+            <hr class="border-gray-300 my-2">
+            <p class="onest-font">Register :   <a href="{{jobpost.portalLink}}" class="roboto-flex text-blue-700" target="_blank" rel="noopener noreferrer">
+                Click
+            </a></p>
+           
+        </div>
+        <!-- Upload Proof of Registration -->
+<!-- Upload Confirmation Screenshot -->
+<div class="mt-6" *ngIf="jobpost.portalLink">
+    <h2 class="text-xl onest-font text-teal-700">Registration Confirmation</h2>
+    <hr class="border-gray-300 my-2">
+    <p class="onest-font mb-2">Upload a screenshot showing you've registered on the portal:</p>
+    <input type="file" accept="image/*" (change)="onFileSelected($event)" class="block text-sm text-gray-600">
+</div>
+
 
         <!-- Important Dates -->
         <div class="mt-6">
@@ -81,9 +99,24 @@
             <p class="onest-font">Aptitude Exam Date: <span
                     class="roboto-flex text-gray-600">{{jobpost.aptitudeStartingDate}}</span></p>
         </div>
-        <div class=" flex justify-center mt-4"> <button
-                class="bg-teal-600 text-white rounded w-20 h-7 hover:bg-teal-700" (click)="nextstep()">Apply</button>
-        </div>
+      <!-- Updated Apply Button -->
+<div class="flex justify-center mt-4">
+    <button
+        class="bg-teal-600 text-white rounded w-20 h-7 hover:bg-teal-700"
+        [disabled]="!availability || (jobpost.portalLink && !screenshotUploaded)"
+        (click)="nextstep()">
+        Apply
+    </button>
+
+</div>
+
+        
+        <div *ngIf="!availability" class="mt-2 text-red-600 text-center text-sm font-medium">
+            This job is currently not available for application.
+          </div>
+          <div *ngIf="jobpost.portalLink && !screenshotUploaded" class="mt-2 text-red-600 text-center text-sm font-medium">
+            Register on the link and apply proof.
+          </div>
     </div>
     <div *ngIf="step==2" class="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
         <!-- Header -->
@@ -141,8 +174,8 @@
             <hr class="border-gray-300 my-2">
           
         </div>
-        <div class=" flex justify-center mt-4"> <button
-                class="bg-teal-600 text-white rounded w-40 h-7 hover:bg-teal-700" (click)="postapplication()">Confirm Apply</button>
+        <div class=" flex justify-center mt-4"> <button [disabled]="!availability"
+                   class="bg-teal-600 text-white rounded w-40 h-7 hover:bg-teal-700" (click)="postapplication()">Confirm Apply</button>
         </div>
     </div>
 </body>

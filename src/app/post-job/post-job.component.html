@@ -3,7 +3,6 @@
     [ngStyle]="{'background-image': 'url(/Main_bg_blue.png)'}">
     <!-- Overlay -->
 
-
     <!-- Content Container -->
     <div class="relative z-10">
         <div class="container mx-auto p-6 bg-white bg-opacity-95 rounded-lg shadow-lg max-w-4xl">
@@ -18,40 +17,59 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Company Name</label>
-                            <select [(ngModel)]="jobData.company.id" (change)="onCompanySelect()" name="company"
-                                required
+                            <select [(ngModel)]="jobData.company.id" (change)="onCompanySelect()" name="companyId" #companyField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
                                 <option [ngValue]="0">Select Company</option>
                                 <option *ngFor="let company of companies" [ngValue]="company.id">
                                     {{company.name}}
                                 </option>
                             </select>
+                            <div class="text-red-500 text-sm mt-1" *ngIf="companyField.invalid && (companyField.dirty || companyField.touched || jobForm.submitted)">
+                                <div *ngIf="companyField.errors?.['required']">Company name is required</div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Job Role</label>
-                            <input type="text" [(ngModel)]="jobData.jobDesignation" name="jobDesignation" required
+                            <input type="text" [(ngModel)]="jobData.jobDesignation" name="jobDesignation" #jobDesignationField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1" *ngIf="jobDesignationField.invalid && (jobDesignationField.dirty || jobDesignationField.touched || jobForm.submitted)">
+                                <div *ngIf="jobDesignationField.errors?.['required']">Job role is required</div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Job Location</label>
-                            <input type="text" [(ngModel)]="jobData.location" name="jobLocation" required
+                            <input type="text" [(ngModel)]="jobData.location" name="jobLocation" #jobLocationField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1" *ngIf="jobLocationField.invalid && (jobLocationField.dirty || jobLocationField.touched || jobForm.submitted)">
+                                <div *ngIf="jobLocationField.errors?.['required']">Job location is required</div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Job Type</label>
-                            <select [(ngModel)]="jobData.jobType" name="jobType" required
+                            <select [(ngModel)]="jobData.jobType" name="jobType" #jobTypeField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
                                 <option value="">Select Job Type</option>
                                 <option value="Full Time">Full Time</option>
                                 <option value="Part Time">Part Time</option>
                                 <option value="Internship">Internship</option>
                             </select>
+                            <div class="text-red-500 text-sm mt-1" *ngIf="jobTypeField.invalid && (jobTypeField.dirty || jobTypeField.touched || jobForm.submitted)">
+                                <div *ngIf="jobTypeField.errors?.['required']">Job type is required</div>
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4">
                         <label class="block text-sm font-medium text-gray-600 mb-2">Job Description</label>
-                        <textarea [(ngModel)]="jobData.description" name="jobDescription" required rows="4"
+                        <textarea [(ngModel)]="jobData.description" name="jobDescription" #jobDescriptionField="ngModel" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                        <div class="text-red-500 text-sm mt-1" *ngIf="jobDescriptionField.invalid && (jobDescriptionField.dirty || jobDescriptionField.touched || jobForm.submitted)">
+                            <div *ngIf="jobDescriptionField.errors?.['required']">Job description is required</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-600 mb-2">Company Portal Link <span class="italic">(optional)</span></label>
+                        <input [(ngModel)]="jobData.portalLink" name="portalLink" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
                     </div>
                 </div>
 
@@ -62,19 +80,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Package</label>
-                            <input type="text" [(ngModel)]="jobData.packageAmount" name="package" required
+                            <input type="text" [(ngModel)]="jobData.packageAmount" name="package" #packageField="ngModel" required
                                 pattern="[0-9]+(\.[0-9]{1,2})?"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['package'].errors?.['required']">
-                                Package amount is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['package'].errors?.['pattern']">
-                                Please enter a valid amount (e.g., 50000 or 50000.00)
+                            <div class="text-red-500 text-sm mt-1" *ngIf="packageField.invalid && (packageField.dirty || packageField.touched || jobForm.submitted)">
+                                <div *ngIf="packageField.errors?.['required']">Package amount is required</div>
+                                <div *ngIf="packageField.errors?.['pattern']">Please enter a valid amount (e.g., 50000 or 50000.00)</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -85,68 +98,58 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Minimum Percentage</label>
-                            <input type="number" [(ngModel)]="jobData.minPercentage" name="minimumPercentage" required
+                            <input type="number" [(ngModel)]="jobData.minPercentage" name="minimumPercentage" #minPercentageField="ngModel" required
                                 min="35" max="100"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['minimumPercentage'].errors?.['required']">
-                                Minimum percentage is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['minimumPercentage'].errors?.['min']">
-                                Percentage must be between 35 and 100
+                            <div class="text-red-500 text-sm mt-1" *ngIf="minPercentageField.invalid && (minPercentageField.dirty || minPercentageField.touched || jobForm.submitted)">
+                                <div *ngIf="minPercentageField.errors?.['required']">Minimum percentage is required</div>
+                                <div *ngIf="minPercentageField.errors?.['min'] || minPercentageField.errors?.['max']">Percentage must be between 35 and 100</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Minimum SSC</label>
-                            <input type="number" [(ngModel)]="jobData.minSsc" name="minSsc" required min="35" max="100"
+                            <input type="number" [(ngModel)]="jobData.minSsc" name="minSsc" #minSscField="ngModel" required min="35" max="100"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['minSsc'].errors?.['required']">
-                                Minimum SSC percentage is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['minSsc'].errors?.['min']">
-                                SSC percentage must be between 35 and 100
+                            <div class="text-red-500 text-sm mt-1" *ngIf="minSscField.invalid && (minSscField.dirty || minSscField.touched || jobForm.submitted)">
+                                <div *ngIf="minSscField.errors?.['required']">Minimum SSC percentage is required</div>
+                                <div *ngIf="minSscField.errors?.['min'] || minSscField.errors?.['max']">SSC percentage must be between 35 and 100</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Minimum HSC</label>
-                            <input type="number" [(ngModel)]="jobData.minHsc" name="minHsc" required min="35" max="100"
+                            <input type="number" [(ngModel)]="jobData.minHsc" name="minHsc" #minHscField="ngModel" required min="35" max="100"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['minHsc'].errors?.['required']">
-                                Minimum HSC percentage is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['minHsc'].errors?.['min']">
-                                HSC percentage must be between 35 and 100
+                            <div class="text-red-500 text-sm mt-1" *ngIf="minHscField.invalid && (minHscField.dirty || minHscField.touched || jobForm.submitted)">
+                                <div *ngIf="minHscField.errors?.['required']">Minimum HSC percentage is required</div>
+                                <div *ngIf="minHscField.errors?.['min'] || minHscField.errors?.['max']">HSC percentage must be between 35 and 100</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Backlog Allowance</label>
-                            <input type="number" [(ngModel)]="jobData.backlogAllowance" name="backlogAllowance" required
+                            <input type="number" [(ngModel)]="jobData.backlogAllowance" name="backlogAllowance" #backlogField="ngModel" required
                                 min="0" max="10"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['backlogAllowance'].errors?.['required']">
-                                Backlog allowance is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['backlogAllowance'].errors?.['min']">
-                                Backlog allowance must be between 0 and 10
+                            <div class="text-red-500 text-sm mt-1" *ngIf="backlogField.invalid && (backlogField.dirty || backlogField.touched || jobForm.submitted)">
+                                <div *ngIf="backlogField.errors?.['required']">Backlog allowance is required</div>
+                                <div *ngIf="backlogField.errors?.['min'] || backlogField.errors?.['max']">Backlog allowance must be between 0 and 10</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Preferred Course</label>
-                            <input type="text" [(ngModel)]="jobData.preferredCourse" name="preferredCourse" required
+                            <input type="text" [(ngModel)]="jobData.preferredCourse" name="preferredCourse" #preferredCourseField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1" *ngIf="preferredCourseField.invalid && (preferredCourseField.dirty || preferredCourseField.touched || jobForm.submitted)">
+                                <div *ngIf="preferredCourseField.errors?.['required']">Preferred course is required</div>
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4">
                         <label class="block text-sm font-medium text-gray-600 mb-2">Skills Requirement</label>
-                        <input type="text" [(ngModel)]="jobData.skillsRequirements" name="skillRequirements" required
+                        <input type="text" [(ngModel)]="jobData.skillsRequirements" name="skillRequirements" #skillsField="ngModel" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <div class="text-red-500 text-sm mt-1" *ngIf="skillsField.invalid && (skillsField.dirty || skillsField.touched || jobForm.submitted)">
+                            <div *ngIf="skillsField.errors?.['required']">Skills requirements are required</div>
+                        </div>
                     </div>
                 </div>
 
@@ -157,32 +160,47 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Selection Rounds</label>
-                            <input type="text" [(ngModel)]="jobData.selectionRounds" name="selectionRounds" required
+                            <input type="text" [(ngModel)]="jobData.selectionRounds" name="selectionRounds" #roundsField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1" *ngIf="roundsField.invalid && (roundsField.dirty || roundsField.touched || jobForm.submitted)">
+                                <div *ngIf="roundsField.errors?.['required']">Selection rounds are required</div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Mode Of Recruitment</label>
-                            <input type="text" [(ngModel)]="jobData.modeOfRecruitment" name="modeOfRecruitment" required
+                            <input type="text" [(ngModel)]="jobData.modeOfRecruitment" name="modeOfRecruitment" #modeField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1" *ngIf="modeField.invalid && (modeField.dirty || modeField.touched || jobForm.submitted)">
+                                <div *ngIf="modeField.errors?.['required']">Mode of recruitment is required</div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Test Platform</label>
-                            <input type="text" [(ngModel)]="jobData.testPlatform" name="testPlatform" required
+                            <input type="text" [(ngModel)]="jobData.testPlatform" name="testPlatform" #platformField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <div class="text-red-500 text-sm mt-1" *ngIf="platformField.invalid && (platformField.dirty || platformField.touched || jobForm.submitted)">
+                                <div *ngIf="platformField.errors?.['required']">Test platform is required</div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Aptitude</label>
-                            <select [(ngModel)]="jobData.aptitude" name="aptitude" required
+                            <select [(ngModel)]="jobData.aptitude" name="aptitude" #aptitudeField="ngModel" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
                                 <option [ngValue]="true">Yes</option>
                                 <option [ngValue]="false">No</option>
                             </select>
+                            <div class="text-red-500 text-sm mt-1" *ngIf="aptitudeField.invalid && (aptitudeField.dirty || aptitudeField.touched || jobForm.submitted)">
+                                <div *ngIf="aptitudeField.errors?.['required']">Please select an aptitude option</div>
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4">
                         <label class="block text-sm font-medium text-gray-600 mb-2">Recruitment Details</label>
-                        <textarea [(ngModel)]="jobData.recruitmentDetails" name="recruitmentDetails" required rows="3"
+                        <textarea [(ngModel)]="jobData.recruitmentDetails" name="recruitmentDetails" #detailsField="ngModel" required rows="3"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+                        <div class="text-red-500 text-sm mt-1" *ngIf="detailsField.invalid && (detailsField.dirty || detailsField.touched || jobForm.submitted)">
+                            <div *ngIf="detailsField.errors?.['required']">Recruitment details are required</div>
+                        </div>
                     </div>
                 </div>
 
@@ -193,58 +211,42 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Application Start Date</label>
-                            <input type="date" [(ngModel)]="jobData.applicationStartDate" name="applicationStartDate"
+                            <input type="date" [(ngModel)]="jobData.applicationStartDate" name="applicationStartDate" #startDateField="ngModel"
                                 required [min]="today"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['applicationStartDate'].errors?.['required']">
-                                Application start date is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['applicationStartDate'].errors?.['min']">
-                                Start date cannot be in the past
+                            <div class="text-red-500 text-sm mt-1" *ngIf="startDateField.invalid && (startDateField.dirty || startDateField.touched || jobForm.submitted)">
+                                <div *ngIf="startDateField.errors?.['required']">Application start date is required</div>
+                                <div *ngIf="startDateField.errors?.['min']">Start date cannot be in the past</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Application End Date</label>
-                            <input type="date" [(ngModel)]="jobData.applicationEndDate" name="applicationEndDate"
+                            <input type="date" [(ngModel)]="jobData.applicationEndDate" name="applicationEndDate" #endDateField="ngModel"
                                 required [min]="jobData.applicationStartDate"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['applicationEndDate'].errors?.['required']">
-                                Application end date is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['applicationEndDate'].errors?.['min']">
-                                End date must be after start date
+                            <div class="text-red-500 text-sm mt-1" *ngIf="endDateField.invalid && (endDateField.dirty || endDateField.touched || jobForm.submitted)">
+                                <div *ngIf="endDateField.errors?.['required']">Application end date is required</div>
+                                <div *ngIf="endDateField.errors?.['min']">End date must be after start date</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Selection Start Date</label>
-                            <input type="date" [(ngModel)]="jobData.selectionStartDate" name="selectionStartDate"
+                            <input type="date" [(ngModel)]="jobData.selectionStartDate" name="selectionStartDate" #selStartDateField="ngModel"
                                 required [min]="jobData.applicationEndDate"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['selectionStartDate'].errors?.['required']">
-                                Selection start date is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['selectionStartDate'].errors?.['min']">
-                                Selection start date must be after application end date
+                            <div class="text-red-500 text-sm mt-1" *ngIf="selStartDateField.invalid && (selStartDateField.dirty || selStartDateField.touched || jobForm.submitted)">
+                                <div *ngIf="selStartDateField.errors?.['required']">Selection start date is required</div>
+                                <div *ngIf="selStartDateField.errors?.['min']">Selection start date must be after application end date</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-600 mb-2">Selection End Date</label>
-                            <input type="date" [(ngModel)]="jobData.selectionEndDate" name="selectionEndDate" required
+                            <input type="date" [(ngModel)]="jobData.selectionEndDate" name="selectionEndDate" #selEndDateField="ngModel" required
                                 [min]="jobData.selectionStartDate"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['selectionEndDate'].errors?.['required']">
-                                Selection end date is required
-                            </div>
-                            <div class="text-red-500 text-sm mt-1"
-                                *ngIf="jobForm.submitted && jobForm.controls['selectionEndDate'].errors?.['min']">
-                                Selection end date must be after selection start date
+                            <div class="text-red-500 text-sm mt-1" *ngIf="selEndDateField.invalid && (selEndDateField.dirty || selEndDateField.touched || jobForm.submitted)">
+                                <div *ngIf="selEndDateField.errors?.['required']">Selection end date is required</div>
+                                <div *ngIf="selEndDateField.errors?.['min']">Selection end date must be after selection start date</div>
                             </div>
                         </div>
                     </div>

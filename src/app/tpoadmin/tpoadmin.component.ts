@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { TpoAdminService } from '../tpo-admin.service';
 import { DashboardData } from '../models/dashboard-data';
+import { Router, RouterLink } from '@angular/router';
 interface Log {
   id: number;
   action: string;
@@ -21,7 +22,7 @@ export class TpoadminComponent {
 onSubmitEditTpoUser() {
 throw new Error('Method not implemented.');
 }
-  constructor(private tposervice: TpoAdminService) { }
+  constructor(private tposervice: TpoAdminService,private router:Router) { }
   dashboardData: DashboardData | null = null;
   isLoading = true;
   error: string | null = null;
@@ -69,6 +70,13 @@ throw new Error('Method not implemented.');
   
   setSelectedTab(title: string): void {
     console.log('Selected tab:', title);
+    
+    // Special handling for logout
+    if (title === 'Logout') {
+      this.logout();
+      return;
+    }
+    
     this.selectedTab = title;
     this.navItems.forEach(item => {
       item.active = item.title === title;
@@ -88,7 +96,8 @@ throw new Error('Method not implemented.');
   
     { title: 'Logs', icon: 'logs.png', active: false },
     { title: 'Search', icon: 'search_white.png', active: false },
-    { title: 'TPO', icon: 'tpo.png', active: false }
+    { title: 'TPO', icon: 'tpo.png', active: false },
+    { title: 'Logout', icon: 'logout.png', active: false }
   ];
   
   showAddCompanyModal = false;
@@ -101,6 +110,8 @@ throw new Error('Method not implemented.');
     contactNumber: '',
     location: '',
     website: '',
+    hr_Name: '',
+    mnc: false,
     associatedSince: null,
     active: true
   };
@@ -123,9 +134,11 @@ throw new Error('Method not implemented.');
     this.newCompany = {
   
       name: '',
+      mnc: false,
       industryType: '',
       email: '',
       contactNumber: '',
+      hr_Name: '',
       location: '',
       website: '',
       associatedSince: null,
@@ -142,6 +155,7 @@ fetchedTabs = new Set<string>(['Dashboard']);
 // ngOnInit() {
 //   this.fetchDashboardData();
 // }
+
 
 loadTabData(tab: string): void {
   this.loading = true;
@@ -165,6 +179,7 @@ loadTabData(tab: string): void {
     case 'Logs':
       this.fetchLogs();
       break;
+    
     // case 'Placements':
     //   this.fetchPlacementsData();
     //   break;
@@ -176,7 +191,9 @@ loadTabData(tab: string): void {
   }
 }
 
-
+logout() {
+this.router.navigate(['/logout']);
+}
 
 fetchCompaniesData(): void {
   this.tposervice.getAllCompanies().subscribe({
@@ -236,20 +253,7 @@ onUpdateCompany() {
   }
 }
 
-// fetchStudentsData(): void {
-//   this.tposervice.getStudentsData().subscribe({
-//     next: (data) => {
-//       // Update student related data
-//       this.loading = false;
-//       this.fetchedTabs.add('Students');
-//     },
-//     error: (error) => {
-//       console.error('Error fetching students data:', error);
-//       this.loading = false;
-//     }
-//   });
-// }
-// Add these properties
+
 selectedTpoUser: any = {
 
   email: null,

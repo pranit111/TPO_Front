@@ -1,0 +1,4 @@
+<!-- resume-viewer.component.html -->
+<iframe *ngIf="pdfUrl" [src]="pdfUrl" width="100%" height="1080" style="border: none;"></iframe>
+<div *ngIf="!pdfUrl">
+  <p>Loading resume...</p>

@@ -9,6 +9,9 @@ import { ErrorService } from '../error.service';
   styleUrl: './stud-dashboard.component.css'
 })
 export class StudDashboardComponent {
+
+
+showInterviewDetailsModal = false;
   constructor(private applicationservice:ApplicationserviceService,private error:ErrorService){}
   applications:any[]=[];
   color=''
@@ -73,6 +76,13 @@ selectedApplication: any = null;
     this.showModal = false;
     this.selectedApplication = null;
   }
+  openInterviewDetailsModal(id: any) {
+    this.selectedApplication = id;
+   this.showInterviewDetailsModal = true;
+  }
+  
+  closeInterviewModal() {
+    this.showInterviewDetailsModal = false;}
   submitPlacementUpdate() {
       const formData = new FormData();
       if (this.file) {

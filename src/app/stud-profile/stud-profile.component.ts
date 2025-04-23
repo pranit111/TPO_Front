@@ -20,21 +20,35 @@ export class StudProfileComponent {
   }
   constructor(private service: StudentService, private error: ErrorService) {}
 
-  ngOnInit() {
-    this.service.getprofile().subscribe({
-      next: (response: any) => {
-        console.log("Full Response from API:", response);
-        this.profileData = response; // Assign the API response to profileData
-        
-          localStorage.setItem("username",response.firstName+" " +response.lastName)
-        // Convert Base64 image if available
-        if (response.profileImageBase64) {
+ // In your component.ts file
+ngOnInit() {
+  this.service.getprofile().subscribe({
+    next: (response: any) => {
+      console.log("Full Response from API:", response);
+      this.profileData = response;
+      
+      localStorage.setItem("username", response.firstName + " " + response.lastName);
+      
+      // Check if the image exists and is not null or empty
+      if (response.profileImageBase64 && response.profileImageBase64.trim() !== '') {
+        // Make sure the base64 string doesn't already include the data URI prefix
+        if (response.profileImageBase64.startsWith('data:')) {
+          this.profileImageUrl = response.profileImageBase64;
+        } else {
           this.profileImageUrl = `data:image/png;base64,${response.profileImageBase64}`;
         }
-      },
-      error: (err) => {
-        console.error("Error fetching profile:", err);
+        console.log("Image URL set to:", this.profileImageUrl.substring(0, 30) + "...");
+      } else {
+        // Make sure the default image path is correct relative to your application
+        this.profileImageUrl = 'assets/images/default_prof_img.png';
+        console.log("Using default image:", this.profileImageUrl);
       }
-    });
-  }
+    },
+    error: (err) => {
+      console.error("Error fetching profile:", err);
+      // Fallback to default image on error
+      this.profileImageUrl = 'assets/images/default_prof_img.png';
+    }
+  });
+}
 }

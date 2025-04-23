@@ -1,13 +1,10 @@
-<div *ngIf="showError" class="fixed top-5 right-5 z-50 w-96">
+<div *ngIf="showError" class="fixed z-50 w-full max-w-xs xs:max-w-sm sm:max-w-md md:w-96 top-4 right-4 sm:top-5 sm:right-5">
   <div [ngClass]="color" class="text-white px-4 py-3 rounded-lg shadow-lg flex flex-col relative animate-slide-in">
     <div class="flex items-center justify-between">
-      <span class="flex-1 font-semibold">{{ (error$ | async)?.message }}</span>
-      <button (click)="closeError()" class="text-white hover:opacity-70">
-        <img src="close-icon.png" alt="Close" class="w-3 h-3">
+      <span class="flex-1 font-semibold text-sm sm:text-base">{{ (error$ | async)?.message }}</span>
+      <button (click)="closeError()" class="text-white hover:opacity-70 ml-2">
+        <img src="close-icon.png" alt="Close" class="w-3 h-3 sm:w-4 sm:h-4">
       </button>
     </div>
-
-
- 
   </div>
 </div>

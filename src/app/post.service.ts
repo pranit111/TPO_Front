@@ -136,4 +136,13 @@ export class PostService {
       responseType: 'blob'
     });
   }
+  updatePost(postData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/Post?post_id=${postData.id}`, postData);
+  }
+
+  // Optionally: Get Post by ID (if needed)
+  getPostById(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/Post/tpo?post_id=${id}`);
+  }
+
 } 

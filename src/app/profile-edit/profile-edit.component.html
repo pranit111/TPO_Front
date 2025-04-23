@@ -32,12 +32,12 @@
     </style>
 </head>
 
-<body class="bg-custom flex  justify-end min-h-screen px-4">
+<body class="bg-custom flex justify-end min-h-screen px-4">
     <div class="flex flex-col lg:flex-row items-center justify-center space-x-10">
         <!-- College Logo -->
        
         <!-- Registration Box -->
-        <div class="bg-white p-8 w-[1000px] h-full shadow-lg rounded-lg flex flex-col ">
+        <div class="bg-white p-8 w-[1000px] h-full shadow-lg rounded-lg flex flex-col">
             <!-- <h1 class="onest-font text-4xl font-semibold text-left mb-6 mt-4">Student Registration</h1> -->
 
             <form class="w-full flex flex-col space-y-4">
@@ -117,7 +117,7 @@
                     <div class="grid grid-cols-2 gap-4 w-full">
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium text-gray-500">GR No : <em>{{Current_profile.gr_No}}</em></label>
-                            <input type="text" [(ngModel)]="student.gr_No"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <input type="text" [(ngModel)]="student.grNo"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div class="flex flex-col">
                         <label class="block text-sm font-medium text-gray-500">Phone Number : <em>{{Current_profile.phoneNumber}}</em></label>
@@ -134,7 +134,15 @@
                         
                         <div class="flex flex-col">
                             <label class="block text-sm font-medium text-gray-500">Year of Studying  : <em>{{Current_profile.academicYear}}</em></label>
-                            <input type="text"[(ngModel)]="student.academicyear" name="academicYear" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <select [(ngModel)]="student.academicYear" name="academicyear" required
+                            class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <option value="">Select Year</option>
+                            <option value="FE">FE</option>
+                            <option value="SE">SE</option>
+                            <option value="TE">TE</option>
+                            <option value="BE">BE</option>
+                        </select>
+     
                         </div>
                     </div>
 
@@ -142,7 +150,7 @@
                         <label class="block text-sm font-medium text-gray-500">SSC Marks : <em>{{Current_profile.sscMarks}}</em></label>
                         <input type="number"[(ngModel)]="student.sscMarks" name="sscMarks" required class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
-                    <div>
+                    <div *ngIf="Current_profile.diplomaMarks > 0" class="hidden">
                         <label class="block text-sm font-medium text-gray-500">HSC Marks : <em>{{Current_profile.hscMarks}}</em></label>
                         <input type="number"[(ngModel)]="student.hscMarks" name="hscMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
@@ -172,39 +180,82 @@
                  
                     <div class="grid grid-cols-3 gap-4 w-full">
                       
-                        <!-- Row 1 -->
-                        <div class="flex flex-col">
+                        <!-- Row 1 with KT options -->
+
+                        <div class="flex flex-col" >
                             <label class="text-sm font-medium text-gray-500">Sem-1 Marks : <em>{{Current_profile.sem1Marks}}</em></label>
-                            <input type="number"[(ngModel)]="student.sem1Marks" name="sem1Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <div class="flex items-center space-x-2">
+                                <input type="number" [(ngModel)]="student.sem1Marks"  [disabled]="Current_profile.diplomaMarks > 0" name="sem1Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="sem1KT"  [disabled]="Current_profile.diplomaMarks > 0"[(ngModel)]="student.sem1KT" name="sem1KT" class="mr-1">
+                                    <label for="sem1KT" class="text-xs text-red-500">KT</label>
+                                </div>
+                            </div>
+                            <div *ngIf="Current_profile.sem1KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
-                        <div class="flex flex-col">
+                        <div class="flex flex-col" >
                             <label class="text-sm font-medium text-gray-500">Sem-2 Marks : <em>{{Current_profile.sem2Marks}}</em></label>
-                            <input type="number"[(ngModel)]="student.sem2Marks" name="sem2Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
-                        </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="number"  [disabled]="Current_profile.diplomaMarks > 0" [(ngModel)]="student.sem2Marks" name="sem2Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="sem2KT"[disabled]="Current_profile.diplomaMarks > 0" [(ngModel)]="student.sem2KT" name="sem2KT" class="mr-1">
+                                    <label for="sem2KT" class="text-xs text-red-500">KT</label>
+                                </div>
+                     
+                            <div *ngIf="Current_profile.sem2KT" class="text-xs text-red-500 mt-1">Current: KT</div>
+                        </div></div>
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-3 Marks : <em>{{Current_profile.sem3Marks}}</em></label>
-                            <input type="number"[(ngModel)]="student.sem3Marks"  name="sem3Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <div class="flex items-center space-x-2">
+                                <input type="number" [(ngModel)]="student.sem3Marks" name="sem3Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="sem3KT" [(ngModel)]="student.sem3KT" name="sem3KT" class="mr-1">
+                                    <label for="sem3KT" class="text-xs text-red-500">KT</label>
+                                </div>
+                            </div>
+                            <div *ngIf="Current_profile.sem3KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
                     
-                        <!-- Row 2 -->
+                        <!-- Row 2 with KT options -->
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-4 Marks : <em>{{Current_profile.sem4Marks}}</em></label>
-                            <input type="number"[(ngModel)]="student.sem4Marks"  name="sem4Marks" name="sem4Marks"class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <div class="flex items-center space-x-2">
+                                <input type="number" [(ngModel)]="student.sem4Marks" name="sem4Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="sem4KT" [(ngModel)]="student.sem4KT" name="sem4KT" class="mr-1">
+                                    <label for="sem4KT" class="text-xs text-red-500">KT</label>
+                                </div>
+                            </div>
+                            <div *ngIf="Current_profile.sem4KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-5 Marks : <em>{{Current_profile.sem5Marks}}</em></label>
-                            <input type="number"[(ngModel)]="student.sem5Marks" name="sem5Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <div class="flex items-center space-x-2">
+                                <input type="number" [(ngModel)]="student.sem5Marks" name="sem5Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="sem5KT" [(ngModel)]="student.sem5KT" name="sem5KT" class="mr-1">
+                                    <label for="sem5KT" class="text-xs text-red-500">KT</label>
+                                </div>
+                            </div>
+                            <div *ngIf="Current_profile.sem5KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
                         <div class="flex flex-col">
                             <label class="text-sm font-medium text-gray-500">Sem-6 Marks : <em>{{Current_profile.sem6Marks}}</em></label>
-                            <input type="number"[(ngModel)]="student.sem6Marks" name="sem6Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <div class="flex items-center space-x-2">
+                                <input type="number" [(ngModel)]="student.sem6Marks" name="sem6Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="sem6KT" [(ngModel)]="student.sem6KT" name="sem6KT" class="mr-1">
+                                    <label for="sem6KT" class="text-xs text-red-500">KT</label>
+                                </div>
+                            </div>
+                            <div *ngIf="Current_profile.sem6KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
                         
                         <!-- Row 3 -->
                         <div class="flex flex-col col-span-3">
                            
                             <label class="text-sm font-medium text-gray-500">Backlog : <em>{{Current_profile.noOfBacklogs}}</em></label>
-                            <input type="number" class="p-2 border border-gray-300 rounded w-full text-sm">
+                            <input type="number" [(ngModel)]="student.noOfBacklogs" name="noOfBacklogs" class="p-2 border border-gray-300 rounded w-full text-sm">
                             <label class="block text-sm font-medium text-gray-500">Upload Resume</label>
                             <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelectedresume($event)">
                         

@@ -26,6 +26,7 @@ export class TpoAdminService {
     throw new Error('Method not implemented.');
   }
   baseUrl = environment.apiUrls.userService;
+
   companyBaseUrl= environment.apiUrls.companyService;
   constructor(private http:HttpClient) { }
   tpoBaseUrl=environment.apiUrls.tpoService;
@@ -61,10 +62,8 @@ deleteTpoUser(id: number) {
   return this.http.delete(`${this.tpoBaseUrl}/${id}`);
 }
 
-updateTpoUserStatus(id: number, status: boolean) {
-  return this.http.patch(`http://localhost:8080/api/tpo-users/${id}/status`, { active: status });
-}
+
 getDashboardData(): Observable<DashboardData> {
-  return this.http.get<DashboardData>('http://localhost:8080/api7/dashboard');
+  return this.http.get<DashboardData>(`${this.baseUrl}/api7/dashboard`);
 }
 }

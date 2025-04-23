@@ -3,6 +3,7 @@ import { Student } from '../student';
 import { StudentService } from '../student.service';
 import { ApplicationserviceService } from '../applicationservice.service';
 import { PostService } from '../post.service';
+import { Router } from '@angular/router';
 
 interface PaginatedResponse<T> {
   content: T[];
@@ -55,6 +56,8 @@ type Application = {
   designation: string;
   feedback: string | null;
   interviewDate: string | null;
+  interviewTime: string | null;
+  interviewLocation: string | null;
   jobPost: {
     id: number;
     company: {
@@ -100,6 +103,20 @@ type Application = {
   styleUrl: './tpo-search.component.css'
 })
 export class TpoSearchComponent implements OnInit {
+onResume(arg0: number) {
+
+window.open(`/download/cv/${arg0}/ignore`, '_blank');
+}
+onResult(type: string, arg0: number) {  
+  window.open(`/download/result/${arg0}/${type}`, '_blank');
+}
+selectedstudent: Student = new Student(); 
+showStudentActionModal = false;
+OnStudentAction(id:number){
+  this.showStudentActionModal = true;
+  this.selectedstudent = this.students.find((student) => student.id === id) || new Student();
+
+}
 
   // Active tab tracking
   activeTab: 'students' | 'posts' | 'applications' = 'students';
@@ -145,13 +162,15 @@ export class TpoSearchComponent implements OnInit {
     minSalary: undefined as number | undefined,  // Filter by minimum salary
     maxSalary: undefined as number | undefined,  // Filter by maximum salary
     fromDate: '',          // Filter by application date range
-    toDate: ''            // Filter by application date range
+    toDate: ''  
+              // Filter by application date range
   };
 
   constructor(
     private studentService: StudentService,
     private applicationservice: ApplicationserviceService,
-    private postService: PostService
+    private postService: PostService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -209,6 +228,19 @@ export class TpoSearchComponent implements OnInit {
         this.applications = [];
       }
     });
+  }
+  formatTime(timeString: string): string {
+    if (!timeString) return '';
+    
+ 
+    
+   
+    const [hours, minutes] = timeString.slice(0, 5).split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  
   }
 
   loadCompanies(): void {
@@ -283,17 +315,38 @@ export class TpoSearchComponent implements OnInit {
     status:"",
     feedback:"",
     interviewDate:"",
+    interviewTime:"",
+    interviewLocation:"",
 
   };
   showEditApplicationModal=false;
-  onApplicationedit(id:number) {
-    this.selectedApplication.id=id;
-    this.showEditApplicationModal=true;
-    }
+  onApplicationedit(id: number) {
+    this.selectedApplication.id = id;
+    this.showEditApplicationModal
+    // You need to fetch the application details here
+    this.applicationservice.getApplicationById(id).subscribe({
+      next: (application) => {
+        this.selectedApplication = {
+          id: application.id,
+          status: application.status || "",
+          feedback: application.feedback || "",
+          interviewDate: application.interviewDate || "",
+          interviewTime: application.interviewTime || "",
+          interviewLocation: application.interviewLocation || "",
+        };
+        this.showEditApplicationModal = true;
+      },
+      error: (error) => {
+        console.error('Error fetching application:', error);
+      }
+    });
+  }
     onUpdateApplication() {
     this.applicationservice.updateApplication({
       ...this.selectedApplication,
-      interviewDate: this.selectedApplication.interviewDate
+      interviewDate: this.selectedApplication.interviewDate,
+      interviewLocation: this.selectedApplication.interviewLocation,
+      interviewTime: this.selectedApplication.interviewTime,
     }).subscribe({
       next: (response) => {
         console.log('Application updated successfully:', response);
@@ -303,6 +356,8 @@ export class TpoSearchComponent implements OnInit {
           status:"",
           feedback:"",
           interviewDate:"",
+          interviewTime:"",
+          interviewLocation:"",
         };
       },
       error: (error) => {
@@ -314,7 +369,109 @@ export class TpoSearchComponent implements OnInit {
   onApplicationEditCancel() {
     this.showEditApplicationModal=false;
     }
-    onPostEdit() {
-    throw new Error('Method not implemented.');
+ 
+    // Variables
+    selectedPost = {
+      id: 0,
+      title: '',                   // Job Designation
+      description: '',
+      location: '',
+      jobType: 'FULL_TIME',        // Default to FULL_TIME
+      status: 'OPEN',
+    
+      packageAmount: null,         // Package Amount
+      minimumSsc: null,            // Minimum SSC %
+      minimumHsc: null,            // Minimum HSC %
+      minPercentage: null,         // Minimum Average %
+    
+      backlogAllowance: null,      // Backlog Allowed
+      preferredCourse: '',         // Preferred Course
+      skillRequirements: '',       // Skills Required
+      selectionRounds: '',         // Rounds of Selection
+      modeOfRecruitment: '',       // Recruitment Mode
+      testPlatform: '',            // Test Platform
+    
+      applicationStartDate: '',    // Dates as string (or convert to Date if needed)
+      applicationEndDate: '',
+      selectionStartDate: '',
+      selectionEndDate: '',
+      aptitudeDate: '',
+    
+      aptitude: false,             // Aptitude Test Yes/No
+      portalLink: ''
+    };
+    
+showEditPostModal = false;
+
+// Open edit modal and load selected post
+onPostEdit(id: number) {
+  this.postService.getPostById(id).subscribe({
+    next: (data) => {
+   
+      this.selectedPost = { ...data };
+      this.showEditPostModal = true;
+      console.log(this.showEditPostModal);
+    },
+    error: (error) => {
+      console.error('Error fetching post data:', error);
     }
+  });
+}
+
+// Update the post
+onUpdatePost() {
+  this.postService.updatePost(this.selectedPost).subscribe({
+    next: (response) => {
+      console.log('Post updated successfully:', response);
+      this.loadPosts(); // Refresh the post list
+      this.resetSelectedPost();
+      this.loadPosts();
+    },
+    error: (error) => {
+      console.error('Error updating post:', error);
+    }
+  });
+  this.showEditPostModal = false;
+}
+
+// Cancel post editing
+onPostEditCancel() {
+  this.showEditPostModal = false;
+  this.resetSelectedPost();
+}
+
+// Reset post data
+resetSelectedPost() {
+ this.selectedPost = {
+  id: 0,
+  title: '',                   // Job Designation
+  description: '',
+  location: '',
+  jobType: 'FULL_TIME',        // Default to FULL_TIME
+  status: 'OPEN',
+
+  packageAmount: null,         // Package Amount
+  minimumSsc: null,            // Minimum SSC %
+  minimumHsc: null,            // Minimum HSC %
+  minPercentage: null,         // Minimum Average %
+
+  backlogAllowance: null,      // Backlog Allowed
+  preferredCourse: '',         // Preferred Course
+  skillRequirements: '',       // Skills Required
+  selectionRounds: '',         // Rounds of Selection
+  modeOfRecruitment: '',       // Recruitment Mode
+  testPlatform: '',            // Test Platform
+
+  applicationStartDate: '',    // Dates as string (or convert to Date if needed)
+  applicationEndDate: '',
+  selectionStartDate: '',
+  selectionEndDate: '',
+  aptitudeDate: '',
+
+  aptitude: false,             // Aptitude Test Yes/No
+  portalLink: ''
+};
+;
+}
+
 }

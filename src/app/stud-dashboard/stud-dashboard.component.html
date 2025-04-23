@@ -73,6 +73,9 @@
             <a *ngIf="application.status === 'INTERVIEWED'"
               class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer"
               (click)="openUpdateModal(application.id)">Update</a>
+              <a *ngIf="application.interviewDate" 
+   class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer"
+   (click)="openInterviewDetailsModal(application)">Interview Details</a>
           </div>
         </div>
 
@@ -87,6 +90,24 @@
 
             <div class="mt-6 flex justify-end">
               <button (click)="closeModal()"
+                class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Close</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="showInterviewDetailsModal" class="fixed inset-0 flex items-center justify-center backdrop-blur bg-opacity-50">
+          <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
+            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Interview Details</h2>
+            <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>
+
+            <div class="space-y-4 text-[#6F6F6F] text-[16px] md:text-[20px]">
+              <p><strong>Date:</strong> {{ selectedApplication.interviewDate }}</p>
+              <p><strong>Time:</strong> {{ selectedApplication.interviewTime || "Not specified" }}</p>
+              <p><strong>Location:</strong> {{ selectedApplication.interviewLocation || "Not specified" }}</p>
+            
+            </div>
+
+            <div class="mt-6 flex justify-end">
+              <button (click)="closeInterviewModal()"
                 class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Close</button>
             </div>
           </div>

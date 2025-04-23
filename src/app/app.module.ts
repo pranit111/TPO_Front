@@ -25,7 +25,8 @@ import { TpoSearchComponent } from './tpo-search/tpo-search.component';
 import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 import { PostJobComponent } from './post-job/post-job.component';
 import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
-
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { DownloadResumeComponent } from './download-resume/download-resume.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +47,8 @@ import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
       TpoSearchComponent,
       TpoNavbarComponent,
       PostJobComponent,
-      TpoadminComponent
+      TpoadminComponent,
+      DownloadResumeComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,8 @@ import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
     HttpClientModule,
     ImageCropperModule
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -19,6 +19,8 @@ interface Application {
   designation: string;
   feedback: string | null;
   interviewDate: string | null;
+  interviewTime: string | null;
+  interviewLocation: string | null;
   jobPost: {
     id: number;
     company: {
@@ -61,15 +63,20 @@ interface Application {
   providedIn: 'root'
 })
 export class ApplicationserviceService {
+  getApplicationById(id: number) {
+    return this.http.get<Application>(`${this.apiUrl}/Application?application_id=${id}`);
+  }
   updateToPlaced(applicationId: number | null, formData: FormData): Observable<any> {
       return this.http.post(`${this.baseUrl}/api9/placements?applicationid=${applicationId}`, formData);
     }
     
-  updateApplication(selectedApplication: { id: number; status: string; feedback: string; interviewDate: string; }) {
+  updateApplication(selectedApplication: { id: number; status: string; feedback: string; interviewDate: string;  interviewLocation: string; interviewTime: string; }): Observable<any> {
     return this.http.put(`${this.apiUrl}/Application?application_id=${selectedApplication.id}`, {
       status: selectedApplication.status,
       feedback: selectedApplication.feedback,
-      interviewDate: selectedApplication.interviewDate
+      interviewDate: selectedApplication.interviewDate,
+      interviewLocation: selectedApplication.interviewLocation,
+      interviewTime: selectedApplication.interviewTime
     });
   }
   private baseUrl = environment.apiUrls.userService;
@@ -194,7 +201,7 @@ export class ApplicationserviceService {
 
   postApplication(postid: number): Observable<any> {
     const params = new HttpParams().set('postid', postid.toString());
-    return this.http.post(`${this.apiUrl}Application`, {}, { params });
+    return this.http.post(`${this.apiUrl}/Application`, {}, { params });
   }
 
   updateApplicationStatus(id: number, status: string): Observable<any> {

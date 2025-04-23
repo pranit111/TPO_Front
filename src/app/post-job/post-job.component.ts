@@ -27,7 +27,7 @@ interface JobData {
   testPlatform: string;
   recruitmentDetails: string;
   aptitude: boolean;
-  
+  portalLink: string;
   applicationStartDate: Date;
   applicationEndDate: Date;
   selectionStartDate: Date;
@@ -62,6 +62,7 @@ export class PostJobComponent implements OnInit {
     modeOfRecruitment: '',
     testPlatform: '',
     recruitmentDetails: '',
+    portalLink: '',
     applicationStartDate: new Date(),
     applicationEndDate: new Date(),
     selectionStartDate: new Date(),
@@ -124,6 +125,7 @@ export class PostJobComponent implements OnInit {
   }
 
   onSubmit() {
+
     if (this.jobForm.valid) {
       // Validate dates
       const startDate = new Date(this.jobData.applicationStartDate);
@@ -192,6 +194,7 @@ export class PostJobComponent implements OnInit {
       modeOfRecruitment: '',
       testPlatform: '',
       recruitmentDetails: '',
+      portalLink: '',
       applicationStartDate: new Date(),
       applicationEndDate: new Date(),
       selectionStartDate: new Date(),

@@ -57,125 +57,152 @@
 
   <!-- Main Content Area -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Student Search Section -->
-    <div *ngIf="activeTab === 'students'" class="bg-white rounded-xl shadow-lg p-6">
-      <!-- Search Bar -->
-      <div
-        class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto bg-white shadow-md relative z-10">
-        <input [(ngModel)]="filters.firstName" type="text" placeholder="Search for Student"
-          class="text-[#878787] text-[16px] sm:text-[18px] md:text-[20px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
-        <img src="Search.png" alt="Search Icon"
-          class="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] md:w-[38px] md:h-[39px] object-contain cursor-pointer ml-2 sm:ml-4"
+    <!-- Student Search Section --><div *ngIf="activeTab === 'students'" class="bg-white rounded-xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <!-- Student Search Bar -->
+    <div class="flex-grow mr-4">
+      <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
+        <input [(ngModel)]="filters.firstName" type="text" placeholder="Search for Student"(keyup.enter)="loadStudents()"
+          class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+        <img src="Search.png" alt="Search Icon" class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
           (click)="loadStudents()" />
       </div>
-
-      <!-- Filter Bar -->
-       <div class="flex justify-end">
-      <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] 
-      w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] h-[42px] px-4 mb-4 sm:mb-6 mx-auto 
-      bg-[#4073BF] shadow-md relative z-10">
-
-
-        <!-- Academic Year Dropdown -->
-        <select [(ngModel)]="filters.academicYear"
-          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-          <option value="">Year</option>
-          <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
-        </select>
-
-        <!-- Department Dropdown -->
-        <select [(ngModel)]="filters.department"
-          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-          <option value="">Department</option>
-          <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
-        </select>
-
-        <!-- Min Avg Marks Dropdown -->
-        <select [(ngModel)]="filters.minAvgMarks"
-          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-          <option [ngValue]="undefined">Min Avg Marks</option>
-          <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
-        </select>
-
-        <!-- Max Avg Marks Dropdown -->
-        <select [(ngModel)]="filters.maxAvgMarks"
-          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-          <option [ngValue]="undefined">Max Avg Marks</option>
-          <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
-        </select>
-
-        <!-- Year of Passing Dropdown -->
-        <select [(ngModel)]="filters.yearOfPassing"
-          class="bg-[#4073BF] text-white text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-roboto-flex rounded-[20px] px-2 sm:px-4 py-1 focus:outline-none">
-          <option [ngValue]="undefined">Year of Passing</option>
-          <option *ngFor="let year of passingYears" [ngValue]="year">{{year}}</option>
-        </select>
-      
-
-      </div>  <button (click)="downloadExcel()" class=" text-white px-4 py-2 mb-5 rounded-lg hover:bg-blue-700">
-        <img src="Download.png" alt="Download" class="w-6 h-6 inline-block " />
-
-      </button>
-      </div>
-
-      <!-- Line Under Columns -->
-      <div class="border-b w-full sm:w-[95%] md:w-[90%] lg:w-[1128px] mx-auto"
-        style="border-color: #053C47; height: 0;">
-      </div>
-
-      <!-- Student Table -->
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Middle Name
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GR No.</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SSC %</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSC %</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diploma %</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average %</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backlogs</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <div class="flex justify-end mt-4">
-
-          </div>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let student of students">
-              <td class="px-6 py-4 whitespace-nowrap">{{student.firstName}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.middleName}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.lastName}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.gender}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.dateOfBirth}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.gr_No}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.sscMarks}}%</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.hscMarks || '-'}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.diplomaMarks || '-'}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.avgMarks | number:'1.3-3' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.department}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.academicyear}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">{{student.noOfBacklogs}}</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <button class="text-blue-600 hover:text-blue-900">
-                  <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Download Button -->
-
     </div>
+    <!-- Download Button -->
+    <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+      <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
+    </button>
+  </div>
+
+  <!-- Student Filter Bar -->
+  <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
+    <select [(ngModel)]="filters.academicYear"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option value="">Year</option>
+      <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
+    </select>
+    <select [(ngModel)]="filters.department"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option value="">Department</option>
+      <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+    </select>
+    <select [(ngModel)]="filters.minAvgMarks"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option [ngValue]="undefined">Min Avg Marks</option>
+      <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
+    </select>
+    <select [(ngModel)]="filters.maxAvgMarks"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option [ngValue]="undefined">Max Avg Marks</option>
+      <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
+    </select>
+    <select [(ngModel)]="filters.yearOfPassing"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option [ngValue]="undefined">Year of Passing</option>
+      <option *ngFor="let year of passingYears" [ngValue]="year">{{year}}</option>
+    </select>
+  </div>
+
+  <!-- Student Table -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">First Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Middle Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GR No.</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SSC%</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSC%</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diploma%</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average%</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backlogs</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let student of students" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center space-x-4">
+              <div class="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center flex-shrink-0">
+                <span class="text-gray-600 font-medium">{{student.firstName[0]}}</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-500">{{student.firstName}}</div>
+                
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.middleName}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.lastName}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.gender}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.dateOfBirth}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.grNo}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.sscMarks}}%</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.hscMarks || '-'}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.diplomaMarks || '-'}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.avgMarks | number:'1.3-3'}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.department}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.academicYear}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.noOfBacklogs}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" ><button class="text-indigo-600 hover:text-indigo-900"
+             >
+              <img (click)="OnStudentAction(student.id)" src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+      
+            
+          </button>
+          <div *ngIf="showStudentActionModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Actions</h3>
+                <button (click)="showStudentActionModal=false" class="text-gray-400 hover:text-gray-500">
+                  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div class="flex flex-col space-y-4">
+                <button
+                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+                  (click)="onResult('ssc', selectedstudent.id)">
+                  View SSC Result
+                </button>
+                
+                <button *ngIf="selectedstudent.hscMarks !== null && selectedstudent.hscMarks > 0"
+                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+                  (click)="onResult('hsc', selectedstudent.id)">
+                  View HSC Result
+                </button>
+
+
+                
+                <button  *ngIf="selectedstudent.diplomaMarks !== null && selectedstudent.diplomaMarks > 0"
+                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+                  (click)="onResult('diploma', selectedstudent.id)">
+                  View Diploma Result
+                </button>
+                
+                <button
+                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+                  (click)="onResume(student.id)">
+                  View Resume
+                </button>
+              </div>
+            </div>
+          </div>
+          
+        
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
     <!-- Post Search Section -->
     <div *ngIf="activeTab === 'posts'" class="bg-white rounded-xl shadow-lg p-6">
@@ -183,7 +210,7 @@
         <!-- Post Search Bar -->
         <div class="flex-grow mr-4">
           <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
-            <input [(ngModel)]="postFilters.position" type="text" placeholder="Search by Position"
+            <input [(ngModel)]="postFilters.position" type="text" placeholder="Search by Position"(keyup.enter)="loadPosts()"
               class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
             <img src="Search.png" alt="Search Icon" class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
               (click)="loadPosts()" />
@@ -240,8 +267,15 @@
           <tbody class="bg-white divide-y divide-gray-200">
             <tr *ngFor="let post of posts" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{post.company.name}}</div>
-                <div class="text-sm text-gray-500">{{post.company.email}}</div>
+                <div class="flex items-center space-x-4">
+                  <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                    <span class="text-gray-600 font-medium">{{post.company.name[0]}}</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">{{post.company.name}}</div>
+                    <div class="text-sm text-gray-500">{{post.company.email}}</div>
+                  </div>
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.company.industryType}}</td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -254,26 +288,403 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.minPercentage}}%</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + 
-                  (post.status === 'Taking Applications' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
-                  {{post.status}}
+                  (post.status === 'OPEN' ? 'bg-green-100 text-green-800' : 
+                  post.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : 
+                  post.status === 'CLOSED' ? 'bg-orange-100 text-orange-800' : 
+                  post.status === 'EXPIRED' ? 'bg-gray-100 text-gray-800' : 
+                  post.status === 'ON_HOLD' ? 'bg-yellow-100 text-yellow-800' : 
+                  post.status === 'SELECTION_IN_PROGRESS' ? 'bg-blue-100 text-blue-800' : 
+                  post.status === 'FILLED' ? 'bg-purple-100 text-purple-800' : 
+                  'bg-gray-100 text-gray-500')">
+                  {{ post.status === 'SELECTION_IN_PROGRESS' ? 'SELECTION IN PROGRESS' : post.status }}
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button class="text-indigo-600 hover:text-indigo-900" (click)="onPostEdit()"> <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" /></button>
+                <button class="text-indigo-600 hover:text-indigo-900" (click)="onPostEdit(post.id)">
+                  <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+                </button>
               </td>
             </tr>
           </tbody>
-        </table>
+        </table><div *ngIf="showEditPostModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div class="relative top-20 mx-auto p-5 border max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">Edit Post</h3>
+              <button (click)="onPostEditCancel()" class="text-gray-400 hover:text-gray-500">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <form #editPostForm="ngForm" (ngSubmit)="onUpdatePost()" class="space-y-6">
+              <!-- Basic Job Information Section -->
+              <div class="bg-gray-50 p-4 rounded-md">
+                <h4 class="text-md font-medium text-gray-700 mb-3">Job Details</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Job Designation -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Job Designation</label>
+                    <input type="text" [(ngModel)]="selectedPost.jobType" name="jobDesignation" #jobDesignationField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="jobDesignationField.invalid && (jobDesignationField.dirty || jobDesignationField.touched || editPostForm.submitted)">
+                      <div *ngIf="jobDesignationField.errors?.['required']">Job designation is required</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Job Type -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Job Type</label>
+                    <select [(ngModel)]="selectedPost.jobType" name="jobType" #jobTypeField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="">Select Job Type</option>
+                      <option value="FULL_TIME">Full Time</option>
+                      <option value="PART_TIME">Part Time</option>
+                      <option value="INTERNSHIP">Internship</option>
+                    </select>
+                    <div class="text-red-500 text-sm mt-1" *ngIf="jobTypeField.invalid && (jobTypeField.dirty || jobTypeField.touched || editPostForm.submitted)">
+                      <div *ngIf="jobTypeField.errors?.['required']">Job type is required</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Status -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <select [(ngModel)]="selectedPost.status" name="status" #statusField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="">Select Status</option>
+                      <option value="OPEN">OPEN</option>
+                      <option value="CLOSED">CLOSED</option>
+                      <option value="SELECTION_IN_PROGRESS">SELECTION IN PROGRESS</option>
+                      <option value="FILLED">FILLED</option>
+                      <option value="ON_HOLD">ON HOLD</option>
+                      <option value="CANCELLED">CANCELLED</option>
+                      <option value="EXPIRED">EXPIRED</option>
+                    </select>
+                    <div class="text-red-500 text-sm mt-1" *ngIf="statusField.invalid && (statusField.dirty || statusField.touched || editPostForm.submitted)">
+                      <div *ngIf="statusField.errors?.['required']">Status is required</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Location -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Location</label>
+                    <input type="text" [(ngModel)]="selectedPost.location" name="location" #locationField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="locationField.invalid && (locationField.dirty || locationField.touched || editPostForm.submitted)">
+                      <div *ngIf="locationField.errors?.['required']">Location is required</div>
+                    </div>
+                  </div>
+        
+                  <!-- Package -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Package Amount (in LPA)</label>
+                    <input type="number" [(ngModel)]="selectedPost.packageAmount" name="packageAmount" #packageField="ngModel" required
+                      pattern="[0-9]+(\.[0-9]{1,2})?" min="0"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="packageField.invalid && (packageField.dirty || packageField.touched || editPostForm.submitted)">
+                      <div *ngIf="packageField.errors?.['required']">Package amount is required</div>
+                      <div *ngIf="packageField.errors?.['pattern']">Please enter a valid amount</div>
+                      <div *ngIf="packageField.errors?.['min']">Amount cannot be negative</div>
+                    </div>
+                  </div>
+        
+                  <!-- Portal Link -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Portal Link <span class="italic">(optional)</span></label>
+                    <input type="url" [(ngModel)]="selectedPost.portalLink" name="portalLink"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                  </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="mt-4">
+                  <label class="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea [(ngModel)]="selectedPost.description" name="description" #descriptionField="ngModel" required rows="3"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                  <div class="text-red-500 text-sm mt-1" *ngIf="descriptionField.invalid && (descriptionField.dirty || descriptionField.touched || editPostForm.submitted)">
+                    <div *ngIf="descriptionField.errors?.['required']">Description is required</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Eligibility Requirements Section -->
+              <div class="bg-gray-50 p-4 rounded-md">
+                <h4 class="text-md font-medium text-gray-700 mb-3">Eligibility Requirements</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <!-- Minimum SSC % -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Min SSC %</label>
+                    <input type="number" [(ngModel)]="selectedPost.minimumSsc" name="minSSC" #minSscField="ngModel" required
+                      min="35" max="100"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="minSscField.invalid && (minSscField.dirty || minSscField.touched || editPostForm.submitted)">
+                      <div *ngIf="minSscField.errors?.['required']">Minimum SSC percentage is required</div>
+                      <div *ngIf="minSscField.errors?.['min'] || minSscField.errors?.['max']">SSC percentage must be between 35 and 100</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Minimum HSC % -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Min HSC %</label>
+                    <input type="number" [(ngModel)]="selectedPost.minimumHsc" name="minHSC" #minHscField="ngModel" required
+                      min="35" max="100"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="minHscField.invalid && (minHscField.dirty || minHscField.touched || editPostForm.submitted)">
+                      <div *ngIf="minHscField.errors?.['required']">Minimum HSC percentage is required</div>
+                      <div *ngIf="minHscField.errors?.['min'] || minHscField.errors?.['max']">HSC percentage must be between 35 and 100</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Minimum AVG % -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Min AVG %</label>
+                    <input type="number" [(ngModel)]="selectedPost.minPercentage" name="minAVG" #minAvgField="ngModel" required
+                      min="35" max="100"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="minAvgField.invalid && (minAvgField.dirty || minAvgField.touched || editPostForm.submitted)">
+                      <div *ngIf="minAvgField.errors?.['required']">Minimum average percentage is required</div>
+                      <div *ngIf="minAvgField.errors?.['min'] || minAvgField.errors?.['max']">Percentage must be between 35 and 100</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <!-- Backlog Allowance -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Backlog Allowance</label>
+                    <input type="number" [(ngModel)]="selectedPost.backlogAllowance" name="backlogAllowance" #backlogField="ngModel" required
+                      min="0" max="10"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="backlogField.invalid && (backlogField.dirty || backlogField.touched || editPostForm.submitted)">
+                      <div *ngIf="backlogField.errors?.['required']">Backlog allowance is required</div>
+                      <div *ngIf="backlogField.errors?.['min'] || backlogField.errors?.['max']">Backlog allowance must be between 0 and 10</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Preferred Course -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Preferred Course</label>
+                    <input type="text" [(ngModel)]="selectedPost.preferredCourse" name="preferredCourse" #preferredCourseField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="preferredCourseField.invalid && (preferredCourseField.dirty || preferredCourseField.touched || editPostForm.submitted)">
+                      <div *ngIf="preferredCourseField.errors?.['required']">Preferred course is required</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Skill Requirements -->
+                <div class="mt-4">
+                  <label class="block text-sm font-medium text-gray-700">Skill Requirements</label>
+                  <input type="text" [(ngModel)]="selectedPost.skillRequirements" name="skillRequirements" #skillsField="ngModel" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  <div class="text-red-500 text-sm mt-1" *ngIf="skillsField.invalid && (skillsField.dirty || skillsField.touched || editPostForm.submitted)">
+                    <div *ngIf="skillsField.errors?.['required']">Skill requirements are required</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Selection Process Section -->
+              <div class="bg-gray-50 p-4 rounded-md">
+                <h4 class="text-md font-medium text-gray-700 mb-3">Selection Process</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Selection Rounds -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Selection Rounds</label>
+                    <input type="text" [(ngModel)]="selectedPost.selectionRounds" name="selectionRounds" #roundsField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="roundsField.invalid && (roundsField.dirty || roundsField.touched || editPostForm.submitted)">
+                      <div *ngIf="roundsField.errors?.['required']">Selection rounds are required</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Mode of Recruitment -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Mode of Recruitment</label>
+                    <input type="text" [(ngModel)]="selectedPost.modeOfRecruitment" name="modeOfRecruitment" #modeField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="modeField.invalid && (modeField.dirty || modeField.touched || editPostForm.submitted)">
+                      <div *ngIf="modeField.errors?.['required']">Mode of recruitment is required</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Test Platform -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Test Platform</label>
+                    <input type="text" [(ngModel)]="selectedPost.testPlatform" name="testPlatform" #platformField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="platformField.invalid && (platformField.dirty || platformField.touched || editPostForm.submitted)">
+                      <div *ngIf="platformField.errors?.['required']">Test platform is required</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Aptitude Test -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Aptitude Test</label>
+                    <select [(ngModel)]="selectedPost.aptitude" name="aptitude" #aptitudeField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option [ngValue]="true">Yes</option>
+                      <option [ngValue]="false">No</option>
+                    </select>
+                    <div class="text-red-500 text-sm mt-1" *ngIf="aptitudeField.invalid && (aptitudeField.dirty || aptitudeField.touched || editPostForm.submitted)">
+                      <div *ngIf="aptitudeField.errors?.['required']">Please select an aptitude option</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Important Dates Section -->
+              <div class="bg-gray-50 p-4 rounded-md">
+                <h4 class="text-md font-medium text-gray-700 mb-3">Important Dates</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Application Dates -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Application Start Date</label>
+                    <input type="date" [(ngModel)]="selectedPost.applicationStartDate" name="applicationStartDate" #startDateField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="startDateField.invalid && (startDateField.dirty || startDateField.touched || editPostForm.submitted)">
+                      <div *ngIf="startDateField.errors?.['required']">Application start date is required</div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Application End Date</label>
+                    <input type="date" [(ngModel)]="selectedPost.applicationEndDate" name="applicationEndDate" #endDateField="ngModel" required
+                      [min]="selectedPost.applicationStartDate"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="endDateField.invalid && (endDateField.dirty || endDateField.touched || editPostForm.submitted)">
+                      <div *ngIf="endDateField.errors?.['required']">Application end date is required</div>
+                      <div *ngIf="endDateField.errors?.['min']">End date must be after start date</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Selection Dates -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Selection Start Date</label>
+                    <input type="date" [(ngModel)]="selectedPost.selectionStartDate" name="selectionStartDate" #selStartDateField="ngModel" required
+                      [min]="selectedPost.applicationEndDate"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="selStartDateField.invalid && (selStartDateField.dirty || selStartDateField.touched || editPostForm.submitted)">
+                      <div *ngIf="selStartDateField.errors?.['required']">Selection start date is required</div>
+                      <div *ngIf="selStartDateField.errors?.['min']">Selection start date must be after application end date</div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Selection End Date</label>
+                    <input type="date" [(ngModel)]="selectedPost.selectionEndDate" name="selectionEndDate" #selEndDateField="ngModel" required
+                      [min]="selectedPost.selectionStartDate"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="selEndDateField.invalid && (selEndDateField.dirty || selEndDateField.touched || editPostForm.submitted)">
+                      <div *ngIf="selEndDateField.errors?.['required']">Selection end date is required</div>
+                      <div *ngIf="selEndDateField.errors?.['min']">Selection end date must be after selection start date</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Aptitude Date -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Aptitude Date</label>
+                    <input type="date" [(ngModel)]="selectedPost.aptitudeDate" name="aptitudeDate" #aptitudeDateField="ngModel" required
+                      [min]="selectedPost.selectionStartDate"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <div class="text-red-500 text-sm mt-1" *ngIf="aptitudeDateField.invalid && (aptitudeDateField.dirty || aptitudeDateField.touched || editPostForm.submitted)">
+                      <div *ngIf="aptitudeDateField.errors?.['required']">Aptitude date is required</div>
+                      <div *ngIf="aptitudeDateField.errors?.['min']">Aptitude date must be after selection start date</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Buttons -->
+              <div class="flex justify-end space-x-3 mt-5">
+                <button type="button" (click)="onPostEditCancel()"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                  Cancel
+                </button>
+                <button type="submit"
+                  class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                  Update Post
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+     
       </div>
     </div>
-
+<div *ngIf="showEditApplicationModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">Edit Application</h3>
+              <button (click)="showEditApplicationModal=false" class="text-gray-400 hover:text-gray-500">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <form #editApplicationForm="ngForm" (ngSubmit)="onUpdateApplication()" class="space-y-4">
+              <!-- Status -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Change Status</label>
+                <select [(ngModel)]="selectedApplication.status" name="status" required #status="ngModel"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  <option selected value="APPLIED">APPLIED</option>
+                  <option value="UNDER_REVIEW">UNDER REVIEW</option>
+                  <option value="SHORTLISTED">SHORTLISTED</option>
+       
+                    <option value="INTERVIEWED">INTERVIEWED</option>
+                  <option value="REJECTED">REJECTED</option>
+                  <option value="OFFERED">OFFERED</option>
+                  <option value="HIRED">HIRED</option>
+                </select>
+              </div>
+              <!-- Interview Date -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Interview  Date</label>
+                <input type="date" [(ngModel)]="selectedApplication.interviewDate" name="interview_date" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Interview Time</label>
+                <input type="time" [(ngModel)]="selectedApplication.interviewTime" name="interview_time" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Interview Location</label>
+                <input type="text" [(ngModel)]="selectedApplication.interviewLocation" name="interview_location" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              </div>
+              <!-- Feedback -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Feedback</label>
+                <textarea [(ngModel)]="selectedApplication.feedback" name="feedback"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+              </div>
+              <!-- Buttons -->
+              <div class="flex justify-end space-x-3 mt-5">
+                <button type="button" (click)="showEditApplicationModal=false"
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                  Cancel
+                </button>
+                <button type="submit" [disabled]="!selectedApplication.status"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                Update Application
+              </button>
+              
+              </div>
+            </form>
+           
+          </div>
+        
+       </div>
+          
     <!-- Application Search Section -->
     <div *ngIf="activeTab === 'applications'" class="bg-white rounded-xl shadow-lg p-6">
       <div class="flex justify-between mb-4">
         <!-- Application Search Bar -->
         <div class="flex-grow mr-4">
           <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
-            <input [(ngModel)]="applicationFilters.studentName" type="text" placeholder="Search by Student Name"
+            <input [(ngModel)]="applicationFilters.studentName" type="text" placeholder="Search by Student Name"  (keyup.enter)="loadApplications()"
               class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
             <img src="Search.png" alt="Search Icon"
               class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
@@ -335,7 +746,7 @@
                          class="h-10 w-10 rounded-full"
                          alt="Profile">
                     <div *ngIf="!application.student.profileImageBase64" 
-                         class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                         class="h-10 w-10 rounded-full bg-cyan-200 flex items-center justify-center">
                       <span class="text-gray-600">{{application.student.firstName[0]}}</span>
                     </div>
                   </div>
@@ -375,6 +786,7 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{application.interviewDate ? (application.interviewDate | date:'mediumDate') : 'Not Scheduled'}}
+                {{application.interviewTime ? "/"+ formatTime(application.interviewTime) : ''}}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button class="text-indigo-600 hover:text-indigo-900" (click)="onApplicationedit(application.id)"> <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" /></button>
@@ -415,6 +827,16 @@
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
               </div>
               <!-- Feedback -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Interview Time</label>
+                <input type="time" [(ngModel)]="selectedApplication.interviewTime" name="interview_time" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Interview Location</label>
+                <input type="text" [(ngModel)]="selectedApplication.interviewLocation" name="interview_location" 
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">Feedback</label>
                 <textarea [(ngModel)]="selectedApplication.feedback" name="feedback"

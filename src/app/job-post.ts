@@ -37,7 +37,7 @@ export class Company {
     aptitudeStartingDate:string;
     status: string='';
     aptitude:string=""
-  
+    portalLink?: string;
     constructor(data: Partial<JobPost> = {}) {
       this.id = data.id || 0;
       this.company = new Company(data.company || {}); // Ensures 'company' is always an object
@@ -60,6 +60,7 @@ export class Company {
       this.status = data.status || '';
       this.aptitude = data.aptitude || '';
       this.aptitudeStartingDate=data.aptitudeStartingDate ||'';
+      this.portalLink = data.portalLink || undefined; // Use undefined instead of null
     }
   }
   
