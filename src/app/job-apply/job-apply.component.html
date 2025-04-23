@@ -19,163 +19,190 @@
 
         .bg-custom {
             background-image: url('/Main_bg.png');
-            /* Replace with actual image path */
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-flex-col {
+                flex-direction: column;
+            }
+            .mobile-text-center {
+                text-align: center;
+            }
+            .mobile-mt-2 {
+                margin-top: 0.5rem;
+            }
+            .grid-cols-1 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
-<body class="bg-custom flex items-center justify-center min-h-screen px-4">
-    <div *ngIf="step==1"  class="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
+<body class="bg-custom flex items-center justify-center min-h-screen px-4 py-8">
+    <div *ngIf="step==1" class="bg-white rounded-xl card-shadow p-6 w-full max-w-4xl mx-4 transition-all">
         <!-- Header -->
-
-        <div class="flex justify-between items-center border-b pb-2">
-            <div class="flex items-center space-x-2">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google Logo"
-                    class="w-10 h-10">
-                <h1 class="text-2xl onest-font text-gray-800">{{jobpost.company.name}}</h1>
+        <div class="flex mobile-flex-col justify-between items-center border-b pb-4">
+            <div class="flex items-center space-x-3 mobile-mb-3">
+              
+                <h1 class="text-2xl onest-font text-gray-800 mobile-text-center">{{jobpost.company.name}}</h1>
             </div>
-            <div>
+            <div class="mobile-text-center mobile-mt-2">
                 <p class="text-gray-600 font-semibold onest-font">Last Date: <span
                         class="roboto-flex text-gray-800">{{jobpost.applicationEndDate}}</span></p>
-                <p class="text-gray-600 font-semibold onest-font"> <span
+                <p class="text-gray-600 font-semibold onest-font">Status: <span
                         class="roboto-flex text-gray-800">{{jobpost.status}}</span></p>
             </div>
-
         </div>
 
         <!-- Basic Details -->
-        <div class="mt-4">
-            <h2 class="text-xl onest-font text-teal-700">Basic Details</h2>
-            <hr class="border-gray-300 my-2">
-            <p class="onest-font">Designation: <span class="roboto-flex text-gray-600">{{jobpost.jobDesignation}}</span>
-            </p>
-            <p class="onest-font">Job Type: <span class="roboto-flex text-gray-600">{{jobpost.jobType}}</span></p>
-            <p class="onest-font">Location: <span class="roboto-flex text-gray-600">{{jobpost.location}}</span></p>
-            <p class="onest-font">CTC: <span class="roboto-flex text-gray-600">{{jobpost.packageAmount}}</span></p>
-            <p class="onest-font">Job description:</p>
-            <p class="roboto-flex text-gray-600">
-                {{jobpost.description}} </p>
+        <div class="mt-6">
+            <h2 class="text-xl onest-font text-teal-700 mb-2">Basic Details</h2>
+            <hr class="border-gray-200 my-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                <div>
+                    <p class="onest-font">Designation: <span class="roboto-flex text-gray-600">{{jobpost.jobDesignation}}</span></p>
+                    <p class="onest-font mt-2">Job Type: <span class="roboto-flex text-gray-600">{{jobpost.jobType}}</span></p>
+                </div>
+                <div>
+                    <p class="onest-font">Location: <span class="roboto-flex text-gray-600">{{jobpost.location}}</span></p>
+                    <p class="onest-font mt-2">CTC: <span class="roboto-flex text-gray-600">{{jobpost.packageAmount}}</span></p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="onest-font mb-1">Job description:</p>
+                <p class="roboto-flex text-gray-600 bg-gray-50 p-3 rounded-lg">
+                    {{jobpost.description}}
+                </p>
+            </div>
         </div>
 
         <!-- Schedule -->
         <div class="mt-6">
-            <h2 class="text-xl onest-font text-teal-700">Schedule</h2>
-            <hr class="border-gray-300 my-2">
-            <p class="onest-font">Mode: <span class="roboto-flex text-gray-600">{{jobpost.modeOfRecruitment}}</span></p>
-            <p class="onest-font">No of Rounds: <span
-                    class="roboto-flex text-gray-600">{{jobpost.selectionRounds}}</span></p>
-            <p class="onest-font">Aptitude: <span class="roboto-flex text-gray-600">{{jobpost.aptitude ?
-                    "Yes":"No"}}</span></p>
+            <h2 class="text-xl onest-font text-teal-700 mb-2">Schedule</h2>
+            <hr class="border-gray-200 my-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+                <p class="onest-font">Mode: <span class="roboto-flex text-gray-600">{{jobpost.modeOfRecruitment}}</span></p>
+                <p class="onest-font">No of Rounds: <span class="roboto-flex text-gray-600">{{jobpost.selectionRounds}}</span></p>
+                <p class="onest-font">Aptitude: <span class="roboto-flex text-gray-600">{{jobpost.aptitude ? "Yes":"No"}}</span></p>
+            </div>
         </div>
-           <!-- Portal Link -->
-        <div class="mt-6" *ngIf="jobpost.portalLink">
-            <h2 class="text-xl onest-font text-teal-700">Application Link</h2>
-            <hr class="border-gray-300 my-2">
-            <p class="onest-font">Register :   <a href="{{jobpost.portalLink}}" class="roboto-flex text-blue-700" target="_blank" rel="noopener noreferrer">
-                Click
-            </a></p>
-           
-        </div>
-        <!-- Upload Proof of Registration -->
-<!-- Upload Confirmation Screenshot -->
-<div class="mt-6" *ngIf="jobpost.portalLink">
-    <h2 class="text-xl onest-font text-teal-700">Registration Confirmation</h2>
-    <hr class="border-gray-300 my-2">
-    <p class="onest-font mb-2">Upload a screenshot showing you've registered on the portal:</p>
-    <input type="file" accept="image/*" (change)="onFileSelected($event)" class="block text-sm text-gray-600">
-</div>
 
+        <!-- Portal Link -->
+        <div class="mt-6" *ngIf="jobpost.portalLink">
+            <h2 class="text-xl onest-font text-teal-700 mb-2">Application Link</h2>
+            <hr class="border-gray-200 my-2">
+            <p class="onest-font">Register: 
+                <a href="{{jobpost.portalLink}}" class="roboto-flex text-blue-600 hover:text-blue-800 hover:underline" target="_blank" rel="noopener noreferrer">
+                    Click here
+                </a>
+            </p>
+        </div>
+
+        <!-- Upload Confirmation Screenshot -->
+        <div class="mt-6" *ngIf="jobpost.portalLink">
+            <h2 class="text-xl onest-font text-teal-700 mb-2">Registration Confirmation</h2>
+            <hr class="border-gray-200 my-2">
+            <p class="onest-font mb-3">Upload a screenshot showing you've registered on the portal:</p>
+            <div class="flex items-center">
+                <input type="file" accept="image/*" (change)="onFileSelected($event)" 
+                    class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+            </div>
+        </div>
 
         <!-- Important Dates -->
         <div class="mt-6">
-            <h2 class="text-xl onest-font text-teal-700">Important Dates</h2>
-            <hr class="border-gray-300 my-2">
-            <p class="onest-font">Application Last Date: <span
-                    class="roboto-flex text-gray-600">{{jobpost.applicationEndDate}}</span></p>
-            <p class="onest-font">Selection Start Date: <span
-                    class="roboto-flex text-gray-600">{{jobpost.applicationStartDate}}</span></p>
-            <p class="onest-font">Aptitude Exam Date: <span
-                    class="roboto-flex text-gray-600">{{jobpost.aptitudeStartingDate}}</span></p>
-        </div>
-      <!-- Updated Apply Button -->
-<div class="flex justify-center mt-4">
-    <button
-        class="bg-teal-600 text-white rounded w-20 h-7 hover:bg-teal-700"
-        [disabled]="!availability || (jobpost.portalLink && !screenshotUploaded)"
-        (click)="nextstep()">
-        Apply
-    </button>
-
-</div>
-
-        
-        <div *ngIf="!availability" class="mt-2 text-red-600 text-center text-sm font-medium">
-            This job is currently not available for application.
-          </div>
-          <div *ngIf="jobpost.portalLink && !screenshotUploaded" class="mt-2 text-red-600 text-center text-sm font-medium">
-            Register on the link and apply proof.
-          </div>
-    </div>
-    <div *ngIf="step==2" class="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
-        <!-- Header -->
-
-        <div  class="flex justify-between items-center border-b pb-2">
-            <div class="flex items-center space-x-2">
-    
-                    <h2 class="text-3xl onest-font text-teal-700">Apply For </h2>
+            <h2 class="text-xl onest-font text-teal-700 mb-2">Important Dates</h2>
+            <hr class="border-gray-200 my-2">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+                <p class="onest-font">Application Last Date: <span class="roboto-flex text-gray-600">{{jobpost.applicationEndDate}}</span></p>
+                <p class="onest-font">Selection Start Date: <span class="roboto-flex text-gray-600">{{jobpost.applicationStartDate}}</span></p>
+                <p class="onest-font">Aptitude Exam Date: <span class="roboto-flex text-gray-600">{{jobpost.aptitudeStartingDate}}</span></p>
             </div>
-            <!-- <div>
+        </div>
+
+        <!-- Apply Button -->
+        <div class="flex flex-col items-center mt-8">
+            <button
+                class="bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                [disabled]="!availability || (jobpost.portalLink && !screenshotUploaded)"
+                (click)="nextstep()">
+                Apply Now
+            </button>
+
+            <div *ngIf="!availability" class="mt-3 text-red-600 text-center text-sm font-medium">
+                This job is currently not available for application.
+            </div>
+            <div *ngIf="jobpost.portalLink && !screenshotUploaded" class="mt-3 text-red-600 text-center text-sm font-medium">
+                Please register on the link and upload proof to apply.
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Confirmation -->
+    <div *ngIf="step==2" class="bg-white rounded-xl card-shadow p-6 w-full max-w-4xl mx-4 transition-all">
+        <!-- Header -->
+        <div class="flex justify-between items-center border-b pb-4 mobile-flex-col">
+            <div class="flex items-center space-x-3 mobile-mb-3">
+                <h2 class="text-2xl onest-font text-teal-700">Apply For</h2>
+            </div>
+            <div class="mobile-text-center mobile-mt-2">
                 <p class="text-gray-600 font-semibold onest-font">Last Date: <span
                         class="roboto-flex text-gray-800">{{jobpost.applicationEndDate}}</span></p>
-                <p class="text-gray-600 font-semibold onest-font"> <span
-                        class="roboto-flex text-gray-800">{{jobpost.status}}</span></p>
-            </div> -->
-
+            </div>
         </div>
 
         <!-- Apply For -->
-        <div class="mt-4">
-            <h2 class="text-xl onest-font text-teal-700">{{jobpost.company.name}}</h2>
-            <hr class="border-gray-300 my-2">
-            <div class="flex space-x-8 mb-3">       <p class="onest-font">Designation: <span class="roboto-flex text-gray-600">{{jobpost.jobDesignation}}</span>
-            </p>
-            <p class="onest-font">Job Type: <span class="roboto-flex text-gray-600">{{jobpost.jobType}}</span></p></div>
-     
-            <p class="onest-font">Location: <span class="roboto-flex text-gray-600">{{jobpost.location}}</span></p>
-     
+        <div class="mt-6">
+            <h2 class="text-xl onest-font text-teal-700 mb-2">{{jobpost.company.name}}</h2>
+            <hr class="border-gray-200 my-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <p class="onest-font">Designation: <span class="roboto-flex text-gray-600">{{jobpost.jobDesignation}}</span></p>
+                <p class="onest-font">Job Type: <span class="roboto-flex text-gray-600">{{jobpost.jobType}}</span></p>
+                <p class="onest-font">Location: <span class="roboto-flex text-gray-600">{{jobpost.location}}</span></p>
+                <p class="onest-font">CTC: <span class="roboto-flex text-gray-600">{{jobpost.packageAmount}}</span></p>
+            </div>
         </div>
 
         <!-- Personal Information-->
         <div class="mt-6">
-            <h2 class="text-xl onest-font text-teal-700">Personal Information</h2>
-            <hr class="border-gray-300 my-2">
-           <div class="grid grid-cols-2 gap-4">
-
-            <div>
-                <p class="onest-font">Name: <span class="roboto-flex text-gray-600">{{Student.firstName}} {{Student.lastName}}</span></p>
-                <p class="onest-font">GR NO: <span class="roboto-flex text-gray-600">{{Student.gr_No}}</span></p>
-                <p class="onest-font">Gender: <span class="roboto-flex text-gray-600">{{Student.gender}}</span></p>
-                <p class="onest-font">SSC Marks: <span class="roboto-flex text-gray-600">{{Student.sscMarks}}</span></p>
-                <p class="onest-font">Diploma Marks: <span class="roboto-flex text-gray-600">{{Student.diplomaMarks}}</span></p>
+            <h2 class="text-xl onest-font text-teal-700 mb-2">Personal Information</h2>
+            <hr class="border-gray-200 my-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div class="space-y-3">
+                    <p class="onest-font">Name: <span class="roboto-flex text-gray-600">{{Student.firstName}} {{Student.lastName}}</span></p>
+                    <p class="onest-font">GR NO: <span class="roboto-flex text-gray-600">{{Student.gr_No}}</span></p>
+                    <p class="onest-font">Gender: <span class="roboto-flex text-gray-600">{{Student.gender}}</span></p>
+                    <p class="onest-font">SSC Marks: <span class="roboto-flex text-gray-600">{{Student.sscMarks}}</span></p>
+                    <p class="onest-font">Diploma Marks: <span class="roboto-flex text-gray-600">{{Student.diplomaMarks}}</span></p>
+                </div>
+                <div class="space-y-3">
+                    <p class="onest-font">Dept: <span class="roboto-flex text-gray-600">{{Student.department}}</span></p>
+                    <p class="onest-font">Phone No: <span class="roboto-flex text-gray-600">{{Student.phoneNumber}}</span></p>
+                    <p class="onest-font">DOB: <span class="roboto-flex text-gray-600">{{Student.dateOfBirth}}</span></p>
+                    <p class="onest-font">HSC Marks: <span class="roboto-flex text-gray-600">{{Student.hscMarks}}</span></p>
+                    <p class="onest-font">Personal Mail: <span class="roboto-flex text-gray-600">{{Student.user.email}}</span></p>
+                </div>
             </div>
-            <div> <p class="onest-font">Dept: <span class="roboto-flex text-gray-600">{{Student.firstName}} {{Student.lastName}}</span></p>
-                <p class="onest-font">Phone No: <span class="roboto-flex text-gray-600">{{Student.gr_No}}</span></p>
-                <p class="onest-font">DOB: <span class="roboto-flex text-gray-600">{{Student.gender}}</span></p>
-                <p class="onest-font">HSC Marks: <span class="roboto-flex text-gray-600">{{Student.sscMarks}}</span></p>
-                <p class="onest-font">Personal Mail: <span class="roboto-flex text-gray-600">{{Student.user.email}}</span></p></div>
-           </div>
         </div>
 
-        <!-- Important Dates -->
-        <div class="mt-6">
-
-            <hr class="border-gray-300 my-2">
-          
-        </div>
-        <div class=" flex justify-center mt-4"> <button [disabled]="!availability"
-                   class="bg-teal-600 text-white rounded w-40 h-7 hover:bg-teal-700" (click)="postapplication()">Confirm Apply</button>
+        <!-- Confirm Button -->
+        <div class="flex justify-center mt-8">
+            <button [disabled]="!availability"
+                   class="bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-8 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                   (click)="postapplication()">
+                Confirm Application
+            </button>
         </div>
     </div>
 </body>

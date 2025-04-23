@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>User Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -16,156 +16,264 @@
     .font-inter {
       font-family: 'Inter', sans-serif;
     }
+
+    /* Ensure background covers entire screen */
+    body {
+      background-image: url('/Main_bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    /* Responsive table container */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Status indicator colors */
+    .status-pending { background-color: #FFC107; }
+    .status-approved { background-color: #28A745; }
+    .status-rejected { background-color: #DC3545; }
+    .status-interviewed { background-color: #17A2B8; }
+    .status-offered { background-color: #6F42C1; }
+
+    /* Modal transitions */
+    .modal-enter {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    .modal-enter-active {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 200ms, transform 200ms;
+    }
+    .modal-exit {
+      opacity: 1;
+    }
+    .modal-exit-active {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 200ms, transform 200ms;
+    }
   </style>
 </head>
 
-<body class="bg-cover bg-center min-h-screen" style="background-image: url('Main_bg.png');">
-  <div class="pt-10"></div>
+<body class="font-inter">
+  <div class="pt-4 md:pt-10 pb-10 px-4 md:px-6">
 
+    <!-- User Dashboard Box -->
+    <div class="mx-auto bg-white shadow-lg p-4 md:p-8 w-full max-w-7xl rounded-lg">
+      <!-- Heading -->
+      <h1 class="text-2xl md:text-4xl lg:text-5xl text-[#053C47] font-onest">User Dashboard</h1>
 
-  <!-- User Dashboard Box -->
-  <div
-    class="mx-auto mt-6 md:mt-10 bg-white shadow-lg p-4 md:p-10 w-[95%] md:w-[80%] rounded-lg relative overflow-x-auto">
+      <!-- Thicker Underline -->
+      <div class="border-b-2 md:border-b-3 mt-2 mb-4 md:mb-6 border-[#053C47] w-full"></div>
 
-    <!-- Heading -->
-    <h1 class="text-[28px] md:text-[48px] lg:text-[64px] text-[#053C47] font-onest">User Dashboard</h1>
+      <!-- Table Container -->
+      <div class="table-container">
+        <div class="bg-[#F3F3F3] w-full min-w-[700px] p-4 md:p-6 rounded-md">
 
-    <!-- Thicker Underline -->
-    <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 md:mb-8 border-[#053C47] w-full"></div>
-
-    <!-- Table-like Layout -->
-    <div class="bg-[#F3F3F3] w-full min-w-[700px] md:min-w-0 p-4 md:p-8 rounded-md">
-
-      <!-- Column Headers -->
-      <div class="grid grid-cols-6 gap-4 mb-4 text-[#156C7D] text-[16px] md:text-[20px] font-onest">
-        <span class="text-left">Job Title</span>
-        <span class="text-left">Status</span>
-        <span class="text-left">Applied On</span>
-        <span class="text-left">Interview Date</span>
-        <span class="text-left">Company</span>
-        <span class="text-left">Response</span>
-      </div>
-
-      <!-- Divider Line -->
-      <div class="border-b-[3px] border-[#053C47] mb-6 w-full"></div>
-
-      <!-- Job Rows -->
-      <div class="space-y-6">
-
-        <!-- Row 1 --><!-- Inside *ngFor for applications -->
-        <div *ngFor="let application of applications"
-          class="grid grid-cols-6 gap-4 items-center bg-[#F3F3F3] p-4 text-[#6F6F6F] text-[14px] md:text-[20px] font-onest rounded-md shadow-sm">
-
-          <span class="text-left">{{application.designation}}</span>
-
-          <div class="flex items-center space-x-2 text-left">
-            <span>{{application.status}}</span>
-            <div class="w-[10px] h-[10px] rounded-full" [ngClass]="getStatusColor(application.status)"></div>
+          <!-- Column Headers - Hidden on mobile, shown from sm breakpoint -->
+          <div class="hidden sm:grid sm:grid-cols-6 gap-3 mb-4 text-[#156C7D] text-sm md:text-lg font-onest">
+            <span class="text-left">Job Title</span>
+            <span class="text-left">Status</span>
+            <span class="text-left">Applied On</span>
+            <span class="text-left">Interview Date</span>
+            <span class="text-left">Company</span>
+            <span class="text-left">Response</span>
           </div>
 
-          <span class="text-left">{{application.applicationDate}}</span>
-          <span class="text-left">{{application.interviewDate || "-"}}</span>
-          <span class="text-left">{{application.jobPost.company.name}}</span>
+          <!-- Divider Line -->
+          <div class="border-b-2 md:border-b-3 border-[#053C47] mb-4 w-full"></div>
 
-          <div class="flex flex-col gap-2">
-            <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer"
-              (click)="openModal(application)">View</a>
-            <a *ngIf="application.status === 'INTERVIEWED'"
-              class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer"
-              (click)="openUpdateModal(application.id)">Update</a>
-              <a *ngIf="application.interviewDate" 
-   class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer"
-   (click)="openInterviewDetailsModal(application)">Interview Details</a>
-          </div>
-        </div>
+          <!-- Job Rows -->
+          <div class="space-y-3">
+            <!-- Row Template -->
+            <div *ngFor="let application of applications"
+              class="grid grid-cols-1 sm:grid-cols-6 gap-3 items-center bg-white sm:bg-[#F3F3F3] p-3 sm:p-4 text-[#6F6F6F] text-sm md:text-base font-onest rounded-md shadow-sm sm:shadow-none border border-gray-200 sm:border-none mb-3 sm:mb-0">
+<!-- Mobile view as card with improved spacing -->
+<div class="sm:hidden bg-white rounded-md shadow border border-gray-200 p-4 space-y-2">
+  <!-- Job Title + Status -->
+  <div class="flex justify-between items-center">
+    <h3 class="text-base font-semibold text-[#053C47] truncate max-w-[70%]">
+      {{ application.designation }}
+    </h3>
+    <div class="flex items-center gap-1">
+      <div class="w-2 h-2 rounded-full" [ngClass]="getStatusColor(application.status)"></div>
+      <span class="text-xs text-gray-600">{{ application.status }}</span>
+    </div>
+  </div>
 
-        <!-- View Response Modal -->
-        <div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center backdrop-blur bg-opacity-50">
-          <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
-            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Application</h2>
-            <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>
+  <!-- Company Name -->
+  <p class="text-sm text-[#156C7D] font-medium">{{ application.jobPost.company.name }}</p>
 
-            <p class="text-[#6F6F6F] text-[16px] md:text-[20px]"><strong>Response:</strong> {{
-              selectedApplication.feedback }}</p>
+  <!-- Application Info -->
+  <div class="grid grid-cols-3 text-sm gap-x-2 gap-y-1 text-[#6F6F6F]">
+    <div class="col-span-1">Applied:</div>
+    <div class="col-span-2 font-medium">{{ application.applicationDate }}</div>
 
-            <div class="mt-6 flex justify-end">
-              <button (click)="closeModal()"
-                class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Close</button>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="showInterviewDetailsModal" class="fixed inset-0 flex items-center justify-center backdrop-blur bg-opacity-50">
-          <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
-            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Interview Details</h2>
-            <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>
+    <div class="col-span-1">Interview:</div>
+    <div class="col-span-2 font-medium">{{ application.interviewDate || "-" }}</div>
+  </div>
 
-            <div class="space-y-4 text-[#6F6F6F] text-[16px] md:text-[20px]">
-              <p><strong>Date:</strong> {{ selectedApplication.interviewDate }}</p>
-              <p><strong>Time:</strong> {{ selectedApplication.interviewTime || "Not specified" }}</p>
-              <p><strong>Location:</strong> {{ selectedApplication.interviewLocation || "Not specified" }}</p>
-            
-            </div>
+  <!-- Actions -->
+  <div class="pt-2 border-t border-gray-200 mt-2 flex flex-wrap gap-3 text-sm">
+    <a class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium"
+      (click)="openModal(application)">View</a>
+    <a *ngIf="application.status === 'INTERVIEWED'"
+      class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium"
+      (click)="openUpdateModal(application.id)">Update</a>
+    <a *ngIf="application.interviewDate"
+      class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium"
+      (click)="openInterviewDetailsModal(application)">Interview Details</a>
+  </div>
+</div>
 
-            <div class="mt-6 flex justify-end">
-              <button (click)="closeInterviewModal()"
-                class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Close</button>
-            </div>
-          </div>
-        </div>
+              <!-- Desktop view cells (hidden on mobile) -->
+              <span class="hidden sm:block text-left truncate">{{application.designation}}</span>
+              
+              <div class="hidden sm:flex items-center space-x-2 text-left">
+                <span class="truncate">{{application.status}}</span>
+                <div class="w-2 h-2 rounded-full" [ngClass]="getStatusColor(application.status)"></div>
+              </div>
+              
+              <span class="hidden sm:block text-left">{{application.applicationDate}}</span>
+              <span class="hidden sm:block text-left">{{application.interviewDate || "-"}}</span>
+              <span class="hidden sm:block text-left truncate">{{application.jobPost.company.name}}</span>
 
-        <!-- Update Modal (For Interviewed Status) -->
-        <div *ngIf="showUpdateModal" class="fixed inset-0 flex items-center justify-center backdrop-blur bg-opacity-50">
-          <div class="bg-white p-6 md:p-10 rounded-lg shadow-lg w-[90%] md:w-[40%]">
-            <h2 class="text-[24px] md:text-[32px] font-onest text-[#053C47]">Update Placement Info</h2>
-            <div class="border-b-[2px] md:border-b-[3px] mt-2 mb-4 border-[#053C47]"></div>
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 mb-4 text-[14px] md:text-[16px] rounded-md">
-              <strong>Note:</strong> Please update this form <span class="font-bold">only if the candidate is placed</span> or has accepted an offer.
-            </div>
-            <form (ngSubmit)="submitPlacementUpdate()" #updateForm="ngForm">
-              <div class="space-y-4 text-[16px] md:text-[20px] text-[#6F6F6F]">
-                <div>
-                  <label for="offerLetter">Offer Letter:</label>
-                  <input type="file" id="offerLetter" name="offerLetter" (change)="onFileSelected($event)"
-                    class="block w-full text-sm mt-1 text-gray-900 border border-gray-300 rounded-md" />
-                </div>
-
-                <div>
-                  <label for="placedPackage">Placed Date:</label>
-                  <input type="date" placeholder="" id="placedPackage" [(ngModel)]="placementDetails.placementDate"
-                    name="placedPackage" class="block w-full border border-gray-300 rounded-md p-2 mt-1" />
-                </div>
-                <div>
-                  <label for="placedDatee">Placed Package </label>
-                  <input type="number" placeholder="IN LPA" id="placedPackage" [(ngModel)]="placementDetails.placed_package"
-                    name="placedPackage" class="block w-full border border-gray-300 rounded-md p-2 mt-1" />
-                </div>
-        
-
-                <div>
-                  <label for="placementData">Placement Data(Additional):</label>
-                  <textarea id="placementData" [(ngModel)]="placementDetails.remarks" name="placementData"
-                    class="block w-full border border-gray-300 rounded-md p-2 mt-1"></textarea>
+              <!-- Actions - visible only on desktop screens -->
+              <div class="hidden sm:block sm:text-left col-span-1">
+                <div class="flex flex-col gap-1">
+                  <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm"
+                    (click)="openModal(application)">View</a>
+                  <a *ngIf="application.status === 'INTERVIEWED'"
+                    class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm"
+                    (click)="openUpdateModal(application.id)">Update</a>
+                  <a *ngIf="application.interviewDate" 
+                    class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm"
+                    (click)="openInterviewDetailsModal(application)">Interview Details</a>
                 </div>
               </div>
-
-              <div class="mt-6 flex justify-end">
-                <button type="button" (click)="closeUpdateModal()"
-                  class="mr-4 text-gray-600 hover:text-gray-800">Cancel</button>
-                <button type="submit"
-                  class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D]">Submit</button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
-
-
-        <!-- Row 2 -->
-
-
       </div>
     </div>
   </div>
 
-</body>
+  <!-- View Response Modal -->
+  <div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-30 z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <h2 class="text-xl md:text-2xl font-onest text-[#053C47]">Application</h2>
+      <div class="border-b-2 mt-2 mb-4 border-[#053C47]"></div>
 
+      <p class="text-[#6F6F6F] text-base md:text-lg mb-4">
+        <strong class="text-[#053C47]">Response:</strong> {{ selectedApplication.feedback }}
+      </p>
+
+      <div class="mt-6 flex justify-end">
+        <button (click)="closeModal()"
+          class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interview Details Modal -->
+  <div *ngIf="showInterviewDetailsModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-30 z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <h2 class="text-xl md:text-2xl font-onest text-[#053C47]">Interview Details</h2>
+      <div class="border-b-2 mt-2 mb-4 border-[#053C47]"></div>
+
+      <div class="space-y-3 text-[#6F6F6F] text-base md:text-lg">
+        <p><strong class="text-[#053C47]">Date:</strong> {{ selectedApplication.interviewDate }}</p>
+        <p><strong class="text-[#053C47]">Time:</strong> {{ selectedApplication.interviewTime || "Not specified" }}</p>
+        <p><strong class="text-[#053C47]">Location:</strong> {{ selectedApplication.interviewLocation || "Not specified" }}</p>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button (click)="closeInterviewModal()"
+          class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Modal (For Interviewed Status) -->
+  <div *ngIf="showUpdateModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-30 z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <h2 class="text-xl md:text-2xl font-onest text-[#053C47]">Update Placement Info</h2>
+      <div class="border-b-2 mt-2 mb-4 border-[#053C47]"></div>
+      
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 mb-4 text-sm rounded">
+        <strong>Note:</strong> Please update this form <span class="font-bold">only if the candidate is placed</span> or has accepted an offer.
+      </div>
+      
+      <form (ngSubmit)="submitPlacementUpdate()" #updateForm="ngForm" class="space-y-4">
+        <div>
+          <label for="offerLetter" class="block text-sm font-medium text-[#6F6F6F] mb-1">Offer Letter:</label>
+          <input type="file" id="offerLetter" name="offerLetter" (change)="onFileSelected($event)"
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#156C7D] file:text-white hover:file:bg-[#0E4F5D]" />
+        </div>
+
+        <div>
+          <label for="placementDate" class="block text-sm font-medium text-[#6F6F6F] mb-1">Placed Date:</label>
+          <input type="date" id="placementDate" [(ngModel)]="placementDetails.placementDate"
+            name="placementDate" class="block w-full border border-gray-300 rounded-md p-2 text-sm" />
+        </div>
+        
+        <div>
+          <label for="placedPackage" class="block text-sm font-medium text-[#6F6F6F] mb-1">Placed Package (LPA):</label>
+          <input type="number" placeholder="Enter package in LPA" id="placedPackage" 
+            [(ngModel)]="placementDetails.placed_package" name="placedPackage" 
+            class="block w-full border border-gray-300 rounded-md p-2 text-sm" />
+        </div>
+
+        <div>
+          <label for="placementData" class="block text-sm font-medium text-[#6F6F6F] mb-1">Additional Notes:</label>
+          <textarea id="placementData" [(ngModel)]="placementDetails.remarks" name="placementData" rows="3"
+            class="block w-full border border-gray-300 rounded-md p-2 text-sm"></textarea>
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-3">
+          <button type="button" (click)="closeUpdateModal()"
+            class="px-4 py-2 text-gray-600 hover:text-gray-800 rounded-md transition-colors">
+            Cancel
+          </button>
+          <button type="submit"
+            class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tailwind configuration to ensure proper build -->
+  <script>
+    tailwind.config = {
+      important: true,
+      theme: {
+        extend: {
+          colors: {
+            primary: '#053C47',
+            secondary: '#156C7D',
+            accent: '#1E93C6',
+            light: '#F3F3F3',
+            dark: '#6F6F6F'
+          }
+        }
+      },
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+</body>
 </html>

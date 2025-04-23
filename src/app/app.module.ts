@@ -27,6 +27,7 @@ import { PostJobComponent } from './post-job/post-job.component';
 import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { DownloadResumeComponent } from './download-resume/download-resume.component';
+import { HomeComponent } from './home/home.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +49,8 @@ import { DownloadResumeComponent } from './download-resume/download-resume.compo
       TpoNavbarComponent,
       PostJobComponent,
       TpoadminComponent,
-      DownloadResumeComponent
+      DownloadResumeComponent,
+      HomeComponent
   ],
   imports: [
     BrowserModule,

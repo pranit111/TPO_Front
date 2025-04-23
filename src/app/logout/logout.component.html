@@ -3,37 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TPO Portal</title>
+    <title>TPO Portal - Logout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&family=Roboto+Flex:wght@400;500;600&display=swap');
-        .onest-font { font-family: 'Onest', sans-serif; }
-        .roboto-flex { font-family: 'Roboto Flex', sans-serif; }
+        
+        body {
+            font-family: 'Roboto Flex', sans-serif;
+        }
+        
+        .onest-font { 
+            font-family: 'Onest', sans-serif; 
+        }
         
         .bg-custom {
             background-image: url("/Main_bg.png");
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         .glass-effect {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 640px) {
+            .glass-effect {
+                width: 95% !important;
+                padding: 1.5rem !important;
+            }
         }
     </style>
 </head>
-<body class="bg-custom flex items-center justify-center min-h-screen px-4">
-    <div class="glass-effect p-8 w-[529px] rounded-2xl shadow-2xl">
-        <div class="flex flex-col items-center space-y-8">
+<body class="bg-custom flex items-center justify-center min-h-screen p-4">
+    <div class="glass-effect p-8 w-full max-w-[529px] rounded-2xl shadow-2xl mx-4">
+        <div class="flex flex-col items-center space-y-6 md:space-y-8">
             <!-- Profile Section -->
-            <div class="flex flex-col items-center space-y-4">
-                <div class="w-24 h-24 bg-[#4073BF] rounded-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex flex-col items-center space-y-3 md:space-y-4">
+                <div class="w-20 h-20 md:w-24 md:h-24 bg-[#4073BF] rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 md:h-12 md:w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
-                <h2 class="text-2xl font-bold onest-font text-[#1E1E1E]">Account Settings</h2>
+                <h2 class="text-xl md:text-2xl font-bold onest-font text-[#1E1E1E]">Account Settings</h2>
             </div>
 
             <!-- Divider -->
@@ -41,14 +57,14 @@
 
             <!-- Logout Section -->
             <div class="flex flex-col items-center space-y-4 w-full">
-                <p class="text-gray-600 roboto-flex text-center">
+                <p class="text-gray-600 text-sm md:text-base text-center px-2">
                     Are you sure you want to logout from the TPO Portal?
                 </p>
                 
-                <div class="flex space-x-4">
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto justify-center">
                     <button 
                         (click)="onLogout()" 
-                        class="px-8 py-3 bg-[#4073BF] hover:bg-[#2c5aa0] text-white rounded-xl font-semibold onest-font transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 shadow-lg hover:shadow-xl"
+                        class="px-6 py-2 md:px-8 md:py-3 bg-[#4073BF] hover:bg-[#2c5aa0] text-white rounded-xl font-semibold onest-font transition-all duration-300 hover:scale-[1.02] flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl w-full sm:w-auto"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -58,7 +74,7 @@
                     
                     <button 
                         onclick="history.back()"
-                        class="px-8 py-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl font-semibold onest-font transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                        class="px-6 py-2 md:px-8 md:py-3 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-xl font-semibold onest-font transition-all duration-300 hover:scale-[1.02] shadow-md hover:shadow-lg w-full sm:w-auto"
                     >
                         Cancel
                     </button>
@@ -66,5 +82,18 @@
             </div>
         </div>
     </div>
+
+    <!-- Ensure Tailwind works after build -->
+    <script>
+        // This ensures Tailwind's responsive classes work properly
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                important: true,
+                corePlugins: {
+                    preflight: false,
+                }
+            }
+        }
+    </script>
 </body>
 </html>

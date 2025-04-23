@@ -16,5 +16,10 @@ export class NavbarComponent {
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
-
+  closeMenuIfMobile() {
+    if (window.innerWidth < 768) {
+      this.isMenuOpen = false;
+    }
+  }
+  
 }

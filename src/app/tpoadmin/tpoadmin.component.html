@@ -571,6 +571,14 @@
         <app-tpo-search></app-tpo-search>
   
     </main>
+        
+    <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Post'">
+    
+        
+      <!-- Add your search component here -->
+      <app-post-job></app-post-job>
+
+  </main>
     <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab == 'TPO'"> 
       
           
@@ -612,44 +620,43 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr *ngFor="let user of tpoUsers">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
-                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <span class="text-blue-600 font-semibold text-lg">{{user.username[0]}}</span>
+                  <!-- Add this *ngIf condition to skip TPO_HEAD -->
+                  <ng-container *ngIf="user.username !== 'TPO_HEAD'">
+                    <td class="px-6 py-4 whitespace-nowrap" *ngIf="!isadmin">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                          <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <span class="text-blue-600 font-semibold text-lg">{{user.username[0]}}</span>
+                          </div>
+                        </div>
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">{{user.username}}</div>
+                          <div class="text-sm text-gray-500">{{user.contactNumber}}</div>
                         </div>
                       </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">{{user.username}}</div>
-                        <div class="text-sm text-gray-500">{{user.contactNumber}}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{user.userEmail}}</div>
-                  </td>
-             
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{user.role}}</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap"
-                  >
-                    
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                    [ngClass]="user.verified ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
-                    {{user.verified ? 'Enabled' : 'Disabled'}}
-                  </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button (click)="onEditTpoUser(user,user.id)"
-                      class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                    <button (click)="onDeleteTpoUser(user.id)"
-                      class="text-red-600 hover:text-red-900">Delete</button>
-                  </td>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">{{user.userEmail}}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">{{user.role}}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                        [ngClass]="user.verified ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                        {{user.verified ? 'Enabled' : 'Disabled'}}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button (click)="onEditTpoUser(user,user.id)"
+                        class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                      <button (click)="onDeleteTpoUser(user.id)"
+                        class="text-red-600 hover:text-red-900">Delete</button>
+                    </td>
+                  </ng-container>
                 </tr>
+              
               </tbody>
             </table>
           </div>

@@ -96,6 +96,7 @@ throw new Error('Method not implemented.');
   
     { title: 'Logs', icon: 'logs.png', active: false },
     { title: 'Search', icon: 'search_white.png', active: false },
+    { title: 'Post', icon: 'post.png', active: false },
     { title: 'TPO', icon: 'tpo.png', active: false },
     { title: 'Logout', icon: 'logout.png', active: false }
   ];
@@ -273,7 +274,7 @@ newTpoUser = {
 };
 showEditTpoUserModal = false;
 editingTpoUser: any = null;
-
+isadmin=false;
 // Add these methods
 fetchTpoUsersData(): void {
   this.tposervice.getAllTpoUsers().subscribe({

@@ -59,6 +59,7 @@ export class TpoLoginComponent {
   private handleLoginError(error: any) {
     if (error.status === 401) {
       this.errorservice.setError("Invalid credentials. Please try again.");
+      this.router.navigate(['/tpo_login']);
     } else if (error.status === 500) {
       this.errorservice.setError("Invalid credentials.");
     } else if (error.status === 502) {

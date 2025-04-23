@@ -18,7 +18,7 @@ import { PostJobComponent } from './post-job/post-job.component';
 import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
 import { DownloadResumeComponent } from './download-resume/download-resume.component';
 const routes: Routes = [
-  {path:'home',  redirectTo:'', pathMatch:'full'},
+  {path:'',  redirectTo:'login', pathMatch:'full'},
 
   {
 

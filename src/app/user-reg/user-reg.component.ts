@@ -23,6 +23,7 @@ export class UserRegComponent implements OnInit {
   console.log("User Registration Page");
   }
 
+  isSendingOtp: boolean = false;
 
   
   next() {
@@ -43,19 +44,19 @@ export class UserRegComponent implements OnInit {
         }
       
         this.user.role = "STUDENT"; // Assign role
-      
+        this.isSendingOtp = true;
         this.useregservice.sendotp(this.user).subscribe({
           next: (response: any) => {
             console.log("OTP Response:", response); // Debugging
       
             if (response.message) { 
-              this.error.setError(response.message); // Show success message if API returns it
+              this.error.setError(response.message,"bg-green-600"); // Show success message if API returns it
               this.next();  // Navigate to OTP entry
             }
           },
           error: (err) => {
             console.error("Error sending OTP:", err);
-      
+            this.isSendingOtp = false
             // Display API error message
             if (err.error?.error) {
               this.error.setError(err.error.error); // Shows "User already exists and is verified!"

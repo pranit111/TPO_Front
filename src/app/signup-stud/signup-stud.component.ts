@@ -239,7 +239,7 @@ isHscStudent: boolean = false; // New flag for HSC student
     // Call service to send data
     this.studentService.createStudent(formData).subscribe({
       next: () => {
-        alert('Student created successfully!');
+        this.error.setError('Student created successfully!','bg-green-600');
         this.router.navigate(['/profile']);
         this.studentForm.reset(); // Reset form
         this.student = new Student(); // Reset object
@@ -252,8 +252,8 @@ isHscStudent: boolean = false; // New flag for HSC student
         this.isDiplomaStudent = false;
       },
       error: (err) => {
-        console.error('Error creating student', err);
-        alert('Failed to create student');
+        this.error.setError('Error creating student', err);
+        this.error.setError('Failed to create student');
       }
     });
   }

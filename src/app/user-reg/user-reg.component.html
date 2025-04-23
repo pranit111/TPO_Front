@@ -22,7 +22,7 @@
 <body class="bg-custom flex items-center justify-center min-h-screen px-4">
     <div class="flex flex-col lg:flex-row items-center justify-center space-y-6 lg:space-y-0 lg:space-x-10 w-full max-w-[700px] md:max-w-[800px]">
         <!-- College Logo -->
-        <img src="/scoe_logo.png" alt="College Logo" class="w-40 md:w-60">
+        <img src="/scoe_logo.png" alt="College Logo" class="w-auto h-auto max-h-28 md:max-h-50 mb-4 lg:mb-6 transition-all duration-300 rounded-full">
 
         <!-- Login Box -->
         <div class="bg-white p-6 md:p-8 w-full max-w-[529px] shadow-lg rounded-lg flex flex-col">
@@ -37,7 +37,7 @@
                     
                     <input type="email" placeholder="Email Address" [(ngModel)]="user.email" name="email" required
                         #email="ngModel"
-                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.edu\.in$"
                         class="roboto-flex input-box w-full h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
                     
                     <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-red-500 text-sm mt-1 w-full">
@@ -76,6 +76,7 @@
                     </div>
                     
                     <button type="submit" 
+                    [disabled]="isSendingOtp"
                         [disabled]="!registerForm.valid || user.password !== user.confirmPassword || !user.password"
                         class="w-full max-w-[200px] h-[40px] bg-[#1E1E1E] text-white rounded-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed">
                         Get OTP
