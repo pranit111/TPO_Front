@@ -41,7 +41,7 @@
     .status-interviewed { background-color: #17A2B8; }
     .status-offered { background-color: #6F42C1; }
 
-    /* Modal transitions */
+    /* Enhanced modal transitions */
     .modal-enter {
       opacity: 0;
       transform: scale(0.95);
@@ -49,7 +49,7 @@
     .modal-enter-active {
       opacity: 1;
       transform: scale(1);
-      transition: opacity 200ms, transform 200ms;
+      transition: opacity 300ms ease-out, transform 300ms ease-out;
     }
     .modal-exit {
       opacity: 1;
@@ -59,23 +59,108 @@
       transform: scale(0.95);
       transition: opacity 200ms, transform 200ms;
     }
+    
+    /* Added animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideInUp {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .slide-in-up {
+      animation: slideInUp 0.5s ease-out;
+    }
+    
+    .hover-scale {
+      transition: transform 0.2s ease-in-out;
+    }
+    
+    .hover-scale:hover {
+      transform: scale(1.02);
+    }
+    
+    .btn-pulse:hover {
+      animation: pulse 0.8s infinite;
+    }
+    
+    .shine-effect {
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+      background-size: 1000px 100%;
+      animation: shimmer 2s infinite linear;
+    }
+    
+    .smooth-transition {
+      transition: all 0.3s ease;
+    }
+    
+    /* Add a subtle wave animation to dashboard header */
+    @keyframes wave {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(-5%); }
+      100% { transform: translateX(0); }
+    }
+    
+    .wave-bg {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .wave-bg::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 10px;
+      background: linear-gradient(90deg, 
+        rgba(21, 108, 125, 0.3) 0%, 
+        rgba(21, 108, 125, 0.6) 50%, 
+        rgba(21, 108, 125, 0.3) 100%);
+      border-radius: 50%;
+      animation: wave 8s infinite ease-in-out;
+    }
   </style>
 </head>
 
 <body class="font-inter">
-  <div class="pt-4 md:pt-10 pb-10 px-4 md:px-6">
+  <div class="pt-4 md:pt-10 pb-10 px-4 md:px-6 fade-in">
 
     <!-- User Dashboard Box -->
-    <div class="mx-auto bg-white shadow-lg p-4 md:p-8 w-full max-w-7xl rounded-lg">
+    <div class="mx-auto bg-white shadow-lg p-4 md:p-8 w-full max-w-7xl rounded-lg slide-in-up">
       <!-- Heading -->
-      <h1 class="text-2xl md:text-4xl lg:text-5xl text-[#053C47] font-onest">User Dashboard</h1>
+      <h1 class="text-2xl md:text-4xl lg:text-5xl text-[#053C47] font-onest wave-bg pb-3">User Dashboard</h1>
 
       <!-- Thicker Underline -->
-      <div class="border-b-2 md:border-b-3 mt-2 mb-4 md:mb-6 border-[#053C47] w-full"></div>
+      <div class="border-b-2 md:border-b-3 mt-2 mb-4 md:mb-6 border-[#053C47] w-full shine-effect"></div>
 
       <!-- Table Container -->
       <div class="table-container">
-        <div class="bg-[#F3F3F3] w-full min-w-[700px] p-4 md:p-6 rounded-md">
+        <div class="bg-[#F3F3F3] w-full min-w-[700px] p-4 md:p-6 rounded-md slide-in-up" style="animation-delay: 0.2s">
 
           <!-- Column Headers - Hidden on mobile, shown from sm breakpoint -->
           <div class="hidden sm:grid sm:grid-cols-6 gap-3 mb-4 text-[#156C7D] text-sm md:text-lg font-onest">
@@ -93,43 +178,50 @@
           <!-- Job Rows -->
           <div class="space-y-3">
             <!-- Row Template -->
-            <div *ngFor="let application of applications"
-              class="grid grid-cols-1 sm:grid-cols-6 gap-3 items-center bg-white sm:bg-[#F3F3F3] p-3 sm:p-4 text-[#6F6F6F] text-sm md:text-base font-onest rounded-md shadow-sm sm:shadow-none border border-gray-200 sm:border-none mb-3 sm:mb-0">
-<!-- Mobile view as card with improved spacing -->
-<div class="sm:hidden bg-white rounded-md shadow border border-gray-200 p-4 space-y-2">
+            <div *ngFor="let application of applications; let i = index"
+              class="grid grid-cols-1 sm:grid-cols-6 gap-3 items-center bg-white sm:bg-[#F3F3F3] p-3 sm:p-4 text-[#6F6F6F] text-sm md:text-base font-onest rounded-md shadow-sm sm:shadow-none border border-gray-200 sm:border-none mb-3 sm:mb-0 hover-scale slide-in-up"
+              [style.animation-delay]="(0.1 * i) + 's'">
+              
+<!-- Mobile view as card with improved spacing - FIXED WIDTH AND LAYOUT -->
+<div class="sm:hidden bg-white rounded-md shadow border border-gray-200 p-4 space-y-2 w-full max-w-full mx-auto">
   <!-- Job Title + Status -->
-  <div class="flex justify-between items-center">
-    <h3 class="text-base font-semibold text-[#053C47] truncate max-w-[70%]">
+  <div class="flex justify-between items-center gap-2">
+    <h3 class="text-base font-semibold text-[#053C47] truncate max-w-[70%] pr-2">
       {{ application.designation }}
     </h3>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1 flex-shrink-0">
       <div class="w-2 h-2 rounded-full" [ngClass]="getStatusColor(application.status)"></div>
-      <span class="text-xs text-gray-600">{{ application.status }}</span>
+      <span class="text-xs text-gray-600 whitespace-nowrap">{{ application.status }}</span>
     </div>
   </div>
 
   <!-- Company Name -->
-  <p class="text-sm text-[#156C7D] font-medium">{{ application.jobPost.company.name }}</p>
+  <p class="text-sm text-[#156C7D] font-medium truncate">{{ application.jobPost.company.name }}</p>
 
-  <!-- Application Info -->
-  <div class="grid grid-cols-3 text-sm gap-x-2 gap-y-1 text-[#6F6F6F]">
-    <div class="col-span-1">Applied:</div>
-    <div class="col-span-2 font-medium">{{ application.applicationDate }}</div>
-
-    <div class="col-span-1">Interview:</div>
-    <div class="col-span-2 font-medium">{{ application.interviewDate || "-" }}</div>
+  <!-- Application Info - Using flex instead of grid for better mobile spacing -->
+  <div class="flex flex-col space-y-1 text-sm text-[#6F6F6F]">
+    <div class="flex justify-between">
+      <span class="font-medium">Applied:</span>
+      <span>{{ application.applicationDate }}</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="font-medium">Interview:</span>
+      <span>{{ application.interviewDate || "-" }}</span>
+    </div>
   </div>
 
-  <!-- Actions -->
-  <div class="pt-2 border-t border-gray-200 mt-2 flex flex-wrap gap-3 text-sm">
-    <a class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium"
-      (click)="openModal(application)">View</a>
-    <a *ngIf="application.status === 'INTERVIEWED'"
-      class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium"
-      (click)="openUpdateModal(application.id)">Update</a>
-    <a *ngIf="application.interviewDate"
-      class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium"
-      (click)="openInterviewDetailsModal(application)">Interview Details</a>
+  <!-- Actions with better wrapping -->
+  <div class="pt-2 border-t border-gray-200 mt-2">
+    <div class="flex flex-wrap gap-3 text-sm justify-start">
+      <a class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium smooth-transition inline-block"
+        (click)="openModal(application)">View</a>
+      <a *ngIf="application.status === 'INTERVIEWED'"
+        class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium smooth-transition inline-block"
+        (click)="openUpdateModal(application.id)">Update</a>
+      <a *ngIf="application.interviewDate"
+        class="text-[#1E93C6] hover:text-[#156C7D] cursor-pointer font-medium smooth-transition inline-block"
+        (click)="openInterviewDetailsModal(application)">Interview Details</a>
+    </div>
   </div>
 </div>
 
@@ -148,13 +240,13 @@
               <!-- Actions - visible only on desktop screens -->
               <div class="hidden sm:block sm:text-left col-span-1">
                 <div class="flex flex-col gap-1">
-                  <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm"
+                  <a class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm smooth-transition"
                     (click)="openModal(application)">View</a>
                   <a *ngIf="application.status === 'INTERVIEWED'"
-                    class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm"
+                    class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm smooth-transition"
                     (click)="openUpdateModal(application.id)">Update</a>
                   <a *ngIf="application.interviewDate" 
-                    class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm"
+                    class="text-[#1E93C6] hover:text-[#156C7D] no-underline cursor-pointer text-sm smooth-transition"
                     (click)="openInterviewDetailsModal(application)">Interview Details</a>
                 </div>
               </div>
@@ -165,89 +257,89 @@
     </div>
   </div>
 
-  <!-- View Response Modal -->
-  <div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-30 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+  <!-- View Response Modal - Enhanced with animations -->
+  <div *ngIf="showModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm bg-opacity-30 z-50 fade-in">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto slide-in-up">
       <h2 class="text-xl md:text-2xl font-onest text-[#053C47]">Application</h2>
-      <div class="border-b-2 mt-2 mb-4 border-[#053C47]"></div>
+      <div class="border-b-2 mt-2 mb-4 border-[#053C47] shine-effect"></div>
 
-      <p class="text-[#6F6F6F] text-base md:text-lg mb-4">
+      <p class="text-[#6F6F6F] text-base md:text-lg mb-4 fade-in" style="animation-delay: 0.2s">
         <strong class="text-[#053C47]">Response:</strong> {{ selectedApplication.feedback }}
       </p>
 
       <div class="mt-6 flex justify-end">
         <button (click)="closeModal()"
-          class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors">
+          class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors btn-pulse">
           Close
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Interview Details Modal -->
-  <div *ngIf="showInterviewDetailsModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-30 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+  <!-- Interview Details Modal - Enhanced with animations -->
+  <div *ngIf="showInterviewDetailsModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm bg-opacity-30 z-50 fade-in">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto slide-in-up">
       <h2 class="text-xl md:text-2xl font-onest text-[#053C47]">Interview Details</h2>
-      <div class="border-b-2 mt-2 mb-4 border-[#053C47]"></div>
+      <div class="border-b-2 mt-2 mb-4 border-[#053C47] shine-effect"></div>
 
       <div class="space-y-3 text-[#6F6F6F] text-base md:text-lg">
-        <p><strong class="text-[#053C47]">Date:</strong> {{ selectedApplication.interviewDate }}</p>
-        <p><strong class="text-[#053C47]">Time:</strong> {{ selectedApplication.interviewTime || "Not specified" }}</p>
-        <p><strong class="text-[#053C47]">Location:</strong> {{ selectedApplication.interviewLocation || "Not specified" }}</p>
+        <p class="fade-in" style="animation-delay: 0.2s"><strong class="text-[#053C47]">Date:</strong> {{ selectedApplication.interviewDate }}</p>
+        <p class="fade-in" style="animation-delay: 0.3s"><strong class="text-[#053C47]">Time:</strong> {{ selectedApplication.interviewTime || "Not specified" }}</p>
+        <p class="fade-in" style="animation-delay: 0.4s"><strong class="text-[#053C47]">Location:</strong> {{ selectedApplication.interviewLocation || "Not specified" }}</p>
       </div>
 
       <div class="mt-6 flex justify-end">
         <button (click)="closeInterviewModal()"
-          class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors">
+          class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors btn-pulse">
           Close
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Update Modal (For Interviewed Status) -->
-  <div *ngIf="showUpdateModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm  bg-opacity-30 z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+  <!-- Update Modal - Enhanced with animations -->
+  <div *ngIf="showUpdateModal" class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm bg-opacity-30 z-50 fade-in">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto slide-in-up">
       <h2 class="text-xl md:text-2xl font-onest text-[#053C47]">Update Placement Info</h2>
-      <div class="border-b-2 mt-2 mb-4 border-[#053C47]"></div>
+      <div class="border-b-2 mt-2 mb-4 border-[#053C47] shine-effect"></div>
       
-      <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 mb-4 text-sm rounded">
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-3 mb-4 text-sm rounded fade-in" style="animation-delay: 0.2s">
         <strong>Note:</strong> Please update this form <span class="font-bold">only if the candidate is placed</span> or has accepted an offer.
       </div>
       
       <form (ngSubmit)="submitPlacementUpdate()" #updateForm="ngForm" class="space-y-4">
-        <div>
+        <div class="fade-in" style="animation-delay: 0.3s">
           <label for="offerLetter" class="block text-sm font-medium text-[#6F6F6F] mb-1">Offer Letter:</label>
           <input type="file" id="offerLetter" name="offerLetter" (change)="onFileSelected($event)"
-            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#156C7D] file:text-white hover:file:bg-[#0E4F5D]" />
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#156C7D] file:text-white hover:file:bg-[#0E4F5D] smooth-transition" />
         </div>
 
-        <div>
+        <div class="fade-in" style="animation-delay: 0.4s">
           <label for="placementDate" class="block text-sm font-medium text-[#6F6F6F] mb-1">Placed Date:</label>
           <input type="date" id="placementDate" [(ngModel)]="placementDetails.placementDate"
-            name="placementDate" class="block w-full border border-gray-300 rounded-md p-2 text-sm" />
+            name="placementDate" class="block w-full border border-gray-300 rounded-md p-2 text-sm hover-scale" />
         </div>
         
-        <div>
-          <label for="placedPackage" class="block text-sm font-medium text-[#6F6F6F] mb-1">Placed Package (LPA):</label>
+        <div class="fade-in" style="animation-delay: 0.5s">
+          <label for="placedPackage" class="block text-sm font-medium text-[#6F6F6F] mb-1">Placed Package (Full number format)</label>
           <input type="number" placeholder="Enter package in LPA" id="placedPackage" 
             [(ngModel)]="placementDetails.placed_package" name="placedPackage" 
-            class="block w-full border border-gray-300 rounded-md p-2 text-sm" />
+            class="block w-full border border-gray-300 rounded-md p-2 text-sm hover-scale" />
         </div>
 
-        <div>
+        <div class="fade-in" style="animation-delay: 0.6s">
           <label for="placementData" class="block text-sm font-medium text-[#6F6F6F] mb-1">Additional Notes:</label>
           <textarea id="placementData" [(ngModel)]="placementDetails.remarks" name="placementData" rows="3"
-            class="block w-full border border-gray-300 rounded-md p-2 text-sm"></textarea>
+            class="block w-full border border-gray-300 rounded-md p-2 text-sm hover-scale"></textarea>
         </div>
 
-        <div class="mt-6 flex justify-end space-x-3">
+        <div class="mt-6 flex justify-end space-x-3 fade-in" style="animation-delay: 0.7s">
           <button type="button" (click)="closeUpdateModal()"
-            class="px-4 py-2 text-gray-600 hover:text-gray-800 rounded-md transition-colors">
+            class="px-4 py-2 text-gray-600 hover:text-gray-800 rounded-md transition-colors smooth-transition">
             Cancel
           </button>
           <button type="submit"
-            class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors">
+            class="bg-[#156C7D] text-white px-4 py-2 rounded-md hover:bg-[#0E4F5D] transition-colors btn-pulse">
             Submit
           </button>
         </div>

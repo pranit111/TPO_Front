@@ -37,7 +37,16 @@ export class DownloadResumeComponent {
         const blobUrl = URL.createObjectURL(pdfBlob);
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
       });
-    } else {
+   
+    }  else if (
+      this.type === 'offerletter' ){
+      this.downloadResumeService.getOfferLetterPdf(this.id).subscribe(pdfBlob => {
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);
+        
+      });
+    }
+    else {
       // Optionally handle invalid type or course
       console.warn('Invalid download type or course');
     }

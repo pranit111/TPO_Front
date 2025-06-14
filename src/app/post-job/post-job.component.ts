@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../post.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ErrorService } from '../error.service';
 
 interface Company {
   id: number;
@@ -74,8 +73,7 @@ export class PostJobComponent implements OnInit {
 
   constructor(
     private postService: PostService,
-    private fb: FormBuilder,
-    private errorService: ErrorService
+    private fb: FormBuilder
   ) {
     this.jobForm = this.fb.group({
       company: ['', Validators.required],
@@ -95,7 +93,6 @@ export class PostJobComponent implements OnInit {
       testPlatform: ['', Validators.required],
       recruitmentDetails: ['', Validators.required],
       aptitude: [false, Validators.required],
-      portalLink: [''], // Add portalLink to form controls
       applicationStartDate: ['', Validators.required],
       applicationEndDate: ['', Validators.required],
       selectionStartDate: ['', Validators.required],
@@ -129,35 +126,13 @@ export class PostJobComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.jobForm.valid) {
-      const formValues = this.jobForm.value;
-      
-      this.jobData = {
-        ...this.jobData,
-        ...formValues,
-        company: formValues.company,
-        companyName: formValues.company?.name || '',
-        portalLink: formValues.portalLink || '', // Explicitly map portalLink
-        applicationStartDate: new Date(formValues.applicationStartDate),
-        applicationEndDate: new Date(formValues.applicationEndDate),
-        selectionStartDate: new Date(formValues.selectionStartDate),
-        selectionEndDate: new Date(formValues.selectionEndDate),
-        // Ensure numeric fields are properly typed
-        minPercentage: Number(formValues.minPercentage),
-        backlogAllowance: Number(formValues.backlogAllowance),
-        minSsc: formValues.minSsc,
-        minHsc: formValues.minHsc,
-        // Ensure boolean fields are properly typed
-        aptitude: Boolean(formValues.aptitude),
-        // Ensure status is set
-        status: 'OPEN'
-      };
 
+    if (this.jobForm.valid) {
       // Validate dates
-      const startDate = this.jobData.applicationStartDate;
-      const endDate = this.jobData.applicationEndDate;
-      const selectionStartDate = this.jobData.selectionStartDate;
-      const selectionEndDate = this.jobData.selectionEndDate;
+      const startDate = new Date(this.jobData.applicationStartDate);
+      const endDate = new Date(this.jobData.applicationEndDate);
+      const selectionStartDate = new Date(this.jobData.selectionStartDate);
+      const selectionEndDate = new Date(this.jobData.selectionEndDate);
 
       if (startDate > endDate) {
         alert('Application end date must be after start date');
@@ -177,12 +152,12 @@ export class PostJobComponent implements OnInit {
       this.postService.createPost(this.jobData).subscribe({
         next: (response) => {
           console.log('Job posted successfully:', response);
-         this.errorService.setError('Job posted successfully!', 'bg-green-600');
+          alert('Job posted successfully!');
           this.resetForm();
         },
         error: (error) => {
           console.error('Error posting job:', error);
-          this.errorService.setError('Error posting job. Please try again.');
+          alert('Error posting job. Please try again.');
         }
       });
     } else {

@@ -349,6 +349,13 @@ onDeleteTpoUser(id: number) {
 }
 
 // Update loadTabData method to include TPO Users
-
-
+onProfileLog(id: number) {
+  this.router.navigate(['/view-profile', id]);
+  console.log('Navigating to profile with ID:', id);
+  this.selectedTab = 'Profile';
+  this.navItems.forEach(item => {
+    item.active = item.title === 'Profile';
+  });
+  this.loadTabData('Profile');
+}
 }

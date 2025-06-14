@@ -62,5 +62,8 @@ export class Company {
       this.aptitudeStartingDate=data.aptitudeStartingDate ||'';
       this.portalLink = data.portalLink || undefined; // Use undefined instead of null
     }
+   
   }
-  
+  export class Placements {
+   
+  }

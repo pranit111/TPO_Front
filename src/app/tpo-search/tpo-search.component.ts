@@ -4,6 +4,8 @@ import { StudentService } from '../student.service';
 import { ApplicationserviceService } from '../applicationservice.service';
 import { PostService } from '../post.service';
 import { Router } from '@angular/router';
+import { Placements } from '../job-post';
+import { PlacementServiceService } from '../placement-service.service';
 
 interface PaginatedResponse<T> {
   content: T[];
@@ -96,6 +98,44 @@ type Application = {
   };
 };
 
+// Interface for Placement DTO based on the controller
+interface PlacementDTO {
+  id: number;
+  placementDate: string;
+  offerLetterUrl: string;
+  placedPackage: number;
+  remarks: string;
+  createdAt: string;
+  updatedAt: string;
+  application: {
+    id: number;
+    applicationDate: string;
+    status: string;
+    designation: string;
+    interviewDate: string;
+    feedback: string;
+    student: {
+      id: number;
+      firstName: string;
+      middleName: string;
+      lastName: string;
+      department: string;
+      user: {
+        email: string;
+      };
+    };
+    jobPost: {
+      id: number;
+      jobDesignation: string;
+      packageAmount: number;
+      company: {
+        id: number;
+        name: string;
+      };
+    };
+  };
+}
+
 @Component({
   selector: 'app-tpo-search',
   standalone: false,
@@ -110,16 +150,18 @@ window.open(`/download/cv/${arg0}/ignore`, '_blank');
 onResult(type: string, arg0: number) {  
   window.open(`/download/result/${arg0}/${type}`, '_blank');
 }
+onOfferLetter(arg0: number) {
+  window.open(`/download/offerletter/${arg0}/download`, '_blank');
+}
 selectedstudent: Student = new Student(); 
 showStudentActionModal = false;
 OnStudentAction(id:number){
   this.showStudentActionModal = true;
   this.selectedstudent = this.students.find((student) => student.id === id) || new Student();
-
 }
 
   // Active tab tracking
-  activeTab: 'students' | 'posts' | 'applications' = 'students';
+  activeTab: 'students' | 'posts' | 'applications'| 'placements' = 'students';
 
   // Student section properties
   students: Student[] = [];
@@ -149,6 +191,7 @@ OnStudentAction(id:number){
     page: 0,
     size: 10
   };
+searchText = '';
 
   // Application section properties
   applications: Application[] = [];
@@ -166,11 +209,25 @@ OnStudentAction(id:number){
               // Filter by application date range
   };
 
+  // Placement section properties
+  placements: PlacementDTO[] = [];
+  placementFilters = {
+    keyword: '',              // Search by keyword (student name, company name, position)
+    department: '',           // Filter by department
+    minPackage: undefined as number | undefined,    // Filter by minimum package
+    maxPackage: undefined as number | undefined,    // Filter by maximum package
+    fromDate: '',             // Filter by joining date range
+    toDate: '',               // Filter by joining date range
+    page: 0,
+    size: 10
+  };
+
   constructor(
     private studentService: StudentService,
     private applicationservice: ApplicationserviceService,
     private postService: PostService,
-    private router: Router
+    private router: Router,
+    private placementsService: PlacementServiceService
   ) {}
 
   ngOnInit(): void {
@@ -179,7 +236,7 @@ OnStudentAction(id:number){
     this.setActiveTab('students');
   }
 
-  setActiveTab(tab: 'students' | 'posts' | 'applications'): void {
+  setActiveTab(tab: 'students' | 'posts' | 'applications' | 'placements'): void {
     this.activeTab = tab;
     switch(tab) {
       case 'students':
@@ -190,6 +247,9 @@ OnStudentAction(id:number){
         break;
       case 'applications':
         this.loadApplications();
+        break;
+      case 'placements':
+        this.loadPlacements();
         break;
     }
   }
@@ -229,18 +289,38 @@ OnStudentAction(id:number){
       }
     });
   }
+
+  loadPlacements(): void {
+    this.placementsService.searchPlacements(this.placementFilters).subscribe({
+      next: (response: PaginatedResponse<PlacementDTO>) => {
+        this.placements = response.content || [];
+      },
+      error: (error: Error) => {
+        console.error('Error fetching placements:', error);
+        this.placements = [];
+      }
+    });
+  }
+
   formatTime(timeString: string): string {
     if (!timeString) return '';
     
- 
-    
-   
     const [hours, minutes] = timeString.slice(0, 5).split(':');
     const hour = parseInt(hours, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const hour12 = hour % 12 || 12;
     return `${hour12}:${minutes} ${ampm}`;
-  
+  }
+
+  formatCurrency(amount: number): string {
+    if (!amount) return '₹0';
+    
+    // Format as Indian currency (lakhs)
+    if (amount >= 100000) {
+      return `₹${(amount / 100000).toFixed(2)} LPA`;
+    } else {
+      return `₹${amount.toLocaleString('en-IN')}`;
+    }
   }
 
   loadCompanies(): void {
@@ -286,6 +366,15 @@ OnStudentAction(id:number){
           console.error('Error downloading Excel:', error);
         }
       });
+    } else if (this.activeTab === 'placements') {
+      this.placementsService.downloadExcel(this.placementFilters).subscribe({
+        next: (response: Blob) => {
+          this.handleExcelDownload(response, 'placements.xlsx');
+        },
+        error: (error: Error) => {
+          console.error('Error downloading Excel:', error);
+        }
+      });
     }
   }
 
@@ -308,8 +397,17 @@ OnStudentAction(id:number){
   }
 
   onFilterChange(): void {
-    this.loadStudents();
+    if (this.activeTab === 'students') {
+      this.loadStudents();
+    } else if (this.activeTab === 'posts') {
+      this.loadPosts();
+    } else if (this.activeTab === 'applications') {
+      this.loadApplications();
+    } else if (this.activeTab === 'placements') {
+      this.loadPlacements();
+    }
   }
+
   selectedApplication= {
     id:0,
     status:"",
@@ -401,77 +499,96 @@ OnStudentAction(id:number){
       portalLink: ''
     };
     
-showEditPostModal = false;
+  showEditPostModal = false;
 
-// Open edit modal and load selected post
-onPostEdit(id: number) {
-  this.postService.getPostById(id).subscribe({
-    next: (data) => {
-   
-      this.selectedPost = { ...data };
-      this.showEditPostModal = true;
-      console.log(this.showEditPostModal);
-    },
-    error: (error) => {
-      console.error('Error fetching post data:', error);
-    }
-  });
-}
+  // Open edit modal and load selected post
+  onPostEdit(id: number) {
+    this.postService.getPostById(id).subscribe({
+      next: (data) => {
+     
+        this.selectedPost = { ...data };
+        this.showEditPostModal = true;
+        console.log(this.showEditPostModal);
+      },
+      error: (error) => {
+        console.error('Error fetching post data:', error);
+      }
+    });
+  }
 
-// Update the post
-onUpdatePost() {
-  this.postService.updatePost(this.selectedPost).subscribe({
-    next: (response) => {
-      console.log('Post updated successfully:', response);
-      this.loadPosts(); // Refresh the post list
-      this.resetSelectedPost();
-      this.loadPosts();
-    },
-    error: (error) => {
-      console.error('Error updating post:', error);
-    }
-  });
-  this.showEditPostModal = false;
-}
+  // Update the post
+  onUpdatePost() {
+    this.postService.updatePost(this.selectedPost).subscribe({
+      next: (response) => {
+        console.log('Post updated successfully:', response);
+        this.loadPosts(); // Refresh the post list
+        this.resetSelectedPost();
+        this.loadPosts();
+      },
+      error: (error) => {
+        console.error('Error updating post:', error);
+      }
+    });
+    this.showEditPostModal = false;
+  }
 
-// Cancel post editing
-onPostEditCancel() {
-  this.showEditPostModal = false;
-  this.resetSelectedPost();
-}
+  // Cancel post editing
+  onPostEditCancel() {
+    this.showEditPostModal = false;
+    this.resetSelectedPost();
+  }
 
-// Reset post data
-resetSelectedPost() {
- this.selectedPost = {
-  id: 0,
-  title: '',                   // Job Designation
-  description: '',
-  location: '',
-  jobType: 'FULL_TIME',        // Default to FULL_TIME
-  status: 'OPEN',
+  // Reset post data
+  resetSelectedPost() {
+   this.selectedPost = {
+    id: 0,
+    title: '',                   // Job Designation
+    description: '',
+    location: '',
+    jobType: 'FULL_TIME',        // Default to FULL_TIME
+    status: 'OPEN',
 
-  packageAmount: null,         // Package Amount
-  minimumSsc: null,            // Minimum SSC %
-  minimumHsc: null,            // Minimum HSC %
-  minPercentage: null,         // Minimum Average %
+    packageAmount: null,         // Package Amount
+    minimumSsc: null,            // Minimum SSC %
+    minimumHsc: null,            // Minimum HSC %
+    minPercentage: null,         // Minimum Average %
 
-  backlogAllowance: null,      // Backlog Allowed
-  preferredCourse: '',         // Preferred Course
-  skillRequirements: '',       // Skills Required
-  selectionRounds: '',         // Rounds of Selection
-  modeOfRecruitment: '',       // Recruitment Mode
-  testPlatform: '',            // Test Platform
+    backlogAllowance: null,      // Backlog Allowed
+    preferredCourse: '',         // Preferred Course
+    skillRequirements: '',       // Skills Required
+    selectionRounds: '',         // Rounds of Selection
+    modeOfRecruitment: '',       // Recruitment Mode
+    testPlatform: '',            // Test Platform
 
-  applicationStartDate: '',    // Dates as string (or convert to Date if needed)
-  applicationEndDate: '',
-  selectionStartDate: '',
-  selectionEndDate: '',
-  aptitudeDate: '',
+    applicationStartDate: '',    // Dates as string (or convert to Date if needed)
+    applicationEndDate: '',
+    selectionStartDate: '',
+    selectionEndDate: '',
+    aptitudeDate: '',
 
-  aptitude: false,             // Aptitude Test Yes/No
-  portalLink: ''
-};
-;
-}
+    aptitude: false,             // Aptitude Test Yes/No
+    portalLink: ''
+  };
+  }
 
+  // Placement variables & methods
+  selectedPlacement :  PlacementDTO | null = null;
+
+  showPlacementDetailsModal = false;
+
+  onViewPlacementDetails(id: number) {
+    this.placementsService.getPlacementById(id).subscribe({
+      next: (response) => {
+        this.selectedPlacement = response;
+        this.showPlacementDetailsModal = true;
+      },
+      error: (error) => {
+        console.error('Error fetching placement details:', error);
+      }
+    });
+  }
+
+  onPlacementDetailsClose() {
+    this.showPlacementDetailsModal = false;
+  }
 }

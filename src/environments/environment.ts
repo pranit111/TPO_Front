@@ -8,5 +8,6 @@ export const environment = {
     userService: 'http://localhost:8080',
     authService: 'http://localhost:8080/api0',
     tpoService: 'http://localhost:8080/api2',
+    
   }
 }; 

@@ -20,12 +20,12 @@
     </style>
 </head>
 <body class="bg-custom flex items-center justify-center min-h-screen px-4">
-    <div class="flex flex-col lg:flex-row items-center justify-center space-y-6 lg:space-y-0 lg:space-x-10 w-full max-w-[700px] md:max-w-[800px]">
+    <div class="flex flex-col lg:flex-row items-center justify-center lg:gap-x-[100px]">
         <!-- College Logo -->
         <img src="/scoe_logo.png" alt="College Logo" class="w-auto h-auto max-h-28 md:max-h-50 mb-4 lg:mb-6 transition-all duration-300 rounded-full">
 
         <!-- Login Box -->
-        <div class="bg-white p-6 md:p-8 w-full max-w-[529px] shadow-lg rounded-lg flex flex-col">
+        <div class="bg-white p-6 lg:p-8 w-[250px] max-w-xl sm:max-w-lg md:max-w-xl lg:w-[529px] lg:h-[409px] shadow-lg rounded-lg flex flex-col box-content sm:box-border">
             <div class="w-full flex justify-center md:justify-between items-center mb-6">
                 <h1 class="onest-font text-2xl md:text-3xl font-semibold text-center">User Registration</h1>
             </div>
@@ -37,7 +37,7 @@
                     
                     <input type="email" placeholder="Email Address" [(ngModel)]="user.email" name="email" required
                         #email="ngModel"
-                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.edu\.in$"
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.sce\.edu\.in$"
                         class="roboto-flex input-box w-full h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
                     
                     <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-red-500 text-sm mt-1 w-full">

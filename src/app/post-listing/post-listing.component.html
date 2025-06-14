@@ -13,10 +13,98 @@
             background-image: url('/Main_bg.png');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
         }
         .input-box::placeholder {
             color: #BFB4B4;
         }
+        
+        /* Animation keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-5%); }
+            100% { transform: translateX(0); }
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .slide-in-up {
+            animation: slideInUp 0.5s ease-out;
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn-pulse:hover {
+            animation: pulse 0.8s infinite;
+        }
+        
+        .shine-effect {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+        
+        .wave-bg {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wave-bg::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 10px;
+            background: linear-gradient(90deg, 
+                rgba(21, 108, 125, 0.3) 0%, 
+                rgba(21, 108, 125, 0.6) 50%, 
+                rgba(21, 108, 125, 0.3) 100%);
+            border-radius: 50%;
+            animation: wave 8s infinite ease-in-out;
+        }
+        
+        /* Responsive styles */
         @media (max-width: 1024px) {
             .container {
                 max-width: 90%;
@@ -54,30 +142,61 @@
     </style>
 </head>
 <body class="bg-custom flex items-start justify-start min-h-screen px-4">
-    <div class="flex flex-col lg:flex-row items-start justify-start min-h-screen w-full">
-        <div class="container mx-auto p-6 bg-white rounded-lg shadow-md w-full max-w-6xl">
-            <h1 class="text-3xl font-semibold mb-4 text-gray-900">Placement Offers</h1>
-            <hr class="mb-6 border-green-900" />
+    <div class="flex flex-col lg:flex-row items-start justify-start min-h-screen w-full fade-in">
+        <div class="container mx-auto p-6 bg-white rounded-lg shadow-md w-full max-w-6xl slide-in-up">
+            <h1 class="text-3xl font-semibold mb-4 text-gray-900 onest-font wave-bg">Placement Offers</h1>
+            <hr class="mb-6 border-teal-700 shine-effect" />
             
-            <p *ngIf="jobPosts.length === 0" class="text-left text-gray-500 text-lg">
+            <p *ngIf="noJobPostsAvailable" class="text-left text-gray-500 text-lg roboto-flex fade-in" style="animation-delay: 0.2s">
                 No placement offers available at the moment. Check back later!
             </p>
             
-            <div *ngIf="jobPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div *ngFor="let job of jobPosts" class="bg-gray-100 p-4 rounded-lg shadow-md text-gray-900 bg-opacity-90">
-                    <h2 class="text-lg md:text-xl font-semibold flex items-center">
-                       
+            <div *ngIf="jobPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 fade-in" style="animation-delay: 0.3s">
+                <div *ngFor="let job of jobPosts; let i = index" 
+                     class="bg-gray-100 p-4 rounded-lg shadow-md text-gray-900 bg-opacity-90 hover-scale smooth-transition slide-in-up" 
+                     [style.animation-delay]="(0.1 * i) + 's'">
+                    <h2 class="text-lg md:text-xl font-semibold flex items-center onest-font text-teal-700">
                         {{ job.jobDesignation }}
                     </h2>
-                    <p class="text-sm text-green-600">{{ job.company.name }}</p>
-                    <hr class="my-2 border-green-900" />
-                    <p class="mt-2 text-sm md:text-base"><strong>Location:</strong> {{ job.location }}</p>
-                    <p class="mt-2 text-sm md:text-base"><strong>Salary:</strong> {{ job.packageAmount }}</p>
-                    <p class="mt-2 text-sm md:text-base"><strong>Type:</strong> {{ job.jobType }}</p>
-                    <button class="bg-teal-600 text-white px-4 py-2 rounded mt-4 w-full hover:bg-teal-700 "(click)="navigateToJobDetails( job.id)">
-                        Apply
+                    <p class="text-sm text-teal-600 roboto-flex">{{ job.company.name }}</p>
+                    <hr class="my-2 border-teal-700 opacity-50 shine-effect" />
+                    
+                    <div class="space-y-2 roboto-flex fade-in" style="animation-delay: 0.1s">
+                        <p class="mt-2 text-sm md:text-base flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-teal-700 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            <span><strong>Location:</strong> {{ job.location }}</span>
+                        </p>
+                        
+                        <p class="mt-2 text-sm md:text-base flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-teal-700 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                            </svg>
+                            <span><strong>Salary:</strong> {{ job.packageAmount }}</span>
+                        </p>
+                        
+                        <p class="mt-2 text-sm md:text-base flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-teal-700 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                                <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
+                            </svg>
+                            <span><strong>Type:</strong> {{ job.jobType }}</span>
+                        </p>
+                    </div>
+                    
+                    <button 
+                        class="bg-teal-600 text-white px-4 py-2 rounded mt-6 w-full hover:bg-teal-700 smooth-transition btn-pulse"
+                        (click)="navigateToJobDetails(job.id)">
+                        Apply Now
                     </button>
                 </div>
+            </div>
+            
+            <!-- Add a loading state with animation -->
+            <div *ngIf="loading" class="flex justify-center items-center py-12 fade-in">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-700"></div>
             </div>
         </div>
     </div>

@@ -21,193 +21,185 @@
 
         .bg-custom {
             background-image: url('/Main_bg.png');
-            /* Set your background image path */
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
         }
 
         .input-box::placeholder {
             color: #BFB4B4;
         }
+
+        @media (max-width: 768px) {
+            .bg-custom {
+                background-position: left;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-custom flex justify-end min-h-screen px-4">
-    <div class="flex flex-col lg:flex-row items-center justify-center space-x-10">
-        <!-- College Logo -->
-       
+<body class="bg-custom min-h-screen p-4 md:flex md:justify-end">
+    <div class="max-w-7xl mx-auto">
         <!-- Registration Box -->
-        <div class="bg-white p-8 w-[1000px] h-full shadow-lg rounded-lg flex flex-col">
-            <!-- <h1 class="onest-font text-4xl font-semibold text-left mb-6 mt-4">Student Registration</h1> -->
-
+        <div class="bg-white p-4 md:p-8 w-full max-w-4xl shadow-lg rounded-lg">
             <form class="w-full flex flex-col space-y-4">
-                <div *ngIf="step==1" class="w-full space-y-2">
-                    <div class="flex items-center justify-center ml-80 mb-5 w-64">
-                        <!-- Left Circle -->
+                <!-- Step 1 -->
+                <div *ngIf="step==1" class="w-full space-y-4">
+                    <!-- Progress Indicator -->
+                    <div class="flex items-center justify-center mb-5 w-48 mx-auto">
                         <div class="w-3 h-3 bg-gray-800 rounded-full mr-1"></div>
-                    
-                        <!-- Line -->
                         <div class="w-full h-[2px] bg-gray-500"></div>
-                    
-                        <!-- Right Circle -->
                         <div class="w-3 h-3 bg-gray-500 rounded-full ml-1"></div>
                     </div>
-                   <!-- Background Overlay -->
-<div *ngIf="showCropModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-    <!-- Modal Box -->
-    <div class="bg-white p-6 rounded-lg shadow-lg w-[400px] text-center">
-        <h2 class="text-lg font-semibold text-gray-700 mb-4">Crop Your Image</h2>
-        
-        <!-- Image Cropping Section -->
-        <div class="relative flex justify-center bg-gray-200 p-2 rounded-lg">
-            <img #imageCropper [src]="imageUrl" class="max-w-full rounded-md shadow-md">
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex justify-between mt-4">
-            <button (click)="cropImage()" 
-                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
-                ✅ Crop
-            </button>
-            <button (click)="cancelCrop()" 
-                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
-                ❌ Cancel
-            </button>
-        </div>
-    </div>
-</div>
+                    
+                    <!-- Profile Image Section -->
+                    <div class="flex flex-col items-center">
+                        <img [src]="profileImageUrl" alt="Profile Image" 
+                             class="w-24 h-24 md:w-32 md:h-32 rounded-full border border-gray-300 object-cover" />
+                        <div *ngIf="imageUrl" class="mt-2">
+                            <img [src]="imageUrl" class="w-24 h-24 rounded-full border border-gray-300 object-cover" />
+                        </div>
+                        <div class="w-full mt-4">
+                            <label class="block text-sm font-medium text-gray-500">Upload Profile Picture</label>
+                            <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" 
+                                   (change)="onFileSelected($event)">
+                        </div>
+                    </div>
 
                     <!-- Name Fields -->
-                    <div class="flex justify-center">
-                        <img [src]="profileImageUrl" alt="Profile Image" class="w-32 h-32 rounded-full border border-gray-300" />
-                      </div>
-                      <div class="flex justify-center mt-4" *ngIf="imageUrl">
-                        <img [src]="imageUrl" class="w-32 h-32 rounded-full border border-gray-300" />
-                    </div>
-                     
-                    <div><label class="block text-sm font-medium text-gray-500">Upload Profile Picture</label>
-                        <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelected($event)"></div>
-                    <div class="grid grid-cols-3 gap-4 ">
-                   
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">First Name : <em>{{Current_profile.firstName}}</em> </label>
-                            <input type="text"[(ngModel)]="student.firstName" name="firstName" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">First Name: <em>{{Current_profile.firstName}}</em></label>
+                            <input type="text" [(ngModel)]="student.firstName" name="firstName" required 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">Middle Name : <em>{{Current_profile.middleName}}</em></label>
-                            <input type="text"[(ngModel)]="student.middleName" name="middleName" class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">Middle Name: <em>{{Current_profile.middleName}}</em></label>
+                            <input type="text" [(ngModel)]="student.middleName" name="middleName" 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">Last Name : <em>{{Current_profile.lastName}}</em></label>
-                            <input type="text" [(ngModel)]="student.lastName"required  name="lastName" class="p-2 w-full rounded border border-gray-300 text-sm">
+                            <label class="block text-sm font-medium text-gray-500">Last Name: <em>{{Current_profile.lastName}}</em></label>
+                            <input type="text" [(ngModel)]="student.lastName" required name="lastName" 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                     </div>
 
                     <!-- Date of Birth -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-500">Date of Birth : <em>{{Current_profile.dateOfBirth}}</em></label>
-                        <input type="date" [(ngModel)]="student.dateOfBirth"required  name="dateOfBirth" class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <label class="block text-sm font-medium text-gray-500">Date of Birth: <em>{{Current_profile.dateOfBirth}}</em></label>
+                        <input type="date" [(ngModel)]="student.dateOfBirth" required name="dateOfBirth" 
+                               class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
-
-                    <!-- Gender Selection -->
-                  
-                    
 
                     <!-- Contact Information -->
-                    <div class="grid grid-cols-2 gap-4 w-full">
-                        <div class="flex flex-col">
-                            <label class="block text-sm font-medium text-gray-500">GR No : <em>{{Current_profile.gr_No}}</em></label>
-                            <input type="text" [(ngModel)]="student.grNo"required  name="department" class="p-2 w-full rounded border border-gray-300 text-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">GR No: <em>{{Current_profile.gr_No}}</em></label>
+                            <input type="text" [(ngModel)]="student.grNo" required name="department" 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
-                        <div class="flex flex-col">
-                        <label class="block text-sm font-medium text-gray-500">Phone Number : <em>{{Current_profile.phoneNumber}}</em></label>
-                        <input type="tel"[(ngModel)]="student.phoneNumber"  name="phoneNumber" required class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Phone Number: <em>{{Current_profile.phoneNumber}}</em></label>
+                            <input type="tel" [(ngModel)]="student.phoneNumber" name="phoneNumber" required 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
                         </div>
                     </div>
+                    
                     <div>
-                        <label class="block text-sm font-medium text-gray-500">Address  : <em>{{Current_profile.address}}</em></label>
-                        <input type="text" [(ngModel)]="student.address"required  name="address" class="p-2 w-full rounded border border-gray-300 text-sm">
+                        <label class="block text-sm font-medium text-gray-500">Address: <em>{{Current_profile.address}}</em></label>
+                        <input type="text" [(ngModel)]="student.address" required name="address" 
+                               class="p-2 w-full rounded border border-gray-300 text-sm">
                     </div>
 
                     <!-- Academic Details -->
-                    <div class="grid grid-cols-2 gap-4 w-full">
-                        
-                        <div class="flex flex-col">
-                            <label class="block text-sm font-medium text-gray-500">Year of Studying  : <em>{{Current_profile.academicYear}}</em></label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Year of Studying: <em>{{Current_profile.academicYear}}</em></label>
                             <select [(ngModel)]="student.academicYear" name="academicyear" required
-                            class="p-2 w-full rounded border border-gray-300 text-sm">
-                            <option value="">Select Year</option>
-                            <option value="FE">FE</option>
-                            <option value="SE">SE</option>
-                            <option value="TE">TE</option>
-                            <option value="BE">BE</option>
-                        </select>
-     
+                                    class="p-2 w-full rounded border border-gray-300 text-sm">
+                                <option value="">Select Year</option>
+                                <option value="FE">FE</option>
+                                <option value="SE">SE</option>
+                                <option value="TE">TE</option>
+                                <option value="BE">BE</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-500">SSC Marks : <em>{{Current_profile.sscMarks}}</em></label>
-                        <input type="number"[(ngModel)]="student.sscMarks" name="sscMarks" required class="p-2 w-full rounded border border-gray-300 text-sm">
-                    </div>
-                    <div *ngIf="Current_profile.diplomaMarks > 0" class="hidden">
-                        <label class="block text-sm font-medium text-gray-500">HSC Marks : <em>{{Current_profile.hscMarks}}</em></label>
-                        <input type="number"[(ngModel)]="student.hscMarks" name="hscMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-500">Diploma Marks : <em>{{Current_profile.diplomaMarks}}</em></label>
-                        <input type="number"[(ngModel)]="student.diplomaMarks"  name="diplomaMarks" class="p-2 w-full rounded border border-gray-300 text-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">SSC Marks: <em>{{Current_profile.sscMarks}}</em></label>
+                            <input type="number" [(ngModel)]="student.sscMarks" name="sscMarks" required 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
+                        </div>
+                        <div *ngIf="Current_profile.diplomaMarks > 0" class="hidden">
+                            <label class="block text-sm font-medium text-gray-500">HSC Marks: <em>{{Current_profile.hscMarks}}</em></label>
+                            <input type="number" [(ngModel)]="student.hscMarks" name="hscMarks" 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Diploma Marks: <em>{{Current_profile.diplomaMarks}}</em></label>
+                            <input type="number" [(ngModel)]="student.diplomaMarks" name="diplomaMarks" 
+                                   class="p-2 w-full rounded border border-gray-300 text-sm">
+                        </div>
                     </div>
 
                     <div class="flex justify-center mt-6">
-
                         <button type="button" (click)="nextStep()"
-                            class="px-10 py-2 bg-[#062027] text-white rounded">Next</button>
+                                class="px-8 py-2 bg-[#062027] text-white rounded hover:bg-[#0a2d38] transition">
+                            Next
+                        </button>
                     </div>
-
                 </div>
-                <div *ngIf="step==2" class="w-full space-y-2">
-                    <div class="flex items-center justify-center ml-80 mb-5 w-64">
-                        <!-- Left Circle -->
+
+                <!-- Step 2 -->
+                <div *ngIf="step==2" class="w-full space-y-4">
+                    <!-- Progress Indicator -->
+                    <div class="flex items-center justify-center mb-5 w-48 mx-auto">
                         <div class="w-3 h-3 bg-gray-800 rounded-full mr-1"></div>
-                    
-                        <!-- Line -->
                         <div class="w-full h-[2px] bg-gray-800"></div>
-                    
-                        <!-- Right Circle -->
                         <div class="w-3 h-3 bg-gray-800 rounded-full ml-1"></div>
                     </div>
-                 
-                    <div class="grid grid-cols-3 gap-4 w-full">
-                      
-                        <!-- Row 1 with KT options -->
 
-                        <div class="flex flex-col" >
-                            <label class="text-sm font-medium text-gray-500">Sem-1 Marks : <em>{{Current_profile.sem1Marks}}</em></label>
+                    <!-- Semester Marks -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Sem 1 -->
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Sem-1 Marks: <em>{{Current_profile.sem1Marks}}</em></label>
                             <div class="flex items-center space-x-2">
-                                <input type="number" [(ngModel)]="student.sem1Marks"  [disabled]="Current_profile.diplomaMarks > 0" name="sem1Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <input type="number" [(ngModel)]="student.sem1Marks" [disabled]="Current_profile.diplomaMarks > 0" 
+                                       name="sem1Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                                 <div class="flex items-center">
-                                    <input type="checkbox" id="sem1KT"  [disabled]="Current_profile.diplomaMarks > 0"[(ngModel)]="student.sem1KT" name="sem1KT" class="mr-1">
+                                    <input type="checkbox" id="sem1KT" [disabled]="Current_profile.diplomaMarks > 0" 
+                                           [(ngModel)]="student.sem1KT" name="sem1KT" class="mr-1">
                                     <label for="sem1KT" class="text-xs text-red-500">KT</label>
                                 </div>
                             </div>
                             <div *ngIf="Current_profile.sem1KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
-                        <div class="flex flex-col" >
-                            <label class="text-sm font-medium text-gray-500">Sem-2 Marks : <em>{{Current_profile.sem2Marks}}</em></label>
+                        
+                        <!-- Sem 2 -->
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Sem-2 Marks: <em>{{Current_profile.sem2Marks}}</em></label>
                             <div class="flex items-center space-x-2">
-                                <input type="number"  [disabled]="Current_profile.diplomaMarks > 0" [(ngModel)]="student.sem2Marks" name="sem2Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <input type="number" [disabled]="Current_profile.diplomaMarks > 0" [(ngModel)]="student.sem2Marks" 
+                                       name="sem2Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
                                 <div class="flex items-center">
-                                    <input type="checkbox" id="sem2KT"[disabled]="Current_profile.diplomaMarks > 0" [(ngModel)]="student.sem2KT" name="sem2KT" class="mr-1">
+                                    <input type="checkbox" id="sem2KT" [disabled]="Current_profile.diplomaMarks > 0" 
+                                           [(ngModel)]="student.sem2KT" name="sem2KT" class="mr-1">
                                     <label for="sem2KT" class="text-xs text-red-500">KT</label>
                                 </div>
-                     
+                            </div>
                             <div *ngIf="Current_profile.sem2KT" class="text-xs text-red-500 mt-1">Current: KT</div>
-                        </div></div>
-                        <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-3 Marks : <em>{{Current_profile.sem3Marks}}</em></label>
+                        </div>
+                        
+                        <!-- Sem 3 -->
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Sem-3 Marks: <em>{{Current_profile.sem3Marks}}</em></label>
                             <div class="flex items-center space-x-2">
-                                <input type="number" [(ngModel)]="student.sem3Marks" name="sem3Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <input type="number" [(ngModel)]="student.sem3Marks" name="sem3Marks" 
+                                       class="p-2 border border-gray-300 rounded w-full text-sm">
                                 <div class="flex items-center">
                                     <input type="checkbox" id="sem3KT" [(ngModel)]="student.sem3KT" name="sem3KT" class="mr-1">
                                     <label for="sem3KT" class="text-xs text-red-500">KT</label>
@@ -215,12 +207,13 @@
                             </div>
                             <div *ngIf="Current_profile.sem3KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
-                    
-                        <!-- Row 2 with KT options -->
-                        <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-4 Marks : <em>{{Current_profile.sem4Marks}}</em></label>
+                        
+                        <!-- Sem 4 -->
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Sem-4 Marks: <em>{{Current_profile.sem4Marks}}</em></label>
                             <div class="flex items-center space-x-2">
-                                <input type="number" [(ngModel)]="student.sem4Marks" name="sem4Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <input type="number" [(ngModel)]="student.sem4Marks" name="sem4Marks" 
+                                       class="p-2 border border-gray-300 rounded w-full text-sm">
                                 <div class="flex items-center">
                                     <input type="checkbox" id="sem4KT" [(ngModel)]="student.sem4KT" name="sem4KT" class="mr-1">
                                     <label for="sem4KT" class="text-xs text-red-500">KT</label>
@@ -228,10 +221,13 @@
                             </div>
                             <div *ngIf="Current_profile.sem4KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
-                        <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-5 Marks : <em>{{Current_profile.sem5Marks}}</em></label>
+                        
+                        <!-- Sem 5 -->
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Sem-5 Marks: <em>{{Current_profile.sem5Marks}}</em></label>
                             <div class="flex items-center space-x-2">
-                                <input type="number" [(ngModel)]="student.sem5Marks" name="sem5Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <input type="number" [(ngModel)]="student.sem5Marks" name="sem5Marks" 
+                                       class="p-2 border border-gray-300 rounded w-full text-sm">
                                 <div class="flex items-center">
                                     <input type="checkbox" id="sem5KT" [(ngModel)]="student.sem5KT" name="sem5KT" class="mr-1">
                                     <label for="sem5KT" class="text-xs text-red-500">KT</label>
@@ -239,10 +235,13 @@
                             </div>
                             <div *ngIf="Current_profile.sem5KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
-                        <div class="flex flex-col">
-                            <label class="text-sm font-medium text-gray-500">Sem-6 Marks : <em>{{Current_profile.sem6Marks}}</em></label>
+                        
+                        <!-- Sem 6 -->
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Sem-6 Marks: <em>{{Current_profile.sem6Marks}}</em></label>
                             <div class="flex items-center space-x-2">
-                                <input type="number" [(ngModel)]="student.sem6Marks" name="sem6Marks" class="p-2 border border-gray-300 rounded w-full text-sm">
+                                <input type="number" [(ngModel)]="student.sem6Marks" name="sem6Marks" 
+                                       class="p-2 border border-gray-300 rounded w-full text-sm">
                                 <div class="flex items-center">
                                     <input type="checkbox" id="sem6KT" [(ngModel)]="student.sem6KT" name="sem6KT" class="mr-1">
                                     <label for="sem6KT" class="text-xs text-red-500">KT</label>
@@ -250,57 +249,83 @@
                             </div>
                             <div *ngIf="Current_profile.sem6KT" class="text-xs text-red-500 mt-1">Current: KT</div>
                         </div>
-                        
-                        <!-- Row 3 -->
-                        <div class="flex flex-col col-span-3">
-                           
-                            <label class="text-sm font-medium text-gray-500">Backlog : <em>{{Current_profile.noOfBacklogs}}</em></label>
-                            <input type="number" [(ngModel)]="student.noOfBacklogs" name="noOfBacklogs" class="p-2 border border-gray-300 rounded w-full text-sm">
+                    </div>
+
+                    <!-- Backlog and Resume -->
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Backlog: <em>{{Current_profile.noOfBacklogs}}</em></label>
+                            <input type="number" [(ngModel)]="student.noOfBacklogs" name="noOfBacklogs" 
+                                   class="p-2 border border-gray-300 rounded w-full text-sm">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-500">Upload Resume</label>
-                            <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" (change)="onFileSelectedresume($event)">
-                        
-                         
-                        
-
-                            <div class="flex justify-center mt-6 space-x-10">
-
-                                <button type="button" (click)="prevStep()"
-                                    class="px-4 py-2 bg-[#062027] text-white rounded">Prev</button>
-                                    <button type="button"
-                                    class="px-4 py-2 bg-[#062027] text-white rounded"(click)="showConfirmation()">Update</button>
-                                    
-                            </div>
+                            <input type="file" class="p-2 border border-gray-300 rounded w-full text-sm" 
+                                   (change)="onFileSelectedresume($event)">
                         </div>
                     </div>
-                    
 
+                    <div class="flex justify-center mt-6 space-x-4">
+                        <button type="button" (click)="prevStep()"
+                                class="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
+                            Previous
+                        </button>
+                        <button type="button" (click)="showConfirmation()"
+                                class="px-6 py-2 bg-[#062027] text-white rounded hover:bg-[#0a2d38] transition">
+                            Update
+                        </button>
+                    </div>
                 </div>
             </form>
-            <div *ngIf="showPopup" class="fixed inset-0 flex items-center backdrop-blur justify-center bg- bg-opacity-50">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-[400px]">
-                    <h2 class="text-xl font-semibold mb-2">Confirm Changes</h2>
-                    <p class="text-gray-600 mb-4">You are about to make the following changes:</p>
-                    
-                    <ul class="list-disc pl-5 text-sm text-gray-700 mb-4">
-                        <li *ngFor="let change of changesList">
-                            <strong>{{ change.key }}:</strong> 
-                            <span class="text-red-600 line-through">{{ change.oldValue }}</span> → 
-                            <span class="text-green-600">{{ change.newValue }}</span>
-                        </li>
-                    </ul>
-            
-                    <div class="flex justify-end space-x-4">
-                        <button (click)="hideConfirmation()"
-                            class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
-                        <button (click)="confirmChanges()"
-                            class="px-4 py-2 bg-[#062027] text-white rounded">Confirm</button>
-                    </div>
+        </div>
+
+        <!-- Crop Modal -->
+        <div *ngIf="showCropModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 text-center">
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">Crop Your Image</h2>
+                <div class="relative flex justify-center bg-gray-200 p-2 rounded-lg">
+                    <img #imageCropper [src]="imageUrl" class="max-w-full rounded-md shadow-md">
+                </div>
+                <div class="flex flex-col sm:flex-row justify-between mt-4 space-y-2 sm:space-y-0">
+                    <button (click)="cropImage()" 
+                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
+                        ✅ Crop
+                    </button>
+                    <button (click)="cancelCrop()" 
+                            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md flex-1 mx-1">
+                        ❌ Cancel
+                    </button>
                 </div>
             </div>
         </div>
 
+        <!-- Confirmation Popup -->
+        <div *ngIf="showPopup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
+                <h2 class="text-xl font-semibold mb-2">Confirm Changes</h2>
+                <p class="text-gray-600 mb-4">You are about to make the following changes:</p>
+                
+                <ul class="list-disc pl-5 text-sm text-gray-700 mb-4 max-h-60 overflow-y-auto">
+                    <li *ngFor="let change of changesList" class="mb-1">
+                        <strong>{{ change.key }}:</strong> 
+                        <span class="text-red-600 line-through">{{ change.oldValue }}</span> → 
+                        <span class="text-green-600">{{ change.newValue }}</span>
+                    </li>
+                </ul>
+        
+                <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+                    <button (click)="hideConfirmation()"
+                            class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition">
+                        Cancel
+                    </button>
+                    <button (click)="confirmChanges()"
+                            class="px-4 py-2 bg-[#062027] text-white rounded hover:bg-[#0a2d38] transition">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-
 </body>
 
 </html>

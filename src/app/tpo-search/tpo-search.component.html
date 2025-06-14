@@ -24,36 +24,48 @@
 </head>
 
 <body class="bg-cover bg-center min-h-screen" style="background-image: url('Main_bg_blue.png');">
-  <!-- Navigation Bar -->
-  <nav class="bg-[white] shadow-lg ml-100 mr-100 rounded-xl">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex justify-between h-16">
-        <div class="flex">
-          <!-- Logo -->
+  <!-- Navigation Bar --><nav class="bg-white shadow-lg ml-[350px] mr-[350px] rounded-xl">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex justify-between h-16">
+      <div class="flex items-center">
+        <!-- Logo -->
 
-
-          <!-- Navigation Links -->
-          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-            <button (click)="setActiveTab('students')" [class.border-blue-500]="activeTab === 'students'"
-              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              [class.text-gray-900]="activeTab === 'students'" [class.text-gray-500]="activeTab !== 'students'">
-              Student Search
-            </button>
-            <button (click)="setActiveTab('posts')" [class.border-blue-500]="activeTab === 'posts'"
-              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              [class.text-gray-900]="activeTab === 'posts'" [class.text-gray-500]="activeTab !== 'posts'">
-              Post Search
-            </button>
-            <button (click)="setActiveTab('applications')" [class.border-blue-500]="activeTab === 'applications'"
-              class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              [class.text-gray-900]="activeTab === 'applications'" [class.text-gray-500]="activeTab !== 'applications'">
-              Application Search
-            </button>
-          </div>
+        <!-- Navigation Links -->
+        <div class="hidden sm:ml-6 sm:flex sm:space-x-2">
+          <button (click)="setActiveTab('students')"
+            [class.border-blue-500]="activeTab === 'students'"
+            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            [class.text-gray-900]="activeTab === 'students'"
+            [class.text-gray-500]="activeTab !== 'students'">
+            Student Search
+          </button>
+          <button (click)="setActiveTab('posts')"
+            [class.border-blue-500]="activeTab === 'posts'"
+            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            [class.text-gray-900]="activeTab === 'posts'"
+            [class.text-gray-500]="activeTab !== 'posts'">
+            Post Search
+          </button>
+          <button (click)="setActiveTab('applications')"
+            [class.border-blue-500]="activeTab === 'applications'"
+            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+            [class.text-gray-900]="activeTab === 'applications'"
+            [class.text-gray-500]="activeTab !== 'applications'">
+            Application Search
+          </button>
+          <button (click)="setActiveTab('placements')"
+          [class.border-blue-500]="activeTab === 'placements'"
+          class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+          [class.text-gray-900]="activeTab === 'placements'"
+          [class.text-gray-500]="activeTab !== 'placements'">
+          Placements Search
+        </button>
         </div>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
+
 
   <!-- Main Content Area -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -127,14 +139,16 @@
       <tbody class="bg-white divide-y divide-gray-200">
         <tr *ngFor="let student of students" class="hover:bg-gray-50">
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-4"><a [routerLink]="['/view_profile', student.id]">
               <div class="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center flex-shrink-0">
                 <span class="text-gray-600 font-medium">{{student.firstName[0]}}</span>
               </div>
+            </a>
+            <a [routerLink]="['/view_profile', student.id]">
               <div>
                 <div class="text-sm font-medium text-gray-500">{{student.firstName}}</div>
                 
-              </div>
+              </div></a>
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.middleName}}</td>
@@ -203,7 +217,122 @@
     </table>
   </div>
 </div>
+<!-- Placements Search Section -->
+<div *ngIf="activeTab === 'placements'" class="bg-white rounded-xl shadow-lg p-6">
+  <div class="flex justify-between mb-4">
+    <!-- Placements Search Bar -->
+    <div class="flex-grow mr-4">
+      <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
+        <input [(ngModel)]="placementFilters.keyword" type="text" placeholder="Search by student, company or position" (keyup.enter)="loadPlacements()"
+          class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+        <img src="Search.png" alt="Search Icon" class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
+          (click)="loadPlacements()" />
+      </div>
+    </div>
+    <!-- Download Button -->
+    <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+      <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
+    </button>
+  </div>
 
+  <!-- Placements Filter Bar -->
+
+  <!-- Placements Table -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joining Date</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let placement of placements" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center space-x-4">
+              <div class="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center flex-shrink-0">
+                <span class="text-gray-600 font-medium">{{placement.application.student.firstName[0]}}</span>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-gray-900">{{placement.application.student.firstName}}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.application.student.department}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.application.jobPost.company.name}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.application.jobPost.jobDesignation}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatCurrency(placement.placedPackage)}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.placementDate}}</td>
+
+        
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button class="text-indigo-600 hover:text-indigo-900 mr-2" (click)="onViewPlacementDetails(placement.id)">
+              <img src="view.png" alt="View" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+            </button>
+            <button class="text-indigo-600 hover:text-indigo-900" (click)="onOfferLetter(placement.id)">
+              <img src="offerletter.png" alt="Download" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Placement Details Modal -->
+  <div *ngIf="showPlacementDetailsModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Placement Details</h3>
+        <button (click)="onPlacementDetailsClose()" class="text-gray-400 hover:text-gray-500">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-600 mb-1">Student Name</p>
+        <p class="text-md font-medium text-gray-800">{{selectedPlacement?.application?.student?.firstName}}</p>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-600 mb-1">Department</p>
+        <p class="text-md font-medium text-gray-800">{{selectedPlacement?.application?.student?.department}}</p>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-600 mb-1">Company</p>
+        <p class="text-md font-medium text-gray-800">{{selectedPlacement?.application?.jobPost?.company?.name}}</p>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-600 mb-1">Position</p>
+        <p class="text-md font-medium text-gray-800">{{selectedPlacement?.application?.jobPost?.jobDesignation}}</p>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-600 mb-1">Package</p>
+        <p class="text-md font-medium text-gray-800">{{selectedPlacement?.placedPackage}}</p>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-sm text-gray-600 mb-1">Joining Date</p>
+        <p class="text-md font-medium text-gray-800">{{selectedPlacement?.placementDate}}</p>
+      </div>
+      
+      <div class="flex justify-end">
+        <button (click)="onOfferLetter(selectedPlacement?.id ?? 0)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+          Download Offer Letter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- Post Search Section -->
     <div *ngIf="activeTab === 'posts'" class="bg-white rounded-xl shadow-lg p-6">
       <div class="flex justify-between mb-4">
@@ -740,6 +869,7 @@
             <tr *ngFor="let application of applications" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
+                  <a [routerLink]="['/view_profile', application.student.id]">
                   <div class="flex-shrink-0 h-10 w-10">
                     <img *ngIf="application.student.profileImageBase64" 
                          [src]="'data:image/jpeg;base64,' + application.student.profileImageBase64" 
@@ -749,7 +879,7 @@
                          class="h-10 w-10 rounded-full bg-cyan-200 flex items-center justify-center">
                       <span class="text-gray-600">{{application.student.firstName[0]}}</span>
                     </div>
-                  </div>
+                  </div></a>  <a [routerLink]="['/view_profile', application.student.id]">
                   <div class="ml-4">
                     <div class="text-sm font-medium text-gray-900">
                       {{application.student.firstName}} {{application.student.middleName}} {{application.student.lastName}}
@@ -757,7 +887,7 @@
                     <div class="text-sm text-gray-500">
                       {{application.student.user.email}}
                     </div>
-                  </div>
+                  </div></a>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -776,6 +906,7 @@
                   (application.status === 'APPLIED' ? 'bg-blue-100 text-blue-800' :
                    application.status === 'SHORTLISTED' ? 'bg-yellow-100 text-yellow-800' :
                    application.status === 'INTERVIEWED' ? 'bg-purple-100 text-purple-800' :
+                   application.status === 'OFFERED' ? 'bg-cyan-100 text-cyan-800' :
                    application.status === 'HIRED' ? 'bg-green-100 text-green-800' :
                    'bg-red-100 text-red-800')">
                   {{application.status}}

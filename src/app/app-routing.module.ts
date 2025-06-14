@@ -17,6 +17,7 @@ import { TpoNavbarComponent } from './tpo-navbar/tpo-navbar.component';
 import { PostJobComponent } from './post-job/post-job.component';
 import { TpoadminComponent } from './tpoadmin/tpoadmin.component';
 import { DownloadResumeComponent } from './download-resume/download-resume.component';
+import { ViewProfileComponent } from './view-profile/view-profile.component';
 const routes: Routes = [
   {path:'',  redirectTo:'login', pathMatch:'full'},
 
@@ -41,12 +42,13 @@ const routes: Routes = [
   { path: "download/:type/:id/:course", component: DownloadResumeComponent }
 ,
 
-
+{path:"view_profile/:id", component :ViewProfileComponent},
   {
     path: 'tpo', component: TpoNavbarComponent, children: [
      
       {path:"search", component :TpoSearchComponent},
       {path:"post_job", component :PostJobComponent},
+
     ]
   }
 ];

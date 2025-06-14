@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Page</title>
+  <title>Student Profile - Admin View</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Roboto+Flex:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -16,7 +16,7 @@
     }
 
     .bg-custom {
-      background-image: url("/Main_bg.png");
+      background-image: url("/Main_bg_blue.png");
       background-size: cover;
       background-position: center;
     }
@@ -72,7 +72,10 @@
   <div class="bg-white p-3 sm:p-4 md:p-8 w-full max-w-7xl shadow-lg rounded-lg">
     <!-- Profile Header -->
     <div class="flex justify-between items-center mb-4 sm:mb-6">
-      <h1 class="onest-font text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800">Your Profile</h1>
+      <h1 class="onest-font text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800">Student Profile</h1>
+      <a (click)="onBack()" class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 sm:py-2 sm:px-4 rounded text-sm sm:text-base transition-colors">
+        Back to Students
+      </a>
     </div>
 
     <!-- Profile Details Section -->
@@ -107,42 +110,21 @@
             <span class="roboto-flex text-gray-600 info-label font-medium text-sm sm:text-base">Email:</span>
             <span class="roboto-flex text-sm sm:text-base break-all">{{ profileData.user?.email }}</span>
           </div>
-          <div class="flex gap-2 sm:gap-4 mt-2 sm:mt-3 flex-wrap">
-            <a href="/forgot_password" class="roboto-flex text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-              </svg>
-              Change Password
-            </a>
-            <a href="/profile_edit" class="roboto-flex text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-              Edit Profile
-            </a>
-            <a [routerLink]="['/download/cv/', profileData.id,profileData.firstName]" class="roboto-flex text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8H6a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" />
-              </svg>
-              View Resume
-            </a>
-            
-          </div>
         </div>
       </div>
 
-  <!-- Percentage Circle -->
-  <div class="flex justify-center mt-2 sm:mt-0">
-    <div class="relative">
-      <div class="circular-progress"></div>
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
-        <span class="text-xs text-gray-600 lg: hidden lg:block">Average</span>
-        <span class="text-xs text-gray-600 lg: hidden lg:block">Percentage</span>
-        <span class="text-base sm:text-lg md:text-xl font-bold text-teal-700">{{profileData.avgMarks | number:'1.2-2'}}</span>
-        <span class=" text-xs text-gray-600 block lg:hidden">AVG</span>
+      <!-- Percentage Circle -->
+      <div class="flex justify-center mt-2 sm:mt-0">
+        <div class="relative">
+          <div class="circular-progress"></div>
+          <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+            <span class="text-xs text-gray-600 lg:hidden lg:block">Average</span>
+            <span class="text-xs text-gray-600 lg:hidden lg:block">Percentage</span>
+            <span class="text-base sm:text-lg md:text-xl font-bold text-teal-700">{{profileData.avgMarks | number:'1.2-2'}}</span>
+            <span class="text-xs text-gray-600 block lg:hidden">AVG</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
     </div>
     
     <hr class="my-4 sm:my-6 border-gray-300" />
@@ -240,9 +222,12 @@
       </div>
     </div>
 
+    <!-- Admin Actions -->
+
+
     <!-- Footer -->
     <div class="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-500">
-      <p>© 2025 Student Portal. All rights reserved.</p>
+      <p>© 2025 Student Portal - Admin Dashboard. All rights reserved.</p>
     </div>
   </div>
 </body>

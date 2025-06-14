@@ -66,4 +66,7 @@ deleteTpoUser(id: number) {
 getDashboardData(): Observable<DashboardData> {
   return this.http.get<DashboardData>(`${this.baseUrl}/api7/dashboard`);
 }
+getStudentProfile(id:number):Observable<any>{
+  return this.http.get(`${this.baseUrl}/api1/tpo/Student/profile/${id}`);   } 
+
 }
