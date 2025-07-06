@@ -30,8 +30,96 @@ export class TpoAdminService {
   companyBaseUrl= environment.apiUrls.companyService;
   constructor(private http:HttpClient) { }
   tpoBaseUrl=environment.apiUrls.tpoService;
+  
+  // Enhanced Logs Service Methods
   getLogs(): Observable<Log[]> {
     return this.http.get<Log[]>(`${this.baseUrl}/api8`);
+  }
+
+  getLogsPaginated(page: number = 0, size: number = 20, sortBy: string = 'timestamp', sortDirection: string = 'desc'): Observable<any> {
+    const params = { page: page.toString(), size: size.toString(), sortBy, sortDirection };
+    return this.http.get<any>(`${this.baseUrl}/api8`, { params });
+  }
+
+  searchLogs(searchParams: any): Observable<any> {
+    const params = this.buildSearchParams(searchParams);
+    return this.http.get<any>(`${this.baseUrl}/api8/search`, { params });
+  }
+
+  filterLogsByAction(action: string, page: number = 0, size: number = 20): Observable<any> {
+    const params = { action, page: page.toString(), size: size.toString() };
+    return this.http.get<any>(`${this.baseUrl}/api8/filter/action`, { params });
+  }
+
+  filterLogsByEntity(entityName: string, page: number = 0, size: number = 20): Observable<any> {
+    const params = { entityName, page: page.toString(), size: size.toString() };
+    return this.http.get<any>(`${this.baseUrl}/api8/filter/entity`, { params });
+  }
+
+  filterLogsByUser(performedBy: string, page: number = 0, size: number = 20): Observable<any> {
+    const params = { performedBy, page: page.toString(), size: size.toString() };
+    return this.http.get<any>(`${this.baseUrl}/api8/filter/user`, { params });
+  }
+
+  filterLogsByDateRange(startDate: string, endDate: string, page: number = 0, size: number = 20): Observable<any> {
+    const params = { startDate, endDate, page: page.toString(), size: size.toString() };
+    return this.http.get<any>(`${this.baseUrl}/api8/filter/daterange`, { params });
+  }
+
+  getRecentLogs(hours: number = 24, page: number = 0, size: number = 20): Observable<any> {
+    const params = { hours: hours.toString(), page: page.toString(), size: size.toString() };
+    return this.http.get<any>(`${this.baseUrl}/api8/recent`, { params });
+  }
+
+  getLogsStatistics(days: number = 30): Observable<any> {
+    const params = { days: days.toString() };
+    return this.http.get<any>(`${this.baseUrl}/api8/stats`, { params });
+  }
+
+  exportLogsToExcel(filters: any = {}): Observable<Blob> {
+    const params = this.buildSearchParams(filters);
+    return this.http.get(`${this.baseUrl}/api8/export/excel`, { 
+      params, 
+      responseType: 'blob' 
+    });
+  }
+
+  getLogById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api8/${id}`);
+  }
+
+  getUniqueActions(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api8/actions/unique`);
+  }
+
+  getUniqueEntities(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api8/entities/unique`);
+  }
+
+  getUniqueUsers(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/api8/users/unique`);
+  }
+
+  saveLog(logData: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/api8/save`, logData);
+  }
+
+  private buildSearchParams(searchParams: any): any {
+    const params: any = {};
+    
+    if (searchParams.action) params.action = searchParams.action;
+    if (searchParams.performedBy) params.performedBy = searchParams.performedBy;
+    if (searchParams.entityName) params.entityName = searchParams.entityName;
+    if (searchParams.entityId) params.entityId = searchParams.entityId;
+    if (searchParams.details) params.details = searchParams.details;
+    if (searchParams.dateFrom) params.dateFrom = searchParams.dateFrom;
+    if (searchParams.dateTo) params.dateTo = searchParams.dateTo;
+    if (searchParams.page !== undefined) params.page = searchParams.page.toString();
+    if (searchParams.size !== undefined) params.size = searchParams.size.toString();
+    if (searchParams.sortBy) params.sortBy = searchParams.sortBy;
+    if (searchParams.sortDirection) params.sortDirection = searchParams.sortDirection;
+    
+    return params;
   }
  getAllCompanies(){
   return this.http.get(this.companyBaseUrl);

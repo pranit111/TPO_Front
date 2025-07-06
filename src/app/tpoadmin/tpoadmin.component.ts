@@ -30,6 +30,38 @@ throw new Error('Method not implemented.');
   filteredLogs: Log[] = [];
   searchQuery: string = '';
   
+  // Enhanced logs properties
+  paginatedLogs: any = null;
+  currentPage: number = 0;
+  pageSize: number = 20;
+  totalElements: number = 0;
+  totalPages: number = 0;
+  
+  // Search and filter properties
+  logsSearchFilters = {
+    action: '',
+    performedBy: '',
+    entityName: '',
+    entityId: '',
+    details: '',
+    dateFrom: '',
+    dateTo: '',
+    sortBy: 'timestamp',
+    sortDirection: 'desc'
+  };
+  
+  // Dropdown data for filters
+  uniqueActions: string[] = [];
+  uniqueEntities: string[] = [];
+  uniqueUsers: string[] = [];
+  
+  // Logs statistics
+  logsStatistics: any = null;
+  
+  // Loading states
+  isLoadingLogs: boolean = false;
+  isExportingLogs: boolean = false;
+  
   // Add new properties for additional dashboard features
   realTimeStats: any = null;
   growthAnalytics: any = null;
@@ -56,18 +88,293 @@ throw new Error('Method not implemented.');
   isExportingYearly = false;
 
   fetchLogs(): void {
-    this.tposervice.getLogs().subscribe((data) => {
-      this.logs = data;
-      this.filteredLogs = data;
+    this.loadLogsPaginated();
+    this.loadLogsDropdownData();
+    this.loadLogsStatistics();
+  }
+
+  loadLogsPaginated(page: number = 0, size: number = 20): void {
+    this.isLoadingLogs = true;
+    this.currentPage = page;
+    this.pageSize = size;
+    
+    this.tposervice.getLogsPaginated(page, size, this.logsSearchFilters.sortBy, this.logsSearchFilters.sortDirection).subscribe({
+      next: (data) => {
+        this.paginatedLogs = data;
+        this.logs = data.logs || [];
+        this.filteredLogs = this.logs;
+        this.totalElements = data.totalElements || 0;
+        this.totalPages = data.totalPages || 0;
+        this.isLoadingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error fetching paginated logs:', error);
+        this.isLoadingLogs = false;
+      }
     });
   }
 
+  searchLogsAdvanced(): void {
+    this.isLoadingLogs = true;
+    const searchParams = {
+      ...this.logsSearchFilters,
+      page: this.currentPage,
+      size: this.pageSize
+    };
+    
+    this.tposervice.searchLogs(searchParams).subscribe({
+      next: (data) => {
+        this.paginatedLogs = data;
+        this.logs = data.logs || [];
+        this.filteredLogs = this.logs;
+        this.totalElements = data.totalElements || 0;
+        this.totalPages = data.totalPages || 0;
+        this.isLoadingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error searching logs:', error);
+        this.isLoadingLogs = false;
+      }
+    });
+  }
+
+  filterLogsByAction(action: string): void {
+    this.isLoadingLogs = true;
+    this.tposervice.filterLogsByAction(action, this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.paginatedLogs = data;
+        this.logs = data.logs || [];
+        this.filteredLogs = this.logs;
+        this.totalElements = data.totalElements || 0;
+        this.totalPages = data.totalPages || 0;
+        this.isLoadingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error filtering logs by action:', error);
+        this.isLoadingLogs = false;
+      }
+    });
+  }
+
+  filterLogsByEntity(entityName: string): void {
+    this.isLoadingLogs = true;
+    this.tposervice.filterLogsByEntity(entityName, this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.paginatedLogs = data;
+        this.logs = data.logs || [];
+        this.filteredLogs = this.logs;
+        this.totalElements = data.totalElements || 0;
+        this.totalPages = data.totalPages || 0;
+        this.isLoadingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error filtering logs by entity:', error);
+        this.isLoadingLogs = false;
+      }
+    });
+  }
+
+  filterLogsByUser(performedBy: string): void {
+    this.isLoadingLogs = true;
+    this.tposervice.filterLogsByUser(performedBy, this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.paginatedLogs = data;
+        this.logs = data.logs || [];
+        this.filteredLogs = this.logs;
+        this.totalElements = data.totalElements || 0;
+        this.totalPages = data.totalPages || 0;
+        this.isLoadingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error filtering logs by user:', error);
+        this.isLoadingLogs = false;
+      }
+    });
+  }
+
+  filterLogsByDateRange(): void {
+    if (!this.logsSearchFilters.dateFrom || !this.logsSearchFilters.dateTo) {
+      alert('Please select both start and end dates');
+      return;
+    }
+    
+    this.isLoadingLogs = true;
+    this.tposervice.filterLogsByDateRange(this.logsSearchFilters.dateFrom, this.logsSearchFilters.dateTo, this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.paginatedLogs = data;
+        this.logs = data.logs || [];
+        this.filteredLogs = this.logs;
+        this.totalElements = data.totalElements || 0;
+        this.totalPages = data.totalPages || 0;
+        this.isLoadingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error filtering logs by date range:', error);
+        this.isLoadingLogs = false;
+      }
+    });
+  }
+
+  getRecentLogs(hours: number = 24): void {
+    this.isLoadingLogs = true;
+    this.tposervice.getRecentLogs(hours, this.currentPage, this.pageSize).subscribe({
+      next: (data) => {
+        this.paginatedLogs = data;
+        this.logs = data.logs || [];
+        this.filteredLogs = this.logs;
+        this.totalElements = data.totalElements || 0;
+        this.totalPages = data.totalPages || 0;
+        this.isLoadingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error fetching recent logs:', error);
+        this.isLoadingLogs = false;
+      }
+    });
+  }
+
+  loadLogsDropdownData(): void {
+    // Load unique actions
+    this.tposervice.getUniqueActions().subscribe({
+      next: (data) => {
+        this.uniqueActions = data.actions || [];
+      },
+      error: (error) => {
+        console.error('Error loading unique actions:', error);
+      }
+    });
+
+    // Load unique entities
+    this.tposervice.getUniqueEntities().subscribe({
+      next: (data) => {
+        this.uniqueEntities = data.entities || [];
+      },
+      error: (error) => {
+        console.error('Error loading unique entities:', error);
+      }
+    });
+
+    // Load unique users
+    this.tposervice.getUniqueUsers().subscribe({
+      next: (data) => {
+        this.uniqueUsers = data.users || [];
+      },
+      error: (error) => {
+        console.error('Error loading unique users:', error);
+      }
+    });
+  }
+
+  loadLogsStatistics(): void {
+    this.tposervice.getLogsStatistics(30).subscribe({
+      next: (data) => {
+        this.logsStatistics = data;
+      },
+      error: (error) => {
+        console.error('Error loading logs statistics:', error);
+      }
+    });
+  }
+
+  exportLogsToExcel(): void {
+    this.isExportingLogs = true;
+    
+    this.tposervice.exportLogsToExcel(this.logsSearchFilters).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `logs_report_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.isExportingLogs = false;
+      },
+      error: (error) => {
+        console.error('Error exporting logs to Excel:', error);
+        this.isExportingLogs = false;
+      }
+    });
+  }
+
+  // Pagination methods
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.loadLogsPaginated(page, this.pageSize);
+    }
+  }
+
+  goToNextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  goToPreviousPage(): void {
+    if (this.currentPage > 0) {
+      this.goToPage(this.currentPage - 1);
+    }
+  }
+
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage = 0;
+    this.loadLogsPaginated(0, newSize);
+  }
+
+  // Clear all filters
+  clearAllFilters(): void {
+    this.logsSearchFilters = {
+      action: '',
+      performedBy: '',
+      entityName: '',
+      entityId: '',
+      details: '',
+      dateFrom: '',
+      dateTo: '',
+      sortBy: 'timestamp',
+      sortDirection: 'desc'
+    };
+    this.searchQuery = '';
+    this.loadLogsPaginated();
+  }
+
+  // Sort logs
+  sortLogs(sortBy: string): void {
+    if (this.logsSearchFilters.sortBy === sortBy) {
+      this.logsSearchFilters.sortDirection = this.logsSearchFilters.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.logsSearchFilters.sortBy = sortBy;
+      this.logsSearchFilters.sortDirection = 'desc';
+    }
+    this.loadLogsPaginated(this.currentPage, this.pageSize);
+  }
+
+  // Get page numbers for pagination display
+  getPageNumbers(): number[] {
+    const maxPages = 5;
+    const pages: number[] = [];
+    const start = Math.max(0, this.currentPage - Math.floor(maxPages / 2));
+    const end = Math.min(this.totalPages, start + maxPages);
+    
+    for (let i = start; i < end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
   filterLogs(): void {
+    if (!this.searchQuery.trim()) {
+      this.filteredLogs = this.logs;
+      return;
+    }
+    
     this.filteredLogs = this.logs.filter(log =>
       log.action.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       log.performedBy.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       log.entityName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      log.entityId.toString().includes(this.searchQuery)
+      log.entityId.toString().includes(this.searchQuery) ||
+      (log.details && log.details.toLowerCase().includes(this.searchQuery.toLowerCase()))
     );
   }
 
@@ -77,6 +384,9 @@ throw new Error('Method not implemented.');
     // Initialize yearly reports data
     this.selectedYear = new Date().getFullYear();
   }
+
+  // Add Math property to access Math functions in template
+  Math = Math;
 
   loadAllDashboardComponents(): void {
     // Load all dashboard components - temporarily commented out until service methods are ready
@@ -384,7 +694,7 @@ onDeleteTpoUser(id: number) {
 }
 
 // Update loadTabData method to include TPO Users
-onProfileLog(id: number) {
+onProfileLog(id: number | string) {
   this.router.navigate(['/view-profile', id]);
   console.log('Navigating to profile with ID:', id);
   this.selectedTab = 'Profile';
