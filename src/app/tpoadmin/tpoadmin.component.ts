@@ -29,6 +29,32 @@ throw new Error('Method not implemented.');
   logs: Log[] = [];
   filteredLogs: Log[] = [];
   searchQuery: string = '';
+  
+  // Add new properties for additional dashboard features
+  realTimeStats: any = null;
+  growthAnalytics: any = null;
+  recentActivities: any = null;
+  processMetrics: any = null;
+  departmentAnalytics: any = null;
+  companyAnalytics: any = null;
+  placementTrends: any = null;
+  performanceAnalytics: any = null;
+  packageDistribution: any = null;
+  hiringTrends: any = null;
+  systemHealth: any = null;
+  dataIntegrity: any = null;
+  dashboardNotifications: any = null;
+  customReports: any = null;
+  
+  // Export states
+  isExporting = false;
+
+  // Yearly Export and Analytics properties
+  yearlyAnalytics: any = null;
+  yearlyComparison: any = null;
+  selectedYear: number = new Date().getFullYear();
+  isExportingYearly = false;
+
   fetchLogs(): void {
     this.tposervice.getLogs().subscribe((data) => {
       this.logs = data;
@@ -47,6 +73,26 @@ throw new Error('Method not implemented.');
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.loadAllDashboardComponents();
+    // Initialize yearly reports data
+    this.selectedYear = new Date().getFullYear();
+  }
+
+  loadAllDashboardComponents(): void {
+    // Load all dashboard components - temporarily commented out until service methods are ready
+    // this.loadRealTimeStats();
+    // this.loadGrowthAnalytics();
+    // this.loadRecentActivities();
+    // this.loadProcessMetrics();
+    // this.loadDepartmentAnalytics();
+    // this.loadCompanyAnalytics();
+    // this.loadPlacementTrends();
+    // this.loadPerformanceAnalytics();
+    // this.loadPackageDistribution();
+    // this.loadHiringTrends();
+    // this.loadSystemHealth();
+    // this.loadDataIntegrity();
+    // this.loadDashboardNotifications();
   }
 
   loadDashboardData(): void {
@@ -91,13 +137,12 @@ throw new Error('Method not implemented.');
   
   navItems = [
     { title: 'Dashboard', icon: 'dashboard.png', active: true },
- 
     { title: 'Companies', icon: 'company.png', active: false },
-  
     { title: 'Logs', icon: 'logs.png', active: false },
     { title: 'Search', icon: 'search_white.png', active: false },
     { title: 'Post', icon: 'post.png', active: false },
     { title: 'TPO', icon: 'tpo.png', active: false },
+    { title: 'Reports', icon: 'Report.png', active: false },
     { title: 'Logout', icon: 'logout.png', active: false }
   ];
   
@@ -162,12 +207,6 @@ loadTabData(tab: string): void {
   this.loading = true;
   
   switch(tab) {
-    // case 'Dashboard':
-    //   this.fetchDashboardData();
-    //   break;
-    // case 'Students':
-    //   this.fetchStudentsData();
-    //   break;
     case 'Companies':
       this.fetchCompaniesData();
       break;
@@ -175,18 +214,14 @@ loadTabData(tab: string): void {
        this.fetchTpoUsersData();
        break;
     case 'Search':
-     
       break;
     case 'Logs':
       this.fetchLogs();
       break;
-    
-    // case 'Placements':
-    //   this.fetchPlacementsData();
-    //   break;
-    // case 'Reports':
-    //   this.fetchReportsData();
-    //   break;
+    case 'Reports':
+      this.loadYearlyAnalytics();
+      this.loadYearlyComparison();
+      break;
     default:
       this.loading = false;
   }
@@ -358,4 +393,388 @@ onProfileLog(id: number) {
   });
   this.loadTabData('Profile');
 }
+
+// Helper methods for dashboard calculations
+getProgressPercentage(current: number, total: number): number {
+  if (!total) return 0;
+  return Math.round((current / total) * 100);
+}
+
+// Add these helper methods to format package amounts
+formatPackageAmount(packageAmount: number): string {
+  if (packageAmount >= 10000000) {
+    return (packageAmount / 10000000).toFixed(1) + ' Cr';
+  } else if (packageAmount >= 100000) {
+    return (packageAmount / 100000).toFixed(1) + ' LPA';
+  } else if (packageAmount > 0) {
+    return packageAmount.toString();
+  }
+  return '0';
+}
+
+formatPackageForDisplay(packageAmount: number): string {
+  if (packageAmount >= 10000000) {
+    return '₹' + (packageAmount / 10000000).toFixed(1) + ' Cr';
+  } else if (packageAmount >= 100000) {
+    return '₹' + (packageAmount / 100000).toFixed(1) + ' LPA';
+  } else if (packageAmount > 0) {
+    return '₹' + packageAmount.toString();
+  }
+  return 'Not Available';
+}
+
+// Update the existing methods to handle the new data structure
+getDepartmentPercentage(departmentName: string): number {
+  const dept = this.dashboardData?.departmentStats?.find(d => d.departmentName === departmentName);
+  return dept ? dept.placementPercentage : 0;
+}
+
+getDepartmentStudentCount(departmentName: string): number {
+  const dept = this.dashboardData?.departmentStats?.find(d => d.departmentName === departmentName);
+  return dept ? dept.totalStudents : 0;
+}
+
+// Color helper methods for dynamic styling
+  getCompanyBarColor(index: number): string {
+    const colors = [
+      'bg-gradient-to-t from-blue-300 to-blue-600',
+      'bg-gradient-to-t from-green-300 to-green-600',
+      'bg-gradient-to-t from-purple-300 to-purple-600',
+      'bg-gradient-to-t from-teal-300 to-teal-600',
+      'bg-gradient-to-t from-indigo-300 to-indigo-600',
+      'bg-gradient-to-t from-amber-300 to-amber-600'
+    ];
+    return colors[index % colors.length];
+  }
+
+  getDepartmentColor(index: number): string {
+    const colors = [
+      'bg-blue-600',
+      'bg-teal-500',
+      'bg-amber-500',
+      'bg-purple-500',
+      'bg-green-500',
+      'bg-indigo-500'
+    ];
+    return colors[index % colors.length];
+  }
+
+  getDepartmentTextColor(index: number): string {
+    const colors = [
+      'text-blue-600',
+      'text-teal-600',
+      'text-amber-600',
+      'text-purple-600',
+      'text-green-600',
+      'text-indigo-600'
+    ];
+    return colors[index % colors.length];
+  }
+
+  getDepartmentBarColor(index: number): string {
+    const colors = [
+      'bg-gradient-to-r from-blue-400 to-blue-600',
+      'bg-gradient-to-r from-teal-400 to-teal-600',
+      'bg-gradient-to-r from-amber-400 to-amber-600',
+      'bg-gradient-to-r from-purple-400 to-purple-600',
+      'bg-gradient-to-r from-green-400 to-green-600',
+      'bg-gradient-to-r from-indigo-400 to-indigo-600'
+    ];
+    return colors[index % colors.length];
+  }
+
+  getStudentRankColor(index: number): string {
+    const colors = [
+      'bg-gradient-to-r from-yellow-400 to-yellow-600', // Gold for #1
+      'bg-gradient-to-r from-gray-400 to-gray-600',     // Silver for #2
+      'bg-gradient-to-r from-amber-600 to-amber-800',   // Bronze for #3
+      'bg-gradient-to-r from-blue-400 to-blue-600',
+      'bg-gradient-to-r from-green-400 to-green-600'
+    ];
+    return colors[index % colors.length];
+  }
+
+  // Add all the new methods for additional dashboard features
+  loadRealTimeStats(): void {
+    this.tposervice.getRealTimeStats().subscribe({
+      next: (data) => {
+        this.realTimeStats = data;
+      },
+      error: (error) => {
+        console.error('Error loading real-time stats:', error);
+      }
+    });
+  }
+
+  loadGrowthAnalytics(): void {
+    this.tposervice.getGrowthAnalytics(6).subscribe({
+      next: (data) => {
+        this.growthAnalytics = data;
+      },
+      error: (error) => {
+        console.error('Error loading growth analytics:', error);
+      }
+    });
+  }
+
+  loadRecentActivities(): void {
+    this.tposervice.getRecentActivities(10).subscribe({
+      next: (data) => {
+        this.recentActivities = data;
+      },
+      error: (error) => {
+        console.error('Error loading recent activities:', error);
+      }
+    });
+  }
+
+  loadProcessMetrics(): void {
+    this.tposervice.getProcessMetrics().subscribe({
+      next: (data) => {
+        this.processMetrics = data;
+      },
+      error: (error) => {
+        console.error('Error loading process metrics:', error);
+      }
+    });
+  }
+
+  loadDepartmentAnalytics(): void {
+    this.tposervice.getDepartmentAnalytics().subscribe({
+      next: (data) => {
+        this.departmentAnalytics = data;
+      },
+      error: (error) => {
+        console.error('Error loading department analytics:', error);
+      }
+    });
+  }
+
+  loadCompanyAnalytics(): void {
+    this.tposervice.getCompanyAnalytics().subscribe({
+      next: (data) => {
+        this.companyAnalytics = data;
+      },
+      error: (error) => {
+        console.error('Error loading company analytics:', error);
+      }
+    });
+  }
+
+  loadPlacementTrends(): void {
+    this.tposervice.getPlacementTrends(12).subscribe({
+      next: (data) => {
+        this.placementTrends = data;
+      },
+      error: (error) => {
+        console.error('Error loading placement trends:', error);
+      }
+    });
+  }
+
+  loadPerformanceAnalytics(): void {
+    this.tposervice.getPerformanceAnalytics(12).subscribe({
+      next: (data) => {
+        this.performanceAnalytics = data;
+      },
+      error: (error) => {
+        console.error('Error loading performance analytics:', error);
+      }
+    });
+  }
+
+  loadPackageDistribution(): void {
+    this.tposervice.getPackageDistribution().subscribe({
+      next: (data) => {
+        this.packageDistribution = data;
+      },
+      error: (error) => {
+        console.error('Error loading package distribution:', error);
+      }
+    });
+  }
+
+  loadHiringTrends(): void {
+    this.tposervice.getHiringTrends(12).subscribe({
+      next: (data) => {
+        this.hiringTrends = data;
+      },
+      error: (error) => {
+        console.error('Error loading hiring trends:', error);
+      }
+    });
+  }
+
+  loadSystemHealth(): void {
+    this.tposervice.getSystemHealth().subscribe({
+      next: (data) => {
+        this.systemHealth = data;
+      },
+      error: (error) => {
+        console.error('Error loading system health:', error);
+      }
+    });
+  }
+
+  loadDataIntegrity(): void {
+    this.tposervice.getDataIntegrity().subscribe({
+      next: (data) => {
+        this.dataIntegrity = data;
+      },
+      error: (error) => {
+        console.error('Error loading data integrity:', error);
+      }
+    });
+  }
+
+  loadDashboardNotifications(): void {
+    this.tposervice.getDashboardNotifications().subscribe({
+      next: (data) => {
+        this.dashboardNotifications = data;
+      },
+      error: (error) => {
+        console.error('Error loading dashboard notifications:', error);
+      }
+    });
+  }
+
+  // Export functionality methods
+  exportDashboardData(): void {
+    this.isExporting = true;
+    
+    this.tposervice.exportDashboardData('excel').subscribe({
+      next: (data) => {
+        this.downloadFile(data, `dashboard_report.xlsx`);
+        this.isExporting = false;
+      },
+      error: (error) => {
+        console.error('Error exporting dashboard data:', error);
+        this.isExporting = false;
+      }
+    });
+  }
+
+  exportStudentData(department: string = '', status: string = ''): void {
+    this.isExporting = true;
+    
+    this.tposervice.exportStudentData('excel', department, status).subscribe({
+      next: (data) => {
+        this.downloadFile(data, `students_report.xlsx`);
+        this.isExporting = false;
+      },
+      error: (error) => {
+        console.error('Error exporting student data:', error);
+        this.isExporting = false;
+      }
+    });
+  }
+
+  exportCompanyData(): void {
+    this.isExporting = true;
+    
+    this.tposervice.exportCompanyData('excel').subscribe({
+      next: (data) => {
+        this.downloadFile(data, `companies_report.xlsx`);
+        this.isExporting = false;
+      },
+      error: (error) => {
+        console.error('Error exporting company data:', error);
+        this.isExporting = false;
+      }
+    });
+  }
+
+  exportYearlyBackup(): void {
+    this.isExportingYearly = true;
+    
+    this.tposervice.exportYearlyBackup(this.selectedYear, 'excel').subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `yearly_backup_${this.selectedYear}.xlsx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.isExportingYearly = false;
+      },
+      error: (error) => {
+        console.error('Error exporting yearly backup:', error);
+        this.isExportingYearly = false;
+      }
+    });
+  }
+
+  loadYearlyAnalytics(year?: number): void {
+    const targetYear = year || this.selectedYear;
+    
+    this.tposervice.getYearlyAnalytics(targetYear).subscribe({
+      next: (data) => {
+        this.yearlyAnalytics = data;
+      },
+      error: (error) => {
+        console.error('Error loading yearly analytics:', error);
+      }
+    });
+  }
+
+  loadYearlyComparison(): void {
+    this.tposervice.getYearlyComparison(3).subscribe({
+      next: (data) => {
+        this.yearlyComparison = data;
+      },
+      error: (error) => {
+        console.error('Error loading yearly comparison:', error);
+      }
+    });
+  }
+
+  refreshDashboardData(): void {
+    this.tposervice.refreshDashboardData().subscribe({
+      next: (response) => {
+        console.log('Dashboard data refreshed:', response);
+        this.loadDashboardData();
+        this.loadAllDashboardComponents();
+      },
+      error: (error) => {
+        console.error('Error refreshing dashboard data:', error);
+      }
+    });
+  }
+
+  generateCustomReport(reportParams: any): void {
+    this.tposervice.generateCustomReport(reportParams).subscribe({
+      next: (data) => {
+        this.customReports = data;
+      },
+      error: (error) => {
+        console.error('Error generating custom report:', error);
+      }
+    });
+  }
+
+  // Method to change selected year
+  onYearChange(year: number): void {
+    this.selectedYear = year;
+    this.loadYearlyAnalytics(year);
+  }
+
+  // Get available years for dropdown
+  getAvailableYears(): number[] {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = 0; i < 5; i++) {
+      years.push(currentYear - i);
+    }
+    return years;
+  }
+
+  private downloadFile(data: any, filename: string): void {
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
 }

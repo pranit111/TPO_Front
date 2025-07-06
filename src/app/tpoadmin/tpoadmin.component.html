@@ -35,30 +35,25 @@
     font-family: 'Roboto Flex', sans-serif;
   }
 </style>
-<div class="flex h-screen bgimage bg-cover bg-no-repeat" style="background-image: url('Main_bg_blue.png');">
-  <nav class="w-20 bg-[#0A1325] flex flex-col items-center py-6 shadow-xl">
+<div class="flex h-screen bgimage">
+  <!-- Sidebar -->
+  <nav class="w-20 sidebar flex flex-col items-center py-6 shadow-enhanced">
     <div class="mb-10">
-      <div
-        class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+      <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
         <span class="text-white font-bold text-xl">A</span>
       </div>
     </div>
 
     <div class="flex flex-col items-center space-y-6 mt-6">
       <ng-container *ngFor="let item of navItems">
-        <div class="cursor-pointer group transition-all"(click)="setSelectedTab(item.title)"
-          [ngClass]="{'text-white': item.active, 'text-indigo-300 hover:text-white': !item.active}">
-          <div class="flex items-center justify-center w-12 h-12 rounded-xl transition-all"
-            [ngClass]="{'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md': item.active, 'hover:bg-blue-800/50': !item.active}">
-            <button  class="relative z-10">
-                <i class="fas fa-{{item.icon}} text-lg"></i>
-                <img *ngIf="item.icon" [src]="item.icon" alt="{{item.title}}" class="w-6 h-6">
-            </button>
-
+        <div class="nav-item cursor-pointer group transition-all rounded-xl" 
+             [class.active]="item.active"
+             (click)="setSelectedTab(item.title)">
+          <div class="flex items-center justify-center w-12 h-12 rounded-xl transition-all relative z-10">
+            <i class="fas fa-{{item.icon}} text-lg text-white"></i>
+            <img *ngIf="item.icon" [src]="item.icon" alt="{{item.title}}" class="w-6 h-6">
           </div>
-          <button (click)="setSelectedTab(item.title)">
-            <div class="text-xs text-center mt-1 font-medium">{{item.title}}</div>
-          </button>
+          <div class="text-xs text-center mt-1 font-medium text-white/80">{{item.title}}</div>
         </div>
       </ng-container>
     </div>
@@ -67,219 +62,526 @@
   <!-- Main Content Area -->
   <div class="flex-1 flex">
     <!-- Dashboard Content -->
-    <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Dashboard'">
-      <div class="bg-gray-100 rounded-xl shadow-lg p-6 mb-4">
+    <main class="flex-1 p-6 overflow-auto animate-fadeInUp" *ngIf="selectedTab=='Dashboard'">
+      <div class="main-content dashboard-header rounded-xl shadow-enhanced p-6 mb-6">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-3xl font-bold text-blue-800">Admin Panel</h1>
+          <div>
+            <h1 class="text-3xl font-bold gradient-text">Admin Dashboard</h1>
+            <p class="text-gray-600 mt-1">Welcome back! Here's what's happening with your placements.</p>
+          </div>
           <div class="flex items-center space-x-4">
-            <div class="relative">
-             
-
+            <div class="flex items-center space-x-2 bg-white/50 backdrop-blur-sm rounded-lg px-3 py-2">
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-sm font-medium text-gray-700">Live Data</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button (click)="exportDashboardData()" class="btn-primary" [disabled]="isExporting">
+                <i class="fas fa-download mr-2"></i>
+                <span *ngIf="!isExporting">Export Excel</span>
+                <span *ngIf="isExporting">Exporting...</span>
+              </button>
+              <button (click)="refreshDashboardData()" class="btn-secondary">
+                <i class="fas fa-sync-alt mr-2"></i>
+                Refresh
+              </button>
             </div>
           </div>
         </div>
     
-        <!-- KPI Summary -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
-            <p class="text-sm text-gray-500 font-medium">Total Students</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.studentData?.total}}
+        <!-- Enhanced KPI Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="kpi-card blue rounded-xl shadow-enhanced p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600 font-medium mb-1">Total Students</p>
+                <p class="text-3xl font-bold text-gray-800">{{dashboardData?.studentData?.total || 0}}</p>
+              </div>
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-users text-blue-600 text-xl"></i>
+              </div>
+            </div>
           </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
-            <p class="text-sm text-gray-500 font-medium">Placement Rate</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.studentData?.placementRate}}%</p>
+          
+          <div class="kpi-card green rounded-xl shadow-enhanced p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600 font-medium mb-1">Placement Rate</p>
+                <p class="text-3xl font-bold text-gray-800">{{dashboardData?.studentData?.placementRate || 0}}%</p>
+              </div>
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-chart-line text-green-600 text-xl"></i>
+              </div>
+            </div>
           </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-amber-500">
-            <p class="text-sm text-gray-500 font-medium">Companies Registered</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.studentData?.total}}</p>
+          
+          <div class="kpi-card amber rounded-xl shadow-enhanced p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600 font-medium mb-1">Active Companies</p>
+                <p class="text-3xl font-bold text-gray-800">{{dashboardData?.companiesData?.total || 0}}</p>
+                <p class="text-xs text-amber-600 mt-1">
+                  <i class="fas fa-building mr-1"></i>
+                  {{dashboardData?.companiesData?.totalOpenings || 0}} openings
+                </p>
+              </div>
+              <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-building text-amber-600 text-xl"></i>
+              </div>
+            </div>
           </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-teal-500">
-            <p class="text-sm text-gray-500 font-medium">Avg. Package</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.insightsData?.averagePackage}}</p>
+          
+          <div class="kpi-card teal rounded-xl shadow-enhanced p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600 font-medium mb-1">Avg. Package</p>
+                <p class="text-3xl font-bold text-gray-800">{{dashboardData?.insightsData?.averagePackage || 'N/A'}}</p>
+                <p class="text-xs text-teal-600 mt-1">
+                  <i class="fas fa-rupee-sign mr-1"></i>
+                  Highest: {{dashboardData?.insightsData?.highestPackage || 'N/A'}}
+                </p>
+              </div>
+              <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-money-bill-wave text-teal-600 text-xl"></i>
+              </div>
+            </div>
           </div>
         </div>
     
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <!-- Students Card -->
-          <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-gray-800">Student Placement Status</h2>
+        <!-- Real-time Stats Section -->
+        <div *ngIf="realTimeStats" class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8 border border-indigo-200">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-800">Real-time Activity</h3>
+            <div class="flex items-center space-x-2">
+              <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <span class="text-sm text-gray-600">Live</span>
             </div>
-            <div class="flex flex-row">
-              <div class="w-1/2">
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="bg-blue-50 rounded-lg p-3">
-                    <p class="text-xs text-gray-500 mb-1">Total</p>
-                    <p class="text-xl font-bold text-gray-800">{{dashboardData?.studentData?.total}}</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white rounded-lg p-4 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600">Active Users</p>
+                  <p class="text-2xl font-bold text-blue-600">{{realTimeStats?.activeUsers || 0}}</p>
+                </div>
+                <i class="fas fa-users text-blue-500 text-xl"></i>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600">Ongoing Applications</p>
+                  <p class="text-2xl font-bold text-green-600">{{realTimeStats?.ongoingApplications || 0}}</p>
+                </div>
+                <i class="fas fa-file-alt text-green-500 text-xl"></i>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow-sm">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600">Current Visitors</p>
+                  <p class="text-2xl font-bold text-purple-600">{{realTimeStats?.currentVisitors || 0}}</p>
+                </div>
+                <i class="fas fa-eye text-purple-500 text-xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Enhanced Dashboard Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <!-- Students Card with Enhanced Visualization -->
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-gray-800">Student Placement Overview</h2>
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                <span class="text-sm text-gray-500">Live</span>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Stats Grid -->
+              <div class="space-y-4">
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm text-blue-600 font-medium mb-1">Total Students</p>
+                      <p class="text-2xl font-bold text-blue-800">{{dashboardData?.studentData?.total || 0}}</p>
+                    </div>
+                    <div class="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center">
+                      <i class="fas fa-users text-blue-600"></i>
+                    </div>
                   </div>
-                  <div class="bg-green-50 rounded-lg p-3">
-                    <p class="text-xs text-gray-500 mb-1">Placed</p>
-                    <p class="text-xl font-bold text-green-600">{{dashboardData?.studentData?.placed}}</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm text-green-600 font-medium mb-1">Placed</p>
+                      <p class="text-2xl font-bold text-green-800">{{dashboardData?.studentData?.placed || 0}}</p>
+                    </div>
+                    <div class="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center">
+                      <i class="fas fa-check text-green-600"></i>
+                    </div>
                   </div>
-                  <div class="bg-amber-50 rounded-lg p-3">
-                    <p class="text-xs text-gray-500 mb-1">Remaining</p>
-                    <p class="text-xl font-bold text-amber-600">{{dashboardData?.studentData?.remaining}}</p>
-                  </div>
-                  <div class="bg-teal-50 rounded-lg p-3">
-                    <p class="text-xs text-gray-500 mb-1">Rate</p>
-                    <p class="text-xl font-bold text-teal-600">{{dashboardData?.studentData?.placementRate}}%</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg p-4 border border-amber-200">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-sm text-amber-600 font-medium mb-1">Remaining</p>
+                      <p class="text-2xl font-bold text-amber-800">{{dashboardData?.studentData?.remaining || 0}}</p>
+                    </div>
+                    <div class="w-10 h-10 bg-amber-200 rounded-full flex items-center justify-center">
+                      <i class="fas fa-clock text-amber-600"></i>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="w-1/2 flex items-center justify-center">
-                <div class="relative w-40 h-40">
-                  <svg viewBox="0 0 36 36" class="w-full h-full">
-                    <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200" stroke-width="1"></circle>
-                    <circle cx="18" cy="18" r="16" fill="none" stroke-width="3.8" stroke-linecap="round"
-                      class="stroke-current text-blue-500" [attr.stroke-dasharray]="100.53"
-                      [attr.stroke-dashoffset]="100.53 - ((dashboardData?.studentData?.placementRate ?? 0) / 100 * 100.53)"
-                      transform="rotate(-90 18 18)"></circle>
-                    <text x="18" y="18" text-anchor="middle" dominant-baseline="middle" class="fill-gray-800 font-bold"
-                      style="font-size: 8px; line-height: 32px;">{{dashboardData?.studentData?.placementRate}}%</text>
-                    <text x="18" y="23" text-anchor="middle" dominant-baseline="middle" class="fill-gray-500"
-                      style="font-size: 2px; line-height: 32px;">Placement Rate</text>
+              
+              <!-- Enhanced Circular Progress -->
+              <div class="flex items-center justify-center">
+                <div class="relative w-48 h-48">
+                  <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+                    <!-- Background circle -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8" />
+                    <!-- Progress circle -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gradient)" stroke-width="8" 
+                            stroke-linecap="round" stroke-dasharray="283" 
+                            [attr.stroke-dashoffset]="283 - ((dashboardData?.studentData?.placementRate || 0) / 100 * 283)"
+                            class="transition-all duration-1000 ease-out" />
+                    <!-- Gradient definition -->
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+                      </linearGradient>
+                    </defs>
                   </svg>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <div class="text-3xl font-bold text-gray-800">{{dashboardData?.studentData?.placementRate || 0}}%</div>
+                      <div class="text-sm text-gray-500 mt-1">Placement Rate</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
     
-          <!-- Insights Card -->
-          <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-gray-800">Placement Insights</h2>
+          <!-- Enhanced Insights Card -->
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-gray-800">Placement Insights</h2>
+              <button class="btn-secondary">
+                <i class="fas fa-chart-bar mr-2"></i>
+                View Details
+              </button>
             </div>
-            <div class="space-y-4">
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium text-gray-800">Highest Package</span>
-                  <span class="text-sm font-bold text-blue-600">{{dashboardData?.insightsData?.highestPackage}}</span>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-2.5">
-                  <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2.5 rounded-full w-2/3"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium text-gray-800">Average Package</span>
-                  <span class="text-sm font-bold text-blue-600">{{dashboardData?.insightsData?.averagePackage}}</span>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-2.5">
-                  <div class="bg-gradient-to-r from-teal-400 to-teal-600 h-2.5 rounded-full w-3/4"></div>
+            
+            <div class="space-y-6">
+              <!-- Highest Package -->
+              <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+                <div class="flex justify-between items-center mb-3">
+                  <span class="text-sm font-medium text-purple-600">Highest Package</span>
+                  <span class="text-lg font-bold text-purple-800">{{dashboardData?.insightsData?.highestPackage || 'N/A'}}</span>
                 </div>
               </div>
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium text-gray-800">Top Hiring Company</span>
-                  <span class="text-sm font-bold text-blue-600">{{dashboardData?.insightsData?.topHiringCompany}}</span>
+              
+              <!-- Average Package -->
+              <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-4 border border-teal-200">
+                <div class="flex justify-between items-center mb-3">
+                  <span class="text-sm font-medium text-teal-600">Average Package</span>
+                  <span class="text-lg font-bold text-teal-800">{{dashboardData?.insightsData?.averagePackage || 'N/A'}}</span>
                 </div>
-                <div class="w-full bg-gray-100 rounded-full h-2.5">
-                  <div class="bg-gradient-to-r from-amber-400 to-amber-600 h-2.5 rounded-full w-2/3"></div>
+              </div>
+              
+              <!-- Top Hiring Company -->
+              <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
+                <div class="flex justify-between items-center mb-3">
+                  <span class="text-sm font-medium text-indigo-600">Top Hiring Company</span>
+                  <span class="text-lg font-bold text-indigo-800">{{dashboardData?.insightsData?.topHiringCompany || 'N/A'}}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
     
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Companies Card -->
-          <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-gray-800">Companies</h2>
-              <button class="text-blue-600 text-sm font-medium hover:text-blue-800">View All</button>
+        <!-- Enhanced Bottom Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Enhanced Companies Card -->
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-gray-800">Company Analytics</h2>
+              <div class="flex items-center space-x-2">
+                <button (click)="exportCompanyData()" class="btn-secondary" [disabled]="isExporting">
+                  <i class="fas fa-download mr-2"></i>
+                  Export
+                </button>
+                <button class="btn-secondary">
+                  <i class="fas fa-external-link-alt mr-2"></i>
+                  View All
+                </button>
+              </div>
             </div>
-            <div class="mb-4 grid grid-cols-3 gap-2 text-center">
-              <div class="bg-blue-50 rounded-lg p-2">
-                <p class="text-xs text-gray-500 mb-1">Total</p>
-                <p class="text-lg font-bold text-blue-600">{{dashboardData?.companiesData?.total}}</p>
+            
+            <!-- Company Stats -->
+            <div class="grid grid-cols-3 gap-3 mb-6">
+              <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 text-center border border-blue-200">
+                <div class="w-8 h-8 bg-blue-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <i class="fas fa-building text-blue-600 text-sm"></i>
+                </div>
+                <p class="text-xs text-blue-600 font-medium mb-1">Total</p>
+                <p class="text-lg font-bold text-blue-800">{{dashboardData?.companiesData?.total || 0}}</p>
               </div>
-              <div class="bg-green-50 rounded-lg p-2">
-                <p class="text-xs text-gray-500 mb-1">Openings</p>
-                <p class="text-lg font-bold text-green-600">{{dashboardData?.companiesData?.totalOpenings}}</p>
+              <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3 text-center border border-green-200">
+                <div class="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <i class="fas fa-briefcase text-green-600 text-sm"></i>
+                </div>
+                <p class="text-xs text-green-600 font-medium mb-1">Openings</p>
+                <p class="text-lg font-bold text-green-800">{{dashboardData?.companiesData?.totalOpenings || 0}}</p>
               </div>
-              <div class="bg-amber-50 rounded-lg p-2">
-                <p class="text-xs text-gray-500 mb-1">Remaining</p>
-                <p class="text-lg font-bold text-amber-600">{{dashboardData?.companiesData?.remaining}}</p>
+              <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-3 text-center border border-amber-200">
+                <div class="w-8 h-8 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <i class="fas fa-hourglass-half text-amber-600 text-sm"></i>
+                </div>
+                <p class="text-xs text-amber-600 font-medium mb-1">Pending</p>
+                <p class="text-lg font-bold text-amber-800">{{dashboardData?.companiesData?.remaining || 0}}</p>
               </div>
             </div>
     
-            <!-- Bar Chart with Labels -->
-            <div class="mt-6">
-              <div class="h-44 flex items-end space-x-3 pb-1 px-2">
-                <div *ngFor="let company of dashboardData?.companiesData?.companies; let i = index"
-                  class="flex-1 flex flex-col items-center">
-                  <div [ngClass]="i === 3 ? 'bg-gradient-to-t from-teal-300 to-teal-500' : 
-                               i === 4 ? 'bg-gradient-to-t from-slate-800 to-black' : 
-                               'bg-gradient-to-t from-blue-300 to-blue-600'"
-                    [style.height.%]="(company.openings / 120) * 100" class="w-full rounded-t-lg"></div>
-                  <span class="text-xs font-medium text-gray-500 mt-1">{{company.name.split(' ')[1]}}</span>
+            <!-- Enhanced Company Chart -->
+            <div class="chart-container">
+              <div class="bar-chart">
+                <div class="h-40 flex items-end justify-between space-x-2 pb-2">
+                  <div *ngFor="let company of dashboardData?.companiesData?.companies; let i = index"
+                       class="flex-1 flex flex-col items-center">
+                    <div class="chart-bar w-full transition-all duration-500 hover:scale-105"
+                         [style.height.%]="getProgressPercentage(company.openings, (dashboardData?.companiesData?.totalOpenings || 1))"
+                         [ngClass]="getCompanyBarColor(i)">
+                    </div>
+                    <span class="text-xs font-medium text-gray-600 mt-2 text-center">
+                      {{company.name.split(' ')[0]}}
+                    </span>
+                    <span class="text-xs text-gray-500">{{company.openings}}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
     
-          <!-- Departments Card -->
-          <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-gray-800">Departments</h2>
-              <div class="bg-blue-50 text-xs text-blue-600 font-medium px-2 py-1 rounded-full">
-                {{dashboardData?.departmentsData?.totalDepartments}} Total
+          <!-- Enhanced Departments Card -->
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-gray-800">Department Analysis</h2>
+              <div class="bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 text-xs font-medium px-3 py-1 rounded-full border border-blue-200">
+                {{dashboardData?.departmentsData?.totalDepartments || 0}} Total
               </div>
             </div>
     
-            <div class="space-y-4 mt-4">
-              <div class="flex items-center">
-                <div class="w-2 h-2 rounded-full bg-blue-600 mr-2"></div>
-                <span class="text-sm font-medium text-gray-800 mr-auto">Computer Science</span>
-                <span class="text-sm font-bold text-blue-600">32%</span>
-              </div>
-              <div class="flex items-center">
-                <div class="w-2 h-2 rounded-full bg-teal-500 mr-2"></div>
-                <span class="text-sm font-medium text-gray-800 mr-auto">Electronics</span>
-                <span class="text-sm font-bold text-teal-600">28%</span>
-              </div>
-              <div class="flex items-center">
-                <div class="w-2 h-2 rounded-full bg-amber-500 mr-2"></div>
-                <span class="text-sm font-medium text-gray-800 mr-auto">Mechanical</span>
-                <span class="text-sm font-bold text-amber-600">18%</span>
-              </div>
-            </div>
-    
-            <div class="mt-4 pt-4 border-t border-gray-200">
-              <div class="flex justify-between mb-1">
-                <span class="text-sm font-medium text-gray-500">Eligible Students</span>
-                <span class="text-sm font-bold text-gray-800">{{dashboardData?.studentData?.total }}</span>
-              </div>
-            </div>
-          </div>
-    
-          <!-- Top Students Card (New Section) -->
-          <div class="bg-white rounded-xl shadow-md p-5 transition-all hover:shadow-lg">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-gray-800">Top Students</h2>
-              <button class="text-blue-600 text-sm font-medium hover:text-blue-800">View All</button>
-            </div>
-    
-            <div class="space-y-4">
-              <div *ngFor="let student of dashboardData?.topStudents" class="flex items-center">
-                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                  <span class="text-gray-600 font-medium">{{student.rank}}</span>
+            <div class="space-y-4 mb-6">
+              <div *ngFor="let dept of dashboardData?.departmentStats; let i = index" 
+                   class="flex items-center p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border border-gray-200 hover:shadow-md transition-all">
+                <div class="department-indicator mr-4 w-4 h-4 rounded-full"
+                     [ngClass]="getDepartmentColor(i)">
                 </div>
                 <div class="flex-1">
-                  <p class="text-sm font-medium text-gray-800">{{student.name}}</p>
-                  <p class="text-xs text-gray-500">{{student.department}}</p>
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium text-gray-800">{{dept.departmentName}}</span>
+                    <span class="text-sm font-bold" [ngClass]="getDepartmentTextColor(i)">
+                      {{dept.placementPercentage | number:'1.0-1'}}%
+                    </span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="h-2 rounded-full transition-all duration-500" 
+                         [style.width.%]="dept.placementPercentage"
+                         [ngClass]="getDepartmentBarColor(i)">
+                    </div>
+                  </div>
+                  <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>{{dept.totalStudents}} students</span>
+                    <span>{{dept.placedStudents}} placed</span>
+                  </div>
+                  <div class="text-xs text-gray-400 mt-1">
+                    Avg Package: {{formatPackageAmount(dept.averagePackage)}}
+                  </div>
                 </div>
-                <div class="text-right">
-                  <p class="text-sm font-bold text-blue-600">{{student.package}}</p>
-                  <p class="text-xs text-gray-500">{{student.company}}</p>
+              </div>
+              
+              <!-- Show loading state if no department data -->
+              <div *ngIf="!dashboardData?.departmentStats?.length" 
+                   class="space-y-3">
+                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <div class="w-3 h-3 rounded-full bg-gray-300 mr-4 loading-pulse"></div>
+                  <div class="flex-1">
+                    <div class="h-4 bg-gray-200 rounded loading-shimmer mb-2"></div>
+                    <div class="h-2 bg-gray-100 rounded loading-shimmer"></div>
+                  </div>
+                </div>
+                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <div class="w-3 h-3 rounded-full bg-gray-300 mr-4 loading-pulse"></div>
+                  <div class="flex-1">
+                    <div class="h-4 bg-gray-200 rounded loading-shimmer mb-2"></div>
+                    <div class="h-2 bg-gray-100 rounded loading-shimmer"></div>
+                  </div>
                 </div>
               </div>
             </div>
     
-            <div class="mt-4 pt-4 border-t border-gray-200 text-center">
-            
+            <div class="pt-4 border-t border-gray-200">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-gray-600">Eligible Students</span>
+                <span class="text-lg font-bold text-gray-800">{{dashboardData?.departmentsData?.eligibleStudents || 0}}</span>
+              </div>
             </div>
           </div>
+    
+          <!-- Enhanced Top Students Card -->
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-gray-800">Top Performers</h2>
+              <button class="btn-secondary">
+                <i class="fas fa-trophy mr-2"></i>
+                View All
+              </button>
+            </div>
+    
+            <div class="space-y-4">
+              <div *ngFor="let student of dashboardData?.topStudents; let i = index" 
+                   class="flex items-center p-4 bg-gradient-to-r from-white to-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition-all">
+                <div class="student-rank w-12 h-12 rounded-full flex items-center justify-center mr-4 font-bold text-white"
+                     [ngClass]="getStudentRankColor(i)">
+                  {{student.rank}}
+                </div>
+                <div class="flex-1">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <p class="text-sm font-bold text-gray-800">{{student.name}}</p>
+                      <p class="text-xs text-gray-500">{{student.department}}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-sm font-bold text-blue-600">{{student.packageAmount}}</p>
+                      <p class="text-xs text-gray-500">{{student.company}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Show loading state if no student data -->
+              <div *ngIf="!dashboardData?.topStudents?.length" class="space-y-3">
+                <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 loading-pulse"></div>
+                  <div class="flex-1">
+                    <div class="h-4 bg-gray-200 rounded loading-shimmer mb-2"></div>
+                    <div class="h-3 bg-gray-100 rounded loading-shimmer"></div>
+                  </div>
+                </div>
+                <div class="flex items-center p-4 bg-gray-50 rounded-lg">
+                  <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 loading-pulse"></div>
+                  <div class="flex-1">
+                    <div class="h-4 bg-gray-200 rounded loading-shimmer mb-2"></div>
+                    <div class="h-3 bg-gray-100 rounded loading-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div *ngFor="let i of [1,2,3,4]" class="bg-white rounded-xl shadow-md p-6 border">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="h-4 bg-gray-200 rounded loading-shimmer mb-2"></div>
+                  <div class="h-8 bg-gray-300 rounded loading-shimmer mb-2"></div>
+                  <div class="h-3 bg-gray-200 rounded loading-shimmer"></div>
+                </div>
+                <div class="w-12 h-12 bg-gray-200 rounded-full loading-shimmer"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div *ngFor="let i of [1,2]" class="bg-white rounded-xl shadow-md p-6">
+              <div class="h-6 bg-gray-200 rounded loading-shimmer mb-4"></div>
+              <div class="space-y-4">
+                <div class="h-4 bg-gray-200 rounded loading-shimmer"></div>
+                <div class="h-4 bg-gray-200 rounded loading-shimmer"></div>
+                <div class="h-4 bg-gray-200 rounded loading-shimmer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error && !isLoading" class="text-center py-12">
+          <div class="max-w-md mx-auto">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Unable to Load Dashboard</h3>
+            <p class="text-gray-600 mb-6">{{error}}</p>
+            <button (click)="loadDashboardData()" class="btn-primary">
+              <i class="fas fa-sync-alt mr-2"></i>
+              Retry
+            </button>
+          </div>
+        </div>
+
+        <!-- System Health and Notifications -->
+        <div *ngIf="systemHealth || dashboardNotifications" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <!-- System Health -->
+          <div *ngIf="systemHealth" class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-bold text-gray-800">System Health</h3>
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span class="text-sm text-green-600 font-medium">All Systems Operational</span>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Database Status</span>
+                <span class="text-sm font-medium text-green-600">{{systemHealth?.databaseStatus || 'Connected'}}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">API Uptime</span>
+                <span class="text-sm font-medium text-blue-600">{{systemHealth?.apiUptime || '99.98%'}}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Server Response Time</span>
+                <span class="text-sm font-medium text-purple-600">{{systemHealth?.responseTime || '< 200ms'}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div *ngIf="dashboardNotifications" class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-bold text-gray-800">Recent Notifications</h3>
+              <button class="btn-secondary">
+                <i class="fas fa-bell mr-2"></i>
+                View All
+              </button>
+            </div>
+            <div class="space-y-3">
+              <div *ngFor="let notification of dashboardNotifications?.alerts?.slice(0, 3)" 
+                   class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                <div class="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-800">{{notification?.type || 'System Alert'}}</p>
+                  <p class="text-xs text-gray-600">{{notification?.message || 'No recent notifications'}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div *ngIf="!isLoading && !error && dashboardData">
+          <!-- Dashboard content is already rendered above -->
         </div>
       </div>
     </main>
@@ -392,30 +694,31 @@
           </div>
 
           <div class="space-y-4 mt-4">
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full bg-blue-600 mr-2"></div>
-              <span class="text-sm font-medium text-gray-800 mr-auto">Computer Science</span>
-              <span class="text-sm font-bold text-blue-600">32%</span>
+            <div *ngFor="let dept of dashboardData?.departmentStats; let i = index" class="flex items-center">
+              <div class="department-indicator mr-3"
+                   [ngClass]="getDepartmentColor(i)">
+              </div>
+              <span class="text-sm font-medium text-gray-800 mr-auto">{{dept.departmentName}}</span>
+              <span class="text-sm font-bold" [ngClass]="getDepartmentTextColor(i)">
+                {{dept.placementPercentage | number:'1.0-1'}}%
+              </span>
             </div>
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full bg-teal-500 mr-2"></div>
-              <span class="text-sm font-medium text-gray-800 mr-auto">Electronics</span>
-              <span class="text-sm font-bold text-teal-600">28%</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full bg-amber-500 mr-2"></div>
-              <span class="text-sm font-medium text-gray-800 mr-auto">Mechanical</span>
-              <span class="text-sm font-bold text-amber-600">18%</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-              <span class="text-sm font-medium text-gray-800 mr-auto">Civil</span>
-              <span class="text-sm font-bold text-green-600">14%</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
-              <span class="text-sm font-medium text-gray-800 mr-auto">Others</span>
-              <span class="text-sm font-bold text-gray-600">8%</span>
+            
+            <!-- Show loading state if no department data -->
+            <div *ngIf="!dashboardData?.departmentStats?.length" 
+                 class="space-y-3">
+              <div class="flex items-center">
+                <div class="w-2 h-2 rounded-full bg-gray-300 mr-3 loading-pulse"></div>
+                <div class="flex-1 h-4 bg-gray-200 rounded loading-shimmer"></div>
+              </div>
+              <div class="flex items-center">
+                <div class="w-2 h-2 rounded-full bg-gray-300 mr-3 loading-pulse"></div>
+                <div class="flex-1 h-4 bg-gray-200 rounded loading-shimmer"></div>
+              </div>
+              <div class="flex items-center">
+                <div class="w-2 h-2 rounded-full bg-gray-300 mr-3 loading-pulse"></div>
+                <div class="flex-1 h-4 bg-gray-200 rounded loading-shimmer"></div>
+              </div>
             </div>
           </div>
 
@@ -444,81 +747,9 @@
 
           
         </div>
-      </div>
-    </main>
-
-    <!-- Students Content -->
-    <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Students'">
-      <div class="bg-gray-100 rounded-xl shadow-lg p-6 mb-4">
-        <div class="flex items-center justify-between mb-6">
-          <h1 class="text-3xl font-bold text-blue-800">Student Management</h1>
-          <div class="flex items-center space-x-4">
-            <div class="relative">
-            
-            </div>
-            <button class="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700">
-              Add Student
-            </button>
-          </div>
-        </div>
-
-        <!-- Student Statistics -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
-            <p class="text-sm text-gray-500 font-medium">Total Students</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.studentData?.total}}</p>
-          </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
-            <p class="text-sm text-gray-500 font-medium">Placed Students</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.studentData?.placed}}</p>
-          </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-amber-500">
-            <p class="text-sm text-gray-500 font-medium">Remaining</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.studentData?.remaining}}</p>
-          </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-teal-500">
-            <p class="text-sm text-gray-500 font-medium">Placement Rate</p>
-            <p class="text-2xl font-bold text-gray-800">{{dashboardData?.studentData?.placementRate}}%</p>
-          </div>
-        </div>
-
-        <!-- Students Table -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h3 class="text-lg font-semibold text-gray-800">Students List</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">           
-                       
-                <tr>
-                                    <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department
-                  </th>
-                                    <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                  </tr>
-                             
-              </thead>
-               
-                         
-            </table>
-                     
-          </div>
-                 
-        </div>
-             
-      </div>
-         
-    </main>
+      </div>    </main>
+    
+    <!-- Logs Content -->
     <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Logs'">
       <div class="bg-gray-100 rounded-xl shadow-lg p-6 mb-4">
         <div class="flex items-center justify-between mb-6">
@@ -1086,36 +1317,547 @@
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                   </div>
 
+                  <div class="flex justify-end space-x-3 mt-5">
+                    <button type="button" (click)="showEditCompanyModal=false"
+                      class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                      Cancel
+                    </button>
+                    <button type="submit"
+                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                      Update Company
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+              
+            </div>
+     
+            <!-- Update the Actions buttons in the table -->
+            <!-- TPO Users Content -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Reports Content -->
+    <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Reports'">
+      <div class="main-content dashboard-header rounded-xl shadow-enhanced p-6 mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-3xl font-bold gradient-text">Reports & Analytics</h1>
+            <p class="text-gray-600 mt-1">Generate comprehensive reports and export data for analysis.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2 bg-white/50 backdrop-blur-sm rounded-lg px-3 py-2">
+              <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span class="text-sm font-medium text-gray-700">Data Ready</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yearly Reports Section -->
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-8 border border-purple-200">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-xl font-bold text-gray-800">Yearly Reports & Analytics</h3>
+              <p class="text-sm text-gray-600 mt-1">Generate comprehensive yearly reports and compare performance across years</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <!-- Year Selector -->
+              <div class="flex items-center space-x-2">
+                <label class="text-sm font-medium text-gray-700">Year:</label>
+                <select [(ngModel)]="selectedYear" 
+                        (ngModelChange)="onYearChange($event)"
+                        class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+                  <option *ngFor="let year of getAvailableYears()" [value]="year">{{year}}</option>
+                </select>
+              </div>
+              
+              <!-- Export Buttons -->
+              <div class="flex items-center space-x-2">
+                <button (click)="exportYearlyBackup()" 
+                        class="btn-primary" 
+                        [disabled]="isExportingYearly">
+                  <i class="fas fa-file-excel mr-2"></i>
+                  <span *ngIf="!isExportingYearly">Export Excel</span>
+                  <span *ngIf="isExportingYearly">Exporting...</span>
+                </button>
+                <button (click)="loadYearlyAnalytics()" class="btn-secondary">
+                  <i class="fas fa-chart-line mr-2"></i>
+                  Load Analytics
+                </button>
+                <button (click)="loadYearlyComparison()" class="btn-secondary">
+                  <i class="fas fa-balance-scale mr-2"></i>
+                  Compare Years
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Yearly Analytics Display -->
+          <div *ngIf="yearlyAnalytics" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600">Total Students ({{selectedYear}})</p>
+                  <p class="text-2xl font-bold text-blue-600">{{yearlyAnalytics?.totalStudents || 0}}</p>
+                </div>
+                <i class="fas fa-users text-blue-500 text-xl"></i>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600">Placed Students</p>
+                  <p class="text-2xl font-bold text-green-600">{{yearlyAnalytics?.totalPlacements }}</p>
+                </div>
+                <i class="fas fa-check-circle text-green-500 text-xl"></i>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+              <div class="flex items-center justify-between">
+   <div>
+  <p class="text-sm text-gray-600">Average Package</p>
+  <p class="text-2xl font-bold text-purple-600">
+    ₹{{ (yearlyAnalytics?.averagePackage / 100000) | number:'1.0-1' }}L
+  </p>
+</div>
+
+
+
+                <i class="fas fa-money-bill-wave text-purple-500 text-xl"></i>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600">Placement Rate</p>
+                  <p class="text-2xl font-bold text-teal-600">{{yearlyAnalytics.placementRate | number:'1.1-1'}}%</p>
+                </div>
+                <i class="fas fa-percentage text-teal-500 text-xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Year Comparison Chart -->
+          <div *ngIf="yearlyComparison" class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">Year-wise Comparison</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div *ngFor="let yearData of yearlyComparison?.yearlyData" 
+                   class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div class="text-center">
+                  <p class="text-lg font-bold text-gray-800">{{yearData.year}}</p>
+                  <p class="text-sm text-gray-600">Placed: {{yearData.placementRate| number:'1.1-1'}}%</p>
+                  <p class="text-sm text-gray-600">Companies: {{yearData.totalCompanies || 'N/A'}}</p>
+                  <p class="text-sm text-gray-600">Avg Package: ₹{{ (yearData.averagePackage / 100000) | number:'1.0-1' }}L</p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 text-xs text-gray-500 text-center">
+              <p>Generated on: {{yearlyComparison?.generatedAt | date:'medium'}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Export Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-users text-blue-600 text-2xl"></i>
+              </div>
+              <h3 class="text-lg font-bold text-gray-800 mb-2">Student Reports</h3>
+              <p class="text-sm text-gray-600 mb-4">Export complete student database with placement details</p>
+              <div class="space-y-2">
+                <button (click)="exportStudentData('', '')" 
+                        class="w-full btn-primary"
+                        [disabled]="isExporting">
+                  <i class="fas fa-file-excel mr-2"></i>
+                  Export All Students (Excel)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-building text-green-600 text-2xl"></i>
+              </div>
+              <h3 class="text-lg font-bold text-gray-800 mb-2">Company Reports</h3>
+              <p class="text-sm text-gray-600 mb-4">Export complete company database with hiring details</p>
+              <div class="space-y-2">
+                <button (click)="exportCompanyData()" 
+                        class="w-full btn-primary"
+                        [disabled]="isExporting">
+                  <i class="fas fa-file-excel mr-2"></i>
+                  Export All Companies (Excel)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-chart-bar text-purple-600 text-2xl"></i>
+              </div>
+              <h3 class="text-lg font-bold text-gray-800 mb-2">Dashboard Summary</h3>
+              <p class="text-sm text-gray-600 mb-4">Export current dashboard data and analytics</p>
+              <div class="space-y-2">
+                <button (click)="exportDashboardData()" 
+                        class="w-full btn-primary"
+                        [disabled]="isExporting">
+                  <i class="fas fa-file-excel mr-2"></i>
+                  Export Dashboard (Excel)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Department-wise Reports -->
+        <div class="dashboard-card rounded-xl shadow-enhanced p-6 mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Department-wise Reports</h3>
+            <button (click)="loadDepartmentAnalytics()" class="btn-secondary">
+              <i class="fas fa-sync-alt mr-2"></i>
+              Refresh Data
+            </button>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div *ngFor="let dept of dashboardData?.departmentStats" 
+                 class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="font-semibold text-gray-800">{{dept.departmentName}}</h4>
+                <div class="flex items-center space-x-1">
+                  <button (click)="exportStudentData(dept.departmentName, '')" 
+                          class="text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fas fa-download"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Total Students:</span>
+                  <span class="font-medium">{{dept.totalStudents}}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Placed:</span>
+                  <span class="font-medium text-green-600">{{dept.placedStudents}}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Placement Rate:</span>
+                  <span class="font-medium">{{dept.placementPercentage | number:'1.1-1'}}%</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Avg Package:</span>
+                  <span class="font-medium">{{formatPackageAmount(dept.averagePackage)}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Report Generator -->
+        <div class="dashboard-card rounded-xl shadow-enhanced p-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-xl font-bold text-gray-800">Custom Report Generator</h3>
+              <p class="text-sm text-gray-600 mt-1">Create custom reports with specific filters and parameters</p>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+              <select class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+                <option value="PLACEMENT">Placement Report</option>
+                <option value="COMPANY">Company Report</option>
+                <option value="DEPARTMENT">Department Report</option>
+                <option value="STUDENT">Student Report</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+              <input type="date" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+              <input type="date" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+              <select class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Departments</option>
+                <option *ngFor="let dept of dashboardData?.departmentStats" [value]="dept.departmentName">
+                  {{dept.departmentName}}
+                </option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <button class="btn-primary">
+              <i class="fas fa-cog mr-2"></i>
+              Generate Custom Report
+            </button>
+            <button class="btn-secondary">
+              <i class="fas fa-save mr-2"></i>
+              Save Template
+            </button>
+            <button class="btn-secondary">
+              <i class="fas fa-clock mr-2"></i>
+              Schedule Report
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Companies Content -->
+    <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Companies'">
+      <div class="bg-gray-100 rounded-xl shadow-lg p-6 mb-4">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-3xl font-bold text-blue-800">Company Management</h1>
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+            
+            </div>
+            <button (click)="showAddCompanyModal=true"
+              class="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700">
+              Add Company
+            </button>
+
+            <!-- Add Company Modal -->
+            <div *ngIf="showAddCompanyModal"
+              class="fixed inset-0 backdrop-blur justify-center bg- bg-opacity-50 overflow-y-auto h-full w-full z-50">
+              <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-lg font-semibold text-gray-800">Add New Company</h3>
+                  <button (click)="showAddCompanyModal=false" class="text-gray-400 hover:text-gray-500">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <form (ngSubmit)="onSubmitCompany()" class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Company Name</label>
+                    <input type="text" [(ngModel)]="newCompany.name" name="name" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Industry Type</label>
+                    <input type="text" [(ngModel)]="newCompany.industryType" name="industryType" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700">Status</label>
                     <div class="mt-1 flex space-x-4">
                       <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="editingCompany.active" name="status" [value]="true" required
+                        <input type="radio" [(ngModel)]="newCompany.active" name="status" [value]="true" required
                           class="text-blue-600 focus:ring-blue-500">
                         <span class="ml-2 text-gray-700">Active</span>
                       </label>
                       <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="editingCompany.active" name="status" [value]="false" required
+                        <input type="radio" [(ngModel)]="newCompany.active" name="status" [value]="false" required
                           class="text-blue-600 focus:ring-blue-500">
                         <span class="ml-2 text-gray-700">Inactive</span>
                       </label>
                     </div>
-                    
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700">MNC</label>
                     <div class="mt-1 flex space-x-4">
                       <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="editingCompany.mnc" name="MNC" [value]="true" required
+                        <input type="radio" [(ngModel)]="newCompany.mnc" name="MNC" [value]="true" required
                           class="text-blue-600 focus:ring-blue-500">
                         <span class="ml-2 text-gray-700">Yes</span>
                       </label>
                       <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="editingCompany.mnc" name="MNC" [value]="false" required
+                        <input type="radio" [(ngModel)]="newCompany.mnc" name="MNC" [value]="false" required
                           class="text-blue-600 focus:ring-blue-500">
                         <span class="ml-2 text-gray-700">No</span>
                       </label>
                     </div>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Hr Name</label>
+                    <input type="name" [(ngModel)]="newCompany.hr_Name" name="name" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" [(ngModel)]="newCompany.email" name="email" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Contact Number</label>
+                    <input type="tel" [(ngModel)]="newCompany.contactNumber" name="contactNumber" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Location</label>
+                    <input type="text" [(ngModel)]="newCompany.location" name="location"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Website</label>
+                    <input type="url" [(ngModel)]="newCompany.website" name="website"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div class="flex justify-end space-x-3 mt-5">
+                    <button type="button" (click)="showAddCompanyModal=false"
+                      class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                      Cancel
+                    </button>
+                    <button type="submit"
+                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                      Add Company
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- ... rest of the existing code ... -->
+          </div>
+        </div>
+
+        <!-- Company Statistics -->
+        <!-- Company Statistics -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <!-- ... existing statistics cards ... -->
+        </div>
+
+        <!-- Companies Table -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h3 class="text-lg font-semibold text-gray-800">Companies List</h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company
+                    Name</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hr Name
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let company of companies">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10">
+                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                          <span class="text-blue-600 font-semibold text-lg">{{company.name[0]}}</span>
+                        </div>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900">{{company.name}} <span *ngIf="company.mnc" class="ml-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">MNC</span></div>
+                        <div class="text-sm text-gray-500">{{company.website}}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">{{company.industryType}}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">{{company.hr_Name}}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                 
+                    <div class="text-sm text-gray-900">{{company.email}}</div>
+                    <div class="text-sm text-gray-500">{{company.contactNumber}}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{company.location || 'Not specified'}}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                      [ngClass]="company.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                      {{company.active ? 'Active' : 'Inactive'}}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button (click)="onEditCompany(company.id)"
+                      class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                    <button (click)="onDeleteCompany(company.id)"
+                      class="text-red-600 hover:text-red-900">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Add Edit Modal -->
+            <div *ngIf="showEditCompanyModal"
+              class="fixed inset-0 backdrop-blur  bg-opacity-50 overflow-y-auto h-full w-full z-50">
+              <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-lg font-semibold text-gray-800">Edit Company</h3>
+                  <button (click)="showEditCompanyModal=false" class="text-gray-400 hover:text-gray-500">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <form (ngSubmit)="onUpdateCompany()" class="space-y-4" *ngIf="editingCompany">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Company Name</label>
+                    <input type="text" [(ngModel)]="editingCompany.name" name="name" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Industry Type</label>
+                    <input type="text" [(ngModel)]="editingCompany.industryType" name="industryType" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Hr Name</label>
+                    <input type="name" [(ngModel)]="editingCompany.hr_Name" name="name" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" [(ngModel)]="editingCompany.email" name="email" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Contact Number</label>
+                    <input type="tel" [(ngModel)]="editingCompany.contactNumber" name="contactNumber" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Location</label>
+                    <input type="text" [(ngModel)]="editingCompany.location" name="location"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Website</label>
+                    <input type="url" [(ngModel)]="editingCompany.website" name="website"
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                   </div>
 
                   <div class="flex justify-end space-x-3 mt-5">
@@ -1136,6 +1878,9 @@
      
             <!-- Update the Actions buttons in the table -->
             <!-- TPO Users Content -->
-         
-           
+          </div>
         </div>
+      </div>
+    </main>
+  </div>
+</div>

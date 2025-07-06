@@ -59,11 +59,73 @@
       }
       .circular-progress::before {
         width: 55px;
-        height: 55px;
-      }
+        height: 55px;      }
       .info-label {
         min-width: 90px;
       }
+    }
+
+    /* Animation keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideInUp {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0, 0, 0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -10px, 0);
+      }
+      70% {
+        transform: translate3d(0, -5px, 0);
+      }
+      90% {
+        transform: translate3d(0, -2px, 0);
+      }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Animation classes */
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .slide-in-up {
+      animation: slideInUp 0.5s ease-out;
+    }
+    
+    .animate-bounce {
+      animation: bounce 1s infinite;
+    }
+    
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
   </style>
 </head>
@@ -119,13 +181,23 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
               Edit Profile
-            </a>
-            <a [routerLink]="['/download/cv/', profileData.id,profileData.firstName]" class="roboto-flex text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center">
+            </a>            <a [routerLink]="['/download/cv/', profileData.id,profileData.firstName]" class="roboto-flex text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8H6a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" />
               </svg>
               View Resume
-            </a>
+            </a>            <button (click)="analyzeResume()" class="roboto-flex text-xs sm:text-sm text-green-600 hover:text-green-800 transition-colors flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              Analyze Resume
+            </button>
+            <button (click)="openInterviewGuide()" class="roboto-flex text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              Interview Guide
+            </button>
             
           </div>
         </div>
@@ -238,11 +310,716 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Footer -->
+    </div>    <!-- Footer -->
     <div class="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-500">
       <p>© 2025 Student Portal. All rights reserved.</p>
+    </div>
+  </div>
+  <!-- Resume Analysis Modal -->
+  <div *ngIf="showAnalysisModal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-50 fade-in">
+    <div class="modal-content bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden slide-in-up">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-green-50 to-blue-50">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 onest-font">AI Resume Analysis</h2>
+            <p class="text-sm text-gray-600 roboto-flex">Powered by T2P AI</p>
+          </div>
+        </div>
+        <button (click)="closeAnalysisModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <!-- Loading State -->
+        <div *ngIf="isAnalyzing" class="flex flex-col items-center justify-center py-12 space-y-6 fade-in">
+          <div class="relative">
+            <!-- Animated Brain Icon -->
+            <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center animate-pulse">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+            <!-- Spinning Ring -->
+            <div class="absolute inset-0 border-4 border-transparent border-t-green-500 border-r-blue-500 rounded-full animate-spin"></div>
+          </div>
+          
+          <div class="text-center space-y-2">
+            <h3 class="text-xl font-semibold text-gray-800 onest-font">AI is Analyzing Your Resume...</h3>
+            <p class="text-gray-600 roboto-flex">This may take a few moments while our AI reviews your profile</p>
+            
+            <!-- Animated Dots -->
+            <div class="flex justify-center space-x-1 pt-4">
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+              <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+            </div>
+          </div>
+        </div>        <!-- Analysis Result -->
+        <div *ngIf="!isAnalyzing && (analysisResult || analysisError)" class="space-y-6 fade-in">
+          <!-- Success State -->
+          <div *ngIf="analysisResult && !analysisError" class="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 class="text-lg font-semibold text-green-800 onest-font">Analysis Complete!</h3>
+            </div>
+          </div>
+
+          <!-- Error State -->
+          <div *ngIf="analysisError" class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="text-red-800 font-medium">{{ analysisError }}</p>
+            </div>
+          </div>
+          
+          <!-- Structured JSON Analysis Display -->
+          <div *ngIf="parsedAnalysis && !analysisError" class="space-y-6">
+            
+            <!-- Overall Rating Card -->
+            <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover-scale">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800 onest-font">Overall Resume Rating</h3>
+                <div class="flex items-center space-x-2">
+                  <span class="text-2xl font-bold" [style.color]="getRatingColor(parsedAnalysis.rating)">
+                    {{ parsedAnalysis.rating }}/10
+                  </span>
+                  <span class="px-3 py-1 rounded-full text-sm font-medium text-white" 
+                        [style.background-color]="getRatingColor(parsedAnalysis.rating)">
+                    {{ getRatingText(parsedAnalysis.rating) }}
+                  </span>
+                </div>
+              </div>
+                <!-- Visual Rating Bar -->
+              <div class="relative w-full bg-gray-200 rounded-full h-4 overflow-hidden rating-bar">
+                <div class="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out"
+                     [style.width]="getRatingWidth(parsedAnalysis.rating)"
+                     [style.background-color]="getRatingColor(parsedAnalysis.rating)">
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-xs font-medium text-gray-700">{{ getRatingText(parsedAnalysis.rating) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Strengths Section -->
+            <div *ngIf="parsedAnalysis.strengths?.length" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">Strengths</h3>
+                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                  {{ parsedAnalysis.strengths.length }} found
+                </span>
+              </div>
+                <div class="grid gap-3">
+                <div *ngFor="let strength of parsedAnalysis.strengths; let i = index" 
+                     class="strength-item flex items-start space-x-3 p-3 rounded-lg slide-in-up"
+                     [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="number-badge w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white text-xs font-bold">{{ i + 1 }}</span>
+                  </div>
+                  <p class="text-gray-700 roboto-flex text-sm">{{ strength }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Weaknesses Section -->
+            <div *ngIf="parsedAnalysis.weaknesses?.length" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">Areas for Improvement</h3>
+                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                  {{ parsedAnalysis.weaknesses.length }} identified
+                </span>
+              </div>
+                <div class="grid gap-3">
+                <div *ngFor="let weakness of parsedAnalysis.weaknesses; let i = index" 
+                     class="weakness-item flex items-start space-x-3 p-3 rounded-lg slide-in-up"
+                     [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="number-badge w-6 h-6 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white text-xs font-bold">{{ i + 1 }}</span>
+                  </div>
+                  <p class="text-gray-700 roboto-flex text-sm">{{ weakness }}</p>
+                </div>
+              </div>
+            </div>            <!-- Suggestions Section (Legacy) -->
+            <div *ngIf="parsedAnalysis.suggestions?.length" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">AI Recommendations</h3>
+                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                  {{ parsedAnalysis.suggestions.length }} suggestions
+                </span>
+              </div>
+                <div class="grid gap-3">
+                <div *ngFor="let suggestion of parsedAnalysis.suggestions; let i = index" 
+                     class="suggestion-item flex items-start space-x-3 p-3 rounded-lg slide-in-up"
+                     [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="number-badge w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white text-xs font-bold">{{ i + 1 }}</span>
+                  </div>
+                  <p class="text-gray-700 roboto-flex text-sm">{{ suggestion }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Targeted Suggestions Section (Enhanced) -->
+            <div *ngIf="parsedAnalysis.targeted_suggestions?.length" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">Targeted Suggestions</h3>
+                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                  {{ parsedAnalysis.targeted_suggestions.length }} recommendations
+                </span>
+              </div>
+              <div class="grid gap-3">
+                <div *ngFor="let suggestion of parsedAnalysis.targeted_suggestions; let i = index" 
+                     class="suggestion-item flex items-start space-x-3 p-3 rounded-lg bg-blue-50 border border-blue-100 slide-in-up"
+                     [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="number-badge w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white text-xs font-bold">{{ i + 1 }}</span>
+                  </div>
+                  <p class="text-blue-800 roboto-flex text-sm font-medium">{{ suggestion }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interview Insights Section -->
+            <div *ngIf="hasInterviewInsights()" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">Interview Insights</h3>
+              </div>
+
+              <!-- Skills Mismatch -->
+              <div *ngIf="parsedAnalysis.interview_insights.skills_mismatch?.length" class="mb-4">
+                <h4 class="text-md font-semibold text-red-700 mb-3 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Skills Mismatch Identified
+                </h4>
+                <div class="space-y-2">
+                  <div *ngFor="let mismatch of parsedAnalysis.interview_insights.skills_mismatch" 
+                       class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p class="text-red-800 roboto-flex text-sm">{{ mismatch }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hidden Strengths -->
+              <div *ngIf="parsedAnalysis.interview_insights.hidden_strengths?.length" class="mb-4">
+                <h4 class="text-md font-semibold text-green-700 mb-3 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Hidden Strengths
+                </h4>
+                <div class="space-y-2">
+                  <div *ngFor="let strength of parsedAnalysis.interview_insights.hidden_strengths" 
+                       class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p class="text-green-800 roboto-flex text-sm">{{ strength }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Consistency Issues -->
+              <div *ngIf="parsedAnalysis.interview_insights.consistency_issues?.length">
+                <h4 class="text-md font-semibold text-yellow-700 mb-3 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  Consistency Issues
+                </h4>
+                <div class="space-y-2">
+                  <div *ngFor="let issue of parsedAnalysis.interview_insights.consistency_issues" 
+                       class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p class="text-yellow-800 roboto-flex text-sm">{{ issue }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Learning Recommendations Section -->
+            <div *ngIf="hasLearningRecommendations()" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">Learning Recommendations</h3>
+              </div>
+
+              <!-- Skill Gaps -->
+              <div *ngIf="getSkillGapsByPriority().length" class="mb-6">
+                <h4 class="text-md font-semibold text-gray-700 mb-4">Skill Gaps to Address</h4>
+                <div class="space-y-4">
+                  <div *ngFor="let skillGap of getSkillGapsByPriority()" 
+                       class="border rounded-lg p-4"
+                       [ngClass]="{
+                         'border-red-200 bg-red-50': skillGap.priority === 'high',
+                         'border-yellow-200 bg-yellow-50': skillGap.priority === 'medium',
+                         'border-green-200 bg-green-50': skillGap.priority === 'low'
+                       }">
+                    <div class="flex items-start justify-between mb-3">
+                      <div>
+                        <h5 class="font-semibold text-gray-800 onest-font flex items-center">
+                          <span class="mr-2">{{ getPriorityIcon(skillGap.priority) }}</span>
+                          {{ skillGap.skill }}
+                        </h5>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium"
+                              [style.background-color]="getPriorityColor(skillGap.priority)"
+                              style="color: white;">
+                          {{ skillGap.priority.toUpperCase() }} PRIORITY
+                        </span>
+                      </div>
+                    </div>
+                    <p class="text-gray-700 roboto-flex text-sm mb-3">{{ skillGap.reason }}</p>
+                    
+                    <!-- Courses -->
+                    <div *ngIf="skillGap.courses?.length" class="mb-3">
+                      <p class="text-xs font-medium text-gray-600 mb-2">📚 Recommended Courses:</p>
+                      <div class="grid gap-1">
+                        <span *ngFor="let course of skillGap.courses" 
+                              class="text-xs text-blue-600 roboto-flex">• {{ course }}</span>
+                      </div>
+                    </div>
+
+                    <!-- YouTube Channels -->
+                    <div *ngIf="skillGap.youtube_channels?.length" class="mb-3">
+                      <p class="text-xs font-medium text-gray-600 mb-2">📺 YouTube Channels:</p>
+                      <div class="grid gap-1">
+                        <span *ngFor="let channel of skillGap.youtube_channels" 
+                              class="text-xs text-red-600 roboto-flex">• {{ channel }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Practice Projects -->
+                    <div *ngIf="skillGap.practice_projects?.length">
+                      <p class="text-xs font-medium text-gray-600 mb-2">🛠️ Practice Projects:</p>
+                      <div class="grid gap-1">
+                        <span *ngFor="let project of skillGap.practice_projects" 
+                              class="text-xs text-purple-600 roboto-flex">• {{ project }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- General Improvements -->
+              <div *ngIf="parsedAnalysis.learning_recommendations.general_improvements?.length">
+                <h4 class="text-md font-semibold text-gray-700 mb-3">General Improvements</h4>
+                <div class="space-y-3">
+                  <div *ngFor="let improvement of parsedAnalysis.learning_recommendations.general_improvements" 
+                       class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                    <h5 class="font-semibold text-gray-800 mb-2 onest-font">{{ improvement.area }}</h5>
+                    
+                    <div *ngIf="improvement.courses?.length" class="mb-2">
+                      <p class="text-xs font-medium text-gray-600 mb-1">📚 Courses:</p>
+                      <div class="grid gap-1">
+                        <span *ngFor="let course of improvement.courses" 
+                              class="text-xs text-blue-600 roboto-flex">• {{ course }}</span>
+                      </div>
+                    </div>
+
+                    <div *ngIf="improvement.youtube_resources?.length">
+                      <p class="text-xs font-medium text-gray-600 mb-1">📺 YouTube Resources:</p>
+                      <div class="grid gap-1">
+                        <span *ngFor="let resource of improvement.youtube_resources" 
+                              class="text-xs text-red-600 roboto-flex">• {{ resource }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Priority Actions Section -->
+            <div *ngIf="parsedAnalysis.priority_actions?.length" class="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">Priority Actions</h3>
+                <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">
+                  Take action now
+                </span>
+              </div>
+              <div class="grid gap-3">
+                <div *ngFor="let action of parsedAnalysis.priority_actions; let i = index" 
+                     class="flex items-start space-x-3 p-3 bg-white rounded-lg border border-orange-200 slide-in-up"
+                     [style.animation-delay]="(i * 0.1) + 's'">
+                  <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white text-xs font-bold">{{ i + 1 }}</span>
+                  </div>
+                  <p class="text-orange-800 roboto-flex text-sm font-medium">{{ action }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Study Plan Section -->
+            <div *ngIf="hasStudyPlan()" class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6 shadow-sm">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 onest-font">Personalized Study Plan</h3>
+              </div>
+
+              <div class="grid gap-4">
+                <!-- Week 1-2 -->
+                <div *ngIf="parsedAnalysis.study_plan.week_1_2?.length" class="bg-white rounded-lg p-4 border border-purple-100">
+                  <h4 class="font-semibold text-purple-800 mb-3 onest-font flex items-center">
+                    <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs mr-2">1-2</span>
+                    Week 1-2
+                  </h4>
+                  <ul class="space-y-2">
+                    <li *ngFor="let task of parsedAnalysis.study_plan.week_1_2" 
+                        class="flex items-start space-x-2">
+                      <div class="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span class="text-purple-800 roboto-flex text-sm">{{ task }}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Week 3-4 -->
+                <div *ngIf="parsedAnalysis.study_plan.week_3_4?.length" class="bg-white rounded-lg p-4 border border-purple-100">
+                  <h4 class="font-semibold text-purple-800 mb-3 onest-font flex items-center">
+                    <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs mr-2">3-4</span>
+                    Week 3-4
+                  </h4>
+                  <ul class="space-y-2">
+                    <li *ngFor="let task of parsedAnalysis.study_plan.week_3_4" 
+                        class="flex items-start space-x-2">
+                      <div class="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span class="text-purple-800 roboto-flex text-sm">{{ task }}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Month 2 -->
+                <div *ngIf="parsedAnalysis.study_plan.month_2?.length" class="bg-white rounded-lg p-4 border border-purple-100">
+                  <h4 class="font-semibold text-purple-800 mb-3 onest-font flex items-center">
+                    <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs mr-2">M2</span>
+                    Month 2
+                  </h4>
+                  <ul class="space-y-2">
+                    <li *ngFor="let task of parsedAnalysis.study_plan.month_2" 
+                        class="flex items-start space-x-2">
+                      <div class="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span class="text-purple-800 roboto-flex text-sm">{{ task }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Analysis Summary Stats -->
+            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6">
+              <h3 class="text-lg font-bold text-gray-800 onest-font mb-4">Analysis Summary</h3>              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="stats-card text-center p-4 bg-white rounded-lg shadow-sm">
+                  <div class="text-2xl font-bold text-green-600">{{ parsedAnalysis.strengths?.length || 0 }}</div>
+                  <div class="text-sm text-gray-600 roboto-flex">Strengths</div>
+                </div>
+                <div class="stats-card text-center p-4 bg-white rounded-lg shadow-sm">
+                  <div class="text-2xl font-bold text-red-600">{{ parsedAnalysis.weaknesses?.length || 0 }}</div>
+                  <div class="text-sm text-gray-600 roboto-flex">Areas to Improve</div>
+                </div>
+                <div class="stats-card text-center p-4 bg-white rounded-lg shadow-sm">
+                  <div class="text-2xl font-bold text-blue-600">{{ parsedAnalysis.suggestions?.length || 0 }}</div>
+                  <div class="text-sm text-gray-600 roboto-flex">Recommendations</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Fallback for Plain Text Response -->
+          <div *ngIf="!parsedAnalysis && analysisResult && !analysisError" class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4 onest-font">AI Analysis Results:</h4>
+            <div class="prose max-w-none">
+              <p class="roboto-flex text-gray-700 whitespace-pre-wrap leading-relaxed">{{ analysisResult }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+        <button (click)="closeAnalysisModal()" 
+                class="px-6 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:from-green-600 hover:to-blue-600 transition-all duration-200 font-medium roboto-flex">
+          Close Analysis
+        </button>      </div>
+    </div>
+  </div>
+
+  <!-- Interview Guide Modal -->
+  <div *ngIf="showInterviewGuideModal" class="modal-backdrop fixed inset-0 flex items-center justify-center p-4 z-50 fade-in">
+    <div class="modal-content bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-[95vh] overflow-hidden slide-in-up">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 onest-font">AI Interview Guide</h2>
+            <p class="text-sm text-gray-600 roboto-flex">Personalized interview preparation & improvement recommendations</p>
+          </div>
+        </div>
+        <button (click)="closeInterviewGuideModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-6 overflow-y-auto max-h-[calc(95vh-120px)]">
+        <!-- Loading State -->
+        <div *ngIf="isGeneratingGuide" class="flex flex-col items-center justify-center py-12 space-y-6 fade-in">
+          <div class="relative">
+            <!-- Animated Interview Icon -->
+            <div class="w-24 h-24 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center animate-pulse">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <!-- Spinning Ring -->
+            <div class="absolute inset-0 border-4 border-transparent border-t-blue-500 border-r-purple-500 rounded-full animate-spin"></div>
+          </div>
+          
+          <div class="text-center space-y-2">
+            <h3 class="text-xl font-semibold text-gray-800 onest-font">AI is Analyzing Your Interview History...</h3>
+            <p class="text-gray-600 roboto-flex">Generating personalized interview improvement recommendations</p>
+            
+            <!-- Animated Dots -->
+            <div class="flex justify-center space-x-1 pt-4">
+              <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+              <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+              <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interview Guide Result -->
+        <div *ngIf="!isGeneratingGuide && (interviewGuideResult || interviewGuideError)" class="space-y-6 fade-in">
+          <!-- Success State -->
+          <div *ngIf="interviewGuideResult && !interviewGuideError" class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 class="text-lg font-semibold text-blue-800 onest-font">Interview Guide Ready!</h3>
+            </div>
+
+            <!-- Parsed Interview Guide Content -->
+            <div *ngIf="parsedInterviewGuide" class="space-y-6">
+              
+              <!-- Overall Assessment -->
+              <div *ngIf="parsedInterviewGuide.overall_assessment" class="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
+                <h4 class="text-lg font-semibold text-gray-800 mb-3 onest-font flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Overall Assessment
+                </h4>
+                <div class="flex items-center space-x-4 mb-3">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-sm font-medium text-gray-600">Interview Readiness:</span>
+                    <div class="w-32 bg-gray-200 rounded-full h-3">
+                      <div class="h-3 rounded-full transition-all duration-300" 
+                           [style.width]="getRatingWidth(parsedInterviewGuide.overall_assessment.readiness_score || 0)" 
+                           [style.background-color]="getRatingColor(parsedInterviewGuide.overall_assessment.readiness_score || 0)">
+                      </div>
+                    </div>
+                    <span class="text-sm font-bold" [style.color]="getRatingColor(parsedInterviewGuide.overall_assessment.readiness_score || 0)">
+                      {{parsedInterviewGuide.overall_assessment.readiness_score || 0}}/10
+                    </span>
+                  </div>
+                </div>
+                <p class="text-gray-700 roboto-flex">{{parsedInterviewGuide.overall_assessment.summary}}</p>
+              </div>
+
+              <!-- Strengths and Weaknesses -->
+              <div class="grid md:grid-cols-2 gap-4">
+                <!-- Strengths -->
+                <div *ngIf="parsedInterviewGuide.strengths" class="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 class="text-lg font-semibold text-green-800 mb-3 onest-font flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Your Strengths
+                  </h4>
+                  <ul class="space-y-2">
+                    <li *ngFor="let strength of parsedInterviewGuide.strengths" class="flex items-start space-x-2">
+                      <div class="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span class="text-green-700 roboto-flex">{{strength}}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Areas for Improvement -->
+                <div *ngIf="parsedInterviewGuide.areas_for_improvement" class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <h4 class="text-lg font-semibold text-orange-800 mb-3 onest-font flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    Areas for Improvement
+                  </h4>
+                  <ul class="space-y-2">
+                    <li *ngFor="let area of parsedInterviewGuide.areas_for_improvement" class="flex items-start space-x-2">
+                      <div class="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span class="text-orange-700 roboto-flex">{{area}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Learning Recommendations -->
+              <div *ngIf="parsedInterviewGuide.learning_recommendations" class="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
+                <h4 class="text-lg font-semibold text-gray-800 mb-4 onest-font flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  Learning Recommendations
+                </h4>
+                <div class="grid gap-4 md:grid-cols-2">
+                  <div *ngFor="let rec of parsedInterviewGuide.learning_recommendations" class="bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
+                    <h5 class="font-semibold text-purple-800 mb-2 onest-font">{{rec.topic}}</h5>
+                    <p class="text-purple-700 text-sm mb-3 roboto-flex">{{rec.description}}</p>
+                    
+                    <!-- YouTube Videos -->
+                    <div *ngIf="rec.youtube_videos && rec.youtube_videos.length > 0" class="mb-3">
+                      <p class="text-xs font-medium text-gray-600 mb-2">📺 Recommended Videos:</p>
+                      <div class="space-y-1">
+                        <a *ngFor="let video of rec.youtube_videos" 
+                           [href]="video.url" 
+                           target="_blank" 
+                           class="block text-xs text-blue-600 hover:text-blue-800 hover:underline transition-colors roboto-flex">
+                          {{video.title}}
+                        </a>
+                      </div>
+                    </div>
+
+                    <!-- Courses -->
+                    <div *ngIf="rec.courses && rec.courses.length > 0">
+                      <p class="text-xs font-medium text-gray-600 mb-2">🎓 Recommended Courses:</p>
+                      <div class="space-y-1">
+                        <a *ngFor="let course of rec.courses" 
+                           [href]="course.url" 
+                           target="_blank" 
+                           class="block text-xs text-green-600 hover:text-green-800 hover:underline transition-colors roboto-flex">
+                          {{course.title}} ({{course.platform}})
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Common Interview Mistakes -->
+              <div *ngIf="parsedInterviewGuide.common_mistakes" class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <h4 class="text-lg font-semibold text-red-800 mb-3 onest-font flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Common Interview Mistakes to Avoid
+                </h4>
+                <ul class="space-y-2">
+                  <li *ngFor="let mistake of parsedInterviewGuide.common_mistakes" class="flex items-start space-x-2">
+                    <div class="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <span class="text-red-700 roboto-flex">{{mistake}}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Practice Questions -->
+              <div *ngIf="parsedInterviewGuide.practice_questions" class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                <h4 class="text-lg font-semibold text-indigo-800 mb-3 onest-font flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Practice Questions for You
+                </h4>
+                <div class="space-y-3">
+                  <div *ngFor="let question of parsedInterviewGuide.practice_questions; let i = index" class="bg-white rounded-lg p-3 border border-indigo-100">
+                    <div class="flex items-start space-x-3">
+                      <div class="w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        {{i + 1}}
+                      </div>
+                      <p class="text-indigo-700 roboto-flex">{{question}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Raw Text Fallback -->
+            <div *ngIf="!parsedInterviewGuide" class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
+              <pre class="whitespace-pre-wrap text-sm text-gray-700 roboto-flex">{{interviewGuideResult}}</pre>
+            </div>
+          </div>
+
+          <!-- Error State -->
+          <div *ngIf="interviewGuideError" class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div class="flex items-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 class="text-lg font-semibold text-red-800 onest-font">Error</h3>
+            </div>
+            <p class="text-red-700 mt-2 roboto-flex">{{interviewGuideError}}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+        <button (click)="closeInterviewGuideModal()" 
+                class="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 font-medium roboto-flex">
+          Close Guide
+        </button>
+      </div>
     </div>
   </div>
 </body>
