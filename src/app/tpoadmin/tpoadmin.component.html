@@ -753,368 +753,323 @@
     <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Logs'">
       <div class="bg-gray-100 rounded-xl shadow-lg p-6 mb-4">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-3xl font-bold text-blue-800">Enhanced Logs Management</h1>
+          <h1 class="text-3xl font-bold text-blue-800">Logs Management</h1>
           <div class="flex items-center space-x-4">
-            <button (click)="exportLogsToExcel()" 
-                    class="btn-primary" 
-                    [disabled]="isExportingLogs">
+            <button (click)="refreshLogs()" class="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700">
+              <i class="fas fa-sync-alt mr-2"></i>
+              Refresh
+            </button>
+            <button (click)="exportLogs()" class="bg-green-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-700" [disabled]="isExporting">
               <i class="fas fa-download mr-2"></i>
-              {{isExportingLogs ? 'Exporting...' : 'Export Excel'}}
-            </button>
-            <button (click)="clearAllFilters()" class="btn-secondary">
-              <i class="fas fa-refresh mr-2"></i>
-              Clear Filters
+              <span *ngIf="!isExporting">Export</span>
+              <span *ngIf="isExporting">Exporting...</span>
             </button>
           </div>
         </div>
 
-        <!-- Statistics Cards -->
-        <div *ngIf="logsStatistics" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
-            <p class="text-sm text-gray-500 font-medium">Total Logs (30 days)</p>
-            <p class="text-2xl font-bold text-gray-800">{{logsStatistics.totalLogs || 0}}</p>
-          </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
-            <p class="text-sm text-gray-500 font-medium">Active Users</p>
-            <p class="text-2xl font-bold text-gray-800">{{logsStatistics.activeUsers || 0}}</p>
-          </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-amber-500">
-            <p class="text-sm text-gray-500 font-medium">Most Active Entity</p>
-            <p class="text-lg font-bold text-gray-800">{{logsStatistics.mostActiveEntity || 'N/A'}}</p>
-          </div>
-          <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-purple-500">
-            <p class="text-sm text-gray-500 font-medium">Today's Activities</p>
-            <p class="text-2xl font-bold text-gray-800">{{logsStatistics.todayActivities || 0}}</p>
-          </div>
-        </div>
-
-        <!-- Quick Filter Buttons -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-          <h3 class="text-lg font-semibold text-gray-800 mb-3">Quick Filters</h3>
-          <div class="flex flex-wrap gap-2">
-            <button (click)="getRecentLogs(1)" class="btn-secondary">
-              <i class="fas fa-clock mr-1"></i>
-              Last Hour
-            </button>
-            <button (click)="getRecentLogs(24)" class="btn-secondary">
-              <i class="fas fa-calendar-day mr-1"></i>
-              Last 24 Hours
-            </button>
-            <button (click)="getRecentLogs(168)" class="btn-secondary">
-              <i class="fas fa-calendar-week mr-1"></i>
-              Last Week
-            </button>
-            <button (click)="filterLogsByAction('LOGIN')" class="btn-secondary">
-              <i class="fas fa-sign-in-alt mr-1"></i>
-              Login Activities
-            </button>
-            <button (click)="filterLogsByAction('UPDATE')" class="btn-secondary">
-              <i class="fas fa-edit mr-1"></i>
-              Updates
-            </button>
-            <button (click)="filterLogsByAction('DELETE')" class="btn-secondary">
-              <i class="fas fa-trash mr-1"></i>
-              Deletions
-            </button>
-          </div>
-        </div>
-
-        <!-- Advanced Search Panel -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">Advanced Search</h3>
-            <button (click)="searchLogsAdvanced()" class="btn-primary">
-              <i class="fas fa-search mr-2"></i>
-              Search
-            </button>
-          </div>
+        <!-- Enhanced Search and Filter Section -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Search & Filter Logs</h3>
           
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Basic Search -->
+          <!-- Search Input -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Search Query</label>
-              <input [(ngModel)]="searchQuery" 
-                     (keyup.enter)="filterLogs()"
-                     type="text" 
-                     placeholder="Search in all fields..."
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <label class="block text-sm font-medium text-gray-700 mb-2">General Search</label>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  [(ngModel)]="logSearchQuery" 
+                  (ngModelChange)="onLogSearch()"
+                  placeholder="Search logs..." 
+                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-search text-gray-400"></i>
+                </div>
+              </div>
             </div>
 
             <!-- Action Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Action</label>
-              <select [(ngModel)]="logsSearchFilters.action" 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Action</label>
+              <select 
+                [(ngModel)]="logFilters.action" 
+                (ngModelChange)="applyLogFilters()"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Actions</option>
-                <option *ngFor="let action of uniqueActions" [value]="action">{{action}}</option>
+                <option value="CREATE">Create</option>
+                <option value="UPDATE">Update</option>
+                <option value="DELETE">Delete</option>
+                <option value="LOGIN">Login</option>
+                <option value="LOGOUT">Logout</option>
+                <option value="EXPORT">Export</option>
+                <option value="IMPORT">Import</option>
               </select>
             </div>
 
             <!-- Entity Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Entity</label>
-              <select [(ngModel)]="logsSearchFilters.entityName" 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Entity Type</label>
+              <select 
+                [(ngModel)]="logFilters.entityName" 
+                (ngModelChange)="applyLogFilters()"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Entities</option>
-                <option *ngFor="let entity of uniqueEntities" [value]="entity">{{entity}}</option>
+                <option value="Student">Student</option>
+                <option value="Company">Company</option>
+                <option value="TPO_User">TPO User</option>
+                <option value="Job">Job</option>
+                <option value="Application">Application</option>
+                <option value="Placement">Placement</option>
               </select>
             </div>
 
-            <!-- User Filter -->
+            <!-- Performed By Filter -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Performed By</label>
-              <select [(ngModel)]="logsSearchFilters.performedBy" 
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">All Users</option>
-                <option *ngFor="let user of uniqueUsers" [value]="user">{{user}}</option>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Performed By</label>
+              <input 
+                type="text" 
+                [(ngModel)]="logFilters.performedBy" 
+                (ngModelChange)="applyLogFilters()"
+                placeholder="Username..." 
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+
+          <!-- Date Range Filter -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+              <input 
+                type="datetime-local" 
+                [(ngModel)]="logFilters.fromDate" 
+                (ngModelChange)="applyLogFilters()"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+              <input 
+                type="datetime-local" 
+                [(ngModel)]="logFilters.toDate" 
+                (ngModelChange)="applyLogFilters()"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="flex items-end">
+              <button 
+                (click)="clearLogFilters()" 
+                class="w-full bg-gray-500 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-600">
+                <i class="fas fa-times mr-2"></i>
+                Clear Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Filter Buttons -->
+          <div class="flex flex-wrap gap-2">
+            <button 
+              (click)="setQuickFilter('today')" 
+              class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-blue-200">
+              Today
+            </button>
+            <button 
+              (click)="setQuickFilter('yesterday')" 
+              class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-blue-200">
+              Yesterday
+            </button>
+            <button 
+              (click)="setQuickFilter('last7days')" 
+              class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-blue-200">
+              Last 7 Days
+            </button>
+            <button 
+              (click)="setQuickFilter('last30days')" 
+              class="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-blue-200">
+              Last 30 Days
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="bg-white rounded-lg p-4 mb-4 border border-gray-200">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">
+              Showing {{filteredLogs.length}} of {{logs.length}} log entries
+            </span>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-gray-600">Sort by:</span>
+              <select 
+                [(ngModel)]="logSortBy" 
+                (ngModelChange)="sortLogs()"
+                class="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-blue-500 focus:border-blue-500">
+                <option value="timestamp_desc">Latest First</option>
+                <option value="timestamp_asc">Oldest First</option>
+                <option value="action_asc">Action A-Z</option>
+                <option value="performedBy_asc">User A-Z</option>
               </select>
-            </div>
-
-            <!-- Date From -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Date From</label>
-              <input [(ngModel)]="logsSearchFilters.dateFrom" 
-                     type="date" 
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <!-- Date To -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Date To</label>
-              <input [(ngModel)]="logsSearchFilters.dateTo" 
-                     type="date" 
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <!-- Entity ID -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Entity ID</label>
-              <input [(ngModel)]="logsSearchFilters.entityId" 
-                     type="text" 
-                     placeholder="Enter entity ID..."
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <!-- Details Search -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Details Contains</label>
-              <input [(ngModel)]="logsSearchFilters.details" 
-                     type="text" 
-                     placeholder="Search in details..."
-                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <!-- Sort Options -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-              <div class="flex space-x-2">
-                <select [(ngModel)]="logsSearchFilters.sortBy" 
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="timestamp">Timestamp</option>
-                  <option value="action">Action</option>
-                  <option value="performedBy">User</option>
-                  <option value="entityName">Entity</option>
-                </select>
-                <select [(ngModel)]="logsSearchFilters.sortDirection" 
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="desc">Descending</option>
-                  <option value="asc">Ascending</option>
-                </select>
-              </div>
             </div>
           </div>
         </div>
     
-        <!-- Enhanced Logs Table -->
+        <!-- Logs Table -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold text-gray-800">
-                Logs List 
-                <span class="text-sm font-normal text-gray-600">
-                  ({{totalElements}} total entries)
-                </span>
-              </h3>
-              <div class="flex items-center space-x-4">
-                <label class="text-sm text-gray-600">Show:</label>
-                <select [(ngModel)]="pageSize" 
-                        (change)="changePageSize(pageSize)" 
-                        class="px-2 py-1 border border-gray-300 rounded text-sm">
-                  <option [value]="10">10</option>
-                  <option [value]="20">20</option>
-                  <option [value]="50">50</option>
-                  <option [value]="100">100</option>
-                </select>
-                <span class="text-sm text-gray-600">entries</span>
-              </div>
-            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Activity Logs</h3>
           </div>
           
           <!-- Loading State -->
-          <div *ngIf="isLoadingLogs" class="p-8 text-center">
-            <div class="inline-flex items-center">
-              <div class="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2"></div>
-              <span class="text-gray-600">Loading logs...</span>
-            </div>
+          <div *ngIf="isLoadingLogs" class="px-6 py-8 text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-600">Loading logs...</p>
           </div>
-          
+
+          <!-- No Results -->
+          <div *ngIf="!isLoadingLogs && filteredLogs.length === 0" class="px-6 py-8 text-center">
+            <div class="text-gray-400 mb-4">
+              <i class="fas fa-search text-4xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No logs found</h3>
+            <p class="text-gray-500">Try adjusting your search criteria or filters.</p>
+          </div>
+
           <!-- Table -->
-          <div *ngIf="!isLoadingLogs" class="overflow-x-auto">
+          <div class="overflow-x-auto" *ngIf="!isLoadingLogs && filteredLogs.length > 0">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th (click)="sortLogs('action')" 
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
-                    Action
-                    <i class="fas fa-sort ml-1" 
-                       [class.fa-sort-up]="logsSearchFilters.sortBy === 'action' && logsSearchFilters.sortDirection === 'asc'"
-                       [class.fa-sort-down]="logsSearchFilters.sortBy === 'action' && logsSearchFilters.sortDirection === 'desc'"></i>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <button (click)="sortBy('timestamp')" class="flex items-center space-x-1 hover:text-gray-700">
+                      <span>Timestamp</span>
+                      <i class="fas fa-sort text-xs"></i>
+                    </button>
                   </th>
-                  <th (click)="sortLogs('performedBy')" 
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
-                    Performed By
-                    <i class="fas fa-sort ml-1"
-                       [class.fa-sort-up]="logsSearchFilters.sortBy === 'performedBy' && logsSearchFilters.sortDirection === 'asc'"
-                       [class.fa-sort-down]="logsSearchFilters.sortBy === 'performedBy' && logsSearchFilters.sortDirection === 'desc'"></i>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <button (click)="sortBy('action')" class="flex items-center space-x-1 hover:text-gray-700">
+                      <span>Action</span>
+                      <i class="fas fa-sort text-xs"></i>
+                    </button>
                   </th>
-                  <th (click)="sortLogs('timestamp')" 
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
-                    Timestamp
-                    <i class="fas fa-sort ml-1"
-                       [class.fa-sort-up]="logsSearchFilters.sortBy === 'timestamp' && logsSearchFilters.sortDirection === 'asc'"
-                       [class.fa-sort-down]="logsSearchFilters.sortBy === 'timestamp' && logsSearchFilters.sortDirection === 'desc'"></i>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <button (click)="sortBy('performedBy')" class="flex items-center space-x-1 hover:text-gray-700">
+                      <span>Performed By</span>
+                      <i class="fas fa-sort text-xs"></i>
+                    </button>
                   </th>
-                  <th (click)="sortLogs('entityName')" 
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
-                    Entity
-                    <i class="fas fa-sort ml-1"
-                       [class.fa-sort-up]="logsSearchFilters.sortBy === 'entityName' && logsSearchFilters.sortDirection === 'asc'"
-                       [class.fa-sort-down]="logsSearchFilters.sortBy === 'entityName' && logsSearchFilters.sortDirection === 'desc'"></i>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <button (click)="sortBy('entityName')" class="flex items-center space-x-1 hover:text-gray-700">
+                      <span>Entity</span>
+                      <i class="fas fa-sort text-xs"></i>
+                    </button>
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entity ID</th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let log of filteredLogs; let i = index" 
-                    class="hover:bg-gray-50 transition-colors"
-                    [class.bg-red-50]="log.action === 'DELETE'"
-                    [class.bg-green-50]="log.action === 'CREATE'"
-                    [class.bg-blue-50]="log.action === 'LOGIN'">
+                <tr *ngFor="let log of filteredLogs" class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <div class="flex flex-col">
+                      <span class="font-medium">{{ log.timestamp | date:'short' }}</span>
+                      <span class="text-gray-500 text-xs">{{ log.timestamp | date:'EEEE' }}</span>
+                    </div>
+                  </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                          [class.bg-red-100]="log.action === 'DELETE'"
-                          [class.text-red-800]="log.action === 'DELETE'"
-                          [class.bg-green-100]="log.action === 'CREATE'"
-                          [class.text-green-800]="log.action === 'CREATE'"
-                          [class.bg-blue-100]="log.action === 'LOGIN' || log.action === 'UPDATE'"
-                          [class.text-blue-800]="log.action === 'LOGIN' || log.action === 'UPDATE'"
-                          [class.bg-gray-100]="log.action !== 'DELETE' && log.action !== 'CREATE' && log.action !== 'LOGIN' && log.action !== 'UPDATE'"
-                          [class.text-gray-800]="log.action !== 'DELETE' && log.action !== 'CREATE' && log.action !== 'LOGIN' && log.action !== 'UPDATE'">
-                      <i class="fas fa-trash mr-1" *ngIf="log.action === 'DELETE'"></i>
-                      <i class="fas fa-plus mr-1" *ngIf="log.action === 'CREATE'"></i>
-                      <i class="fas fa-sign-in-alt mr-1" *ngIf="log.action === 'LOGIN'"></i>
-                      <i class="fas fa-edit mr-1" *ngIf="log.action === 'UPDATE'"></i>
-                      <i class="fas fa-cog mr-1" *ngIf="log.action !== 'DELETE' && log.action !== 'CREATE' && log.action !== 'LOGIN' && log.action !== 'UPDATE'"></i>
+                          [ngClass]="{
+                            'bg-green-100 text-green-800': log.action === 'CREATE',
+                            'bg-blue-100 text-blue-800': log.action === 'UPDATE',
+                            'bg-red-100 text-red-800': log.action === 'DELETE',
+                            'bg-yellow-100 text-yellow-800': log.action === 'LOGIN',
+                            'bg-gray-100 text-gray-800': log.action === 'LOGOUT',
+                            'bg-purple-100 text-purple-800': log.action === 'EXPORT',
+                            'bg-indigo-100 text-indigo-800': log.action === 'IMPORT'
+                          }">
                       {{ log.action }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <div class="flex items-center">
-                      <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                        <i class="fas fa-user text-gray-600 text-sm"></i>
+                      <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                        <span class="text-xs font-medium text-gray-600">{{ log.performedBy.charAt(0).toUpperCase() }}</span>
                       </div>
-                      <div class="text-sm font-medium text-gray-900">{{ log.performedBy }}</div>
+                      <span class="font-medium">{{ log.performedBy }}</span>
                     </div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{ log.timestamp | date:'short' }}</div>
-                    <div class="text-xs text-gray-500">{{ log.timestamp | date:'EEEE' }}</div>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <a *ngIf="log.entityName === 'Student'" 
+                       [routerLink]="['/view_profile', log.entityId]" 
+                       class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+                      {{ log.entityName }}
+                    </a>
+                    <span *ngIf="log.entityName !== 'Student'" class="text-gray-900 font-medium">{{ log.entityName }}</span>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
-                        <i class="fas fa-database mr-1"></i>
-                        {{ log.entityName }}
-                      </span>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span class="font-mono bg-gray-100 px-2 py-1 rounded">{{ log.entityId }}</span>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-900">
+                    <div class="max-w-xs truncate" [title]="log.details">
+                      {{ log.details }}
                     </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">
-                      <a *ngIf="log.entityName === 'Student'" 
-                         [routerLink]="['/view_profile', log.entityId]" 
-                         class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
-                        #{{ log.entityId }}
-                      </a>
-                      <span *ngIf="log.entityName !== 'Student'" class="text-gray-600">
-                        #{{ log.entityId }}
-                      </span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4">
-                    <div class="text-sm text-gray-900 max-w-xs truncate" 
-                         [title]="log.details">
-                      {{ log.details || 'No details available' }}
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button class="text-blue-600 hover:text-blue-900 mr-3" 
-                            title="View Details">
-                      <i class="fas fa-eye"></i>
-                    </button>
-                    <button *ngIf="log.entityName === 'Student'" 
-                            (click)="onProfileLog(log.entityId)"
-                            class="text-green-600 hover:text-green-900" 
-                            title="View Profile">
-                      <i class="fas fa-user"></i>
-                    </button>
                   </td>
                 </tr>
               </tbody>
             </table>
             
-            <!-- No Results -->
-            <div *ngIf="filteredLogs.length === 0" class="text-center py-8">
-              <div class="text-gray-500">
-                <i class="fas fa-search text-4xl mb-4"></i>
-                <p class="text-lg font-medium">No logs found</p>
-                <p class="text-sm">Try adjusting your search criteria</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pagination -->
-          <div *ngIf="!isLoadingLogs && totalPages > 1" class="px-6 py-4 border-t border-gray-200 bg-gray-50">
-            <div class="flex items-center justify-between">
-              <div class="text-sm text-gray-700">
-                Showing {{ currentPage * pageSize + 1 }} to {{ Math.min((currentPage + 1) * pageSize, totalElements) }} of {{ totalElements }} entries
-              </div>
-              <div class="flex items-center space-x-2">
-                <button (click)="goToPreviousPage()" 
-                        [disabled]="currentPage === 0"
-                        class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
-                  <i class="fas fa-chevron-left"></i>
+            <!-- Pagination Controls -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+              <div class="flex-1 flex justify-between sm:hidden">
+                <button 
+                  (click)="previousLogPage()"
+                  [disabled]="!hasPreviousLogPage"
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                   Previous
                 </button>
-                
-                <div class="flex space-x-1">
-                  <button *ngFor="let page of getPageNumbers()" 
-                          (click)="goToPage(page)"
-                          class="px-3 py-1 border rounded text-sm hover:bg-gray-100"
-                          [class.bg-blue-500]="currentPage === page"
-                          [class.text-white]="currentPage === page"
-                          [class.border-blue-500]="currentPage === page">
-                    {{ page + 1 }}
-                  </button>
-                </div>
-                
-                <button (click)="goToNextPage()" 
-                        [disabled]="currentPage === totalPages - 1"
-                        class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+                <button 
+                  (click)="nextLogPage()"
+                  [disabled]="!hasNextLogPage"
+                  class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                   Next
-                  <i class="fas fa-chevron-right"></i>
                 </button>
+              </div>
+              <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-sm text-gray-700">
+                    Showing page 
+                    <span class="font-medium">{{ currentLogPage + 1 }}</span>
+                    of
+                    <span class="font-medium">{{ totalLogPages }}</span>
+                    ({{ totalLogElements }} total entries)
+                  </p>
+                </div>
+                <div>
+                  <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <button 
+                      (click)="previousLogPage()"
+                      [disabled]="!hasPreviousLogPage"
+                      class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                      <span class="sr-only">Previous</span>
+                      <i class="fas fa-chevron-left h-5 w-5"></i>
+                    </button>
+                    
+                    <!-- Page numbers (limit to reasonable number) -->
+                    <button 
+                      *ngFor="let page of getDisplayPages(); let i = index"
+                      (click)="goToLogPage(page)"
+                      [ngClass]="{
+                        'bg-blue-50 border-blue-500 text-blue-600': page === currentLogPage,
+                        'bg-white border-gray-300 text-gray-500 hover:bg-gray-50': page !== currentLogPage
+                      }"
+                      class="relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                      {{ page + 1 }}
+                    </button>
+                    
+                    <button 
+                      (click)="nextLogPage()"
+                      [disabled]="!hasNextLogPage"
+                      class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                      <span class="sr-only">Next</span>
+                      <i class="fas fa-chevron-right h-5 w-5"></i>
+                    </button>
+                  </nav>
+                </div>
               </div>
             </div>
           </div>
@@ -1608,6 +1563,39 @@
                     <input type="text" [(ngModel)]="editingCompany.industryType" name="industryType" required
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                   </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <div class="mt-1 flex space-x-4">
+                      <label class="inline-flex items-center">
+                        <input type="radio" [(ngModel)]="editingCompany.active" name="editStatus" [value]="true" required
+                          class="text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-gray-700">Active</span>
+                      </label>
+                      <label class="inline-flex items-center">
+                        <input type="radio" [(ngModel)]="editingCompany.active" name="editStatus" [value]="false" required
+                          class="text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-gray-700">Inactive</span>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">MNC</label>
+                    <div class="mt-1 flex space-x-4">
+                      <label class="inline-flex items-center">
+                        <input type="radio" [(ngModel)]="editingCompany.mnc" name="editMNC" [value]="true" required
+                          class="text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-gray-700">Yes</span>
+                      </label>
+                      <label class="inline-flex items-center">
+                        <input type="radio" [(ngModel)]="editingCompany.mnc" name="editMNC" [value]="false" required
+                          class="text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-gray-700">No</span>
+                      </label>
+                    </div>
+                  </div>
+
                   <div>
                     <label class="block text-sm font-medium text-gray-700">Hr Name</label>
                     <input type="name" [(ngModel)]="editingCompany.hr_Name" name="name" required
@@ -1932,272 +1920,6 @@
               <i class="fas fa-clock mr-2"></i>
               Schedule Report
             </button>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Companies Content -->
-    <main class="flex-1 p-6 overflow-auto" *ngIf="selectedTab=='Companies'">
-      <div class="bg-gray-100 rounded-xl shadow-lg p-6 mb-4">
-        <div class="flex items-center justify-between mb-6">
-          <h1 class="text-3xl font-bold text-blue-800">Company Management</h1>
-          <div class="flex items-center space-x-4">
-            <div class="relative">
-            
-            </div>
-            <button (click)="showAddCompanyModal=true"
-              class="bg-blue-600 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-blue-700">
-              Add Company
-            </button>
-
-            <!-- Add Company Modal -->
-            <div *ngIf="showAddCompanyModal"
-              class="fixed inset-0 backdrop-blur justify-center bg- bg-opacity-50 overflow-y-auto h-full w-full z-50">
-              <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-lg font-semibold text-gray-800">Add New Company</h3>
-                  <button (click)="showAddCompanyModal=false" class="text-gray-400 hover:text-gray-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <form (ngSubmit)="onSubmitCompany()" class="space-y-4">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Company Name</label>
-                    <input type="text" [(ngModel)]="newCompany.name" name="name" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Industry Type</label>
-                    <input type="text" [(ngModel)]="newCompany.industryType" name="industryType" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Status</label>
-                    <div class="mt-1 flex space-x-4">
-                      <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="newCompany.active" name="status" [value]="true" required
-                          class="text-blue-600 focus:ring-blue-500">
-                        <span class="ml-2 text-gray-700">Active</span>
-                      </label>
-                      <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="newCompany.active" name="status" [value]="false" required
-                          class="text-blue-600 focus:ring-blue-500">
-                        <span class="ml-2 text-gray-700">Inactive</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">MNC</label>
-                    <div class="mt-1 flex space-x-4">
-                      <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="newCompany.mnc" name="MNC" [value]="true" required
-                          class="text-blue-600 focus:ring-blue-500">
-                        <span class="ml-2 text-gray-700">Yes</span>
-                      </label>
-                      <label class="inline-flex items-center">
-                        <input type="radio" [(ngModel)]="newCompany.mnc" name="MNC" [value]="false" required
-                          class="text-blue-600 focus:ring-blue-500">
-                        <span class="ml-2 text-gray-700">No</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Hr Name</label>
-                    <input type="name" [(ngModel)]="newCompany.hr_Name" name="name" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" [(ngModel)]="newCompany.email" name="email" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Contact Number</label>
-                    <input type="tel" [(ngModel)]="newCompany.contactNumber" name="contactNumber" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Location</label>
-                    <input type="text" [(ngModel)]="newCompany.location" name="location"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Website</label>
-                    <input type="url" [(ngModel)]="newCompany.website" name="website"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div class="flex justify-end space-x-3 mt-5">
-                    <button type="button" (click)="showAddCompanyModal=false"
-                      class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-                      Cancel
-                    </button>
-                    <button type="submit"
-                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
-                      Add Company
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <!-- ... rest of the existing code ... -->
-          </div>
-        </div>
-
-        <!-- Company Statistics -->
-        <!-- Company Statistics -->
-        <div class="grid grid-cols-4 gap-4 mb-6">
-          <!-- ... existing statistics cards ... -->
-        </div>
-
-        <!-- Companies Table -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-          <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h3 class="text-lg font-semibold text-gray-800">Companies List</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company
-                    Name</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hr Name
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let company of companies">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
-                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <span class="text-blue-600 font-semibold text-lg">{{company.name[0]}}</span>
-                        </div>
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">{{company.name}} <span *ngIf="company.mnc" class="ml-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">MNC</span></div>
-                        <div class="text-sm text-gray-500">{{company.website}}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{company.industryType}}</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{company.hr_Name}}</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                 
-                    <div class="text-sm text-gray-900">{{company.email}}</div>
-                    <div class="text-sm text-gray-500">{{company.contactNumber}}</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{company.location || 'Not specified'}}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                      [ngClass]="company.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
-                      {{company.active ? 'Active' : 'Inactive'}}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button (click)="onEditCompany(company.id)"
-                      class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                    <button (click)="onDeleteCompany(company.id)"
-                      class="text-red-600 hover:text-red-900">Delete</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <!-- Add Edit Modal -->
-            <div *ngIf="showEditCompanyModal"
-              class="fixed inset-0 backdrop-blur  bg-opacity-50 overflow-y-auto h-full w-full z-50">
-              <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                <div class="flex justify-between items-center mb-4">
-                  <h3 class="text-lg font-semibold text-gray-800">Edit Company</h3>
-                  <button (click)="showEditCompanyModal=false" class="text-gray-400 hover:text-gray-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <form (ngSubmit)="onUpdateCompany()" class="space-y-4" *ngIf="editingCompany">
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Company Name</label>
-                    <input type="text" [(ngModel)]="editingCompany.name" name="name" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Industry Type</label>
-                    <input type="text" [(ngModel)]="editingCompany.industryType" name="industryType" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Hr Name</label>
-                    <input type="name" [(ngModel)]="editingCompany.hr_Name" name="name" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" [(ngModel)]="editingCompany.email" name="email" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Contact Number</label>
-                    <input type="tel" [(ngModel)]="editingCompany.contactNumber" name="contactNumber" required
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Location</label>
-                    <input type="text" [(ngModel)]="editingCompany.location" name="location"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Website</label>
-                    <input type="url" [(ngModel)]="editingCompany.website" name="website"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                  </div>
-
-                  <div class="flex justify-end space-x-3 mt-5">
-                    <button type="button" (click)="showEditCompanyModal=false"
-                      class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-                      Cancel
-                    </button>
-                    <button type="submit"
-                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
-                      Update Company
-                    </button>
-                  </div>
-                </form>
-
-              </div>
-              
-            </div>
-     
-            <!-- Update the Actions buttons in the table -->
-            <!-- TPO Users Content -->
           </div>
         </div>
       </div>

@@ -30,37 +30,17 @@ throw new Error('Method not implemented.');
   filteredLogs: Log[] = [];
   searchQuery: string = '';
   
-  // Enhanced logs properties
-  paginatedLogs: any = null;
-  currentPage: number = 0;
-  pageSize: number = 20;
-  totalElements: number = 0;
-  totalPages: number = 0;
-  
-  // Search and filter properties
-  logsSearchFilters = {
+  // Enhanced logs filtering properties
+  logSearchQuery: string = '';
+  logFilters = {
     action: '',
-    performedBy: '',
     entityName: '',
-    entityId: '',
-    details: '',
-    dateFrom: '',
-    dateTo: '',
-    sortBy: 'timestamp',
-    sortDirection: 'desc'
+    performedBy: '',
+    fromDate: '',
+    toDate: ''
   };
-  
-  // Dropdown data for filters
-  uniqueActions: string[] = [];
-  uniqueEntities: string[] = [];
-  uniqueUsers: string[] = [];
-  
-  // Logs statistics
-  logsStatistics: any = null;
-  
-  // Loading states
-  isLoadingLogs: boolean = false;
-  isExportingLogs: boolean = false;
+  logSortBy: string = 'timestamp_desc';
+  isLoadingLogs = false;
   
   // Add new properties for additional dashboard features
   realTimeStats: any = null;
@@ -87,306 +67,280 @@ throw new Error('Method not implemented.');
   selectedYear: number = new Date().getFullYear();
   isExportingYearly = false;
 
-  fetchLogs(): void {
-    this.loadLogsPaginated();
-    this.loadLogsDropdownData();
-    this.loadLogsStatistics();
-  }
+  // Add pagination properties for logs
+  currentLogPage = 0;
+  logPageSize = 20;
+  totalLogPages = 0;
+  totalLogElements = 0;
+  hasNextLogPage = false;
+  hasPreviousLogPage = false;
 
-  loadLogsPaginated(page: number = 0, size: number = 20): void {
+  fetchLogs(page: number = 0): void {
     this.isLoadingLogs = true;
-    this.currentPage = page;
-    this.pageSize = size;
-    
-    this.tposervice.getLogsPaginated(page, size, this.logsSearchFilters.sortBy, this.logsSearchFilters.sortDirection).subscribe({
-      next: (data) => {
-        this.paginatedLogs = data;
-        this.logs = data.logs || [];
-        this.filteredLogs = this.logs;
-        this.totalElements = data.totalElements || 0;
-        this.totalPages = data.totalPages || 0;
+    this.tposervice.getLogs(page, this.logPageSize).subscribe({
+      next: (response) => {
+        // Handle the paginated response structure
+        this.logs = response.logs || [];
+        this.filteredLogs = [...this.logs];
+        
+        // Update pagination info
+        this.currentLogPage = response.currentPage || 0;
+        this.totalLogPages = response.totalPages || 0;
+        this.totalLogElements = response.totalElements || 0;
+        this.hasNextLogPage = response.hasNext || false;
+        this.hasPreviousLogPage = response.hasPrevious || false;
+        
+        this.applyLogFilters();
         this.isLoadingLogs = false;
       },
       error: (error) => {
-        console.error('Error fetching paginated logs:', error);
+        console.error('Error fetching logs:', error);
         this.isLoadingLogs = false;
       }
     });
-  }
-
-  searchLogsAdvanced(): void {
-    this.isLoadingLogs = true;
-    const searchParams = {
-      ...this.logsSearchFilters,
-      page: this.currentPage,
-      size: this.pageSize
-    };
-    
-    this.tposervice.searchLogs(searchParams).subscribe({
-      next: (data) => {
-        this.paginatedLogs = data;
-        this.logs = data.logs || [];
-        this.filteredLogs = this.logs;
-        this.totalElements = data.totalElements || 0;
-        this.totalPages = data.totalPages || 0;
-        this.isLoadingLogs = false;
-      },
-      error: (error) => {
-        console.error('Error searching logs:', error);
-        this.isLoadingLogs = false;
-      }
-    });
-  }
-
-  filterLogsByAction(action: string): void {
-    this.isLoadingLogs = true;
-    this.tposervice.filterLogsByAction(action, this.currentPage, this.pageSize).subscribe({
-      next: (data) => {
-        this.paginatedLogs = data;
-        this.logs = data.logs || [];
-        this.filteredLogs = this.logs;
-        this.totalElements = data.totalElements || 0;
-        this.totalPages = data.totalPages || 0;
-        this.isLoadingLogs = false;
-      },
-      error: (error) => {
-        console.error('Error filtering logs by action:', error);
-        this.isLoadingLogs = false;
-      }
-    });
-  }
-
-  filterLogsByEntity(entityName: string): void {
-    this.isLoadingLogs = true;
-    this.tposervice.filterLogsByEntity(entityName, this.currentPage, this.pageSize).subscribe({
-      next: (data) => {
-        this.paginatedLogs = data;
-        this.logs = data.logs || [];
-        this.filteredLogs = this.logs;
-        this.totalElements = data.totalElements || 0;
-        this.totalPages = data.totalPages || 0;
-        this.isLoadingLogs = false;
-      },
-      error: (error) => {
-        console.error('Error filtering logs by entity:', error);
-        this.isLoadingLogs = false;
-      }
-    });
-  }
-
-  filterLogsByUser(performedBy: string): void {
-    this.isLoadingLogs = true;
-    this.tposervice.filterLogsByUser(performedBy, this.currentPage, this.pageSize).subscribe({
-      next: (data) => {
-        this.paginatedLogs = data;
-        this.logs = data.logs || [];
-        this.filteredLogs = this.logs;
-        this.totalElements = data.totalElements || 0;
-        this.totalPages = data.totalPages || 0;
-        this.isLoadingLogs = false;
-      },
-      error: (error) => {
-        console.error('Error filtering logs by user:', error);
-        this.isLoadingLogs = false;
-      }
-    });
-  }
-
-  filterLogsByDateRange(): void {
-    if (!this.logsSearchFilters.dateFrom || !this.logsSearchFilters.dateTo) {
-      alert('Please select both start and end dates');
-      return;
-    }
-    
-    this.isLoadingLogs = true;
-    this.tposervice.filterLogsByDateRange(this.logsSearchFilters.dateFrom, this.logsSearchFilters.dateTo, this.currentPage, this.pageSize).subscribe({
-      next: (data) => {
-        this.paginatedLogs = data;
-        this.logs = data.logs || [];
-        this.filteredLogs = this.logs;
-        this.totalElements = data.totalElements || 0;
-        this.totalPages = data.totalPages || 0;
-        this.isLoadingLogs = false;
-      },
-      error: (error) => {
-        console.error('Error filtering logs by date range:', error);
-        this.isLoadingLogs = false;
-      }
-    });
-  }
-
-  getRecentLogs(hours: number = 24): void {
-    this.isLoadingLogs = true;
-    this.tposervice.getRecentLogs(hours, this.currentPage, this.pageSize).subscribe({
-      next: (data) => {
-        this.paginatedLogs = data;
-        this.logs = data.logs || [];
-        this.filteredLogs = this.logs;
-        this.totalElements = data.totalElements || 0;
-        this.totalPages = data.totalPages || 0;
-        this.isLoadingLogs = false;
-      },
-      error: (error) => {
-        console.error('Error fetching recent logs:', error);
-        this.isLoadingLogs = false;
-      }
-    });
-  }
-
-  loadLogsDropdownData(): void {
-    // Load unique actions
-    this.tposervice.getUniqueActions().subscribe({
-      next: (data) => {
-        this.uniqueActions = data.actions || [];
-      },
-      error: (error) => {
-        console.error('Error loading unique actions:', error);
-      }
-    });
-
-    // Load unique entities
-    this.tposervice.getUniqueEntities().subscribe({
-      next: (data) => {
-        this.uniqueEntities = data.entities || [];
-      },
-      error: (error) => {
-        console.error('Error loading unique entities:', error);
-      }
-    });
-
-    // Load unique users
-    this.tposervice.getUniqueUsers().subscribe({
-      next: (data) => {
-        this.uniqueUsers = data.users || [];
-      },
-      error: (error) => {
-        console.error('Error loading unique users:', error);
-      }
-    });
-  }
-
-  loadLogsStatistics(): void {
-    this.tposervice.getLogsStatistics(30).subscribe({
-      next: (data) => {
-        this.logsStatistics = data;
-      },
-      error: (error) => {
-        console.error('Error loading logs statistics:', error);
-      }
-    });
-  }
-
-  exportLogsToExcel(): void {
-    this.isExportingLogs = true;
-    
-    this.tposervice.exportLogsToExcel(this.logsSearchFilters).subscribe({
-      next: (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `logs_report_${new Date().toISOString().split('T')[0]}.xlsx`;
-        link.click();
-        window.URL.revokeObjectURL(url);
-        this.isExportingLogs = false;
-      },
-      error: (error) => {
-        console.error('Error exporting logs to Excel:', error);
-        this.isExportingLogs = false;
-      }
-    });
-  }
-
-  // Pagination methods
-  goToPage(page: number): void {
-    if (page >= 0 && page < this.totalPages) {
-      this.currentPage = page;
-      this.loadLogsPaginated(page, this.pageSize);
-    }
-  }
-
-  goToNextPage(): void {
-    if (this.currentPage < this.totalPages - 1) {
-      this.goToPage(this.currentPage + 1);
-    }
-  }
-
-  goToPreviousPage(): void {
-    if (this.currentPage > 0) {
-      this.goToPage(this.currentPage - 1);
-    }
-  }
-
-  changePageSize(newSize: number): void {
-    this.pageSize = newSize;
-    this.currentPage = 0;
-    this.loadLogsPaginated(0, newSize);
-  }
-
-  // Clear all filters
-  clearAllFilters(): void {
-    this.logsSearchFilters = {
-      action: '',
-      performedBy: '',
-      entityName: '',
-      entityId: '',
-      details: '',
-      dateFrom: '',
-      dateTo: '',
-      sortBy: 'timestamp',
-      sortDirection: 'desc'
-    };
-    this.searchQuery = '';
-    this.loadLogsPaginated();
-  }
-
-  // Sort logs
-  sortLogs(sortBy: string): void {
-    if (this.logsSearchFilters.sortBy === sortBy) {
-      this.logsSearchFilters.sortDirection = this.logsSearchFilters.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.logsSearchFilters.sortBy = sortBy;
-      this.logsSearchFilters.sortDirection = 'desc';
-    }
-    this.loadLogsPaginated(this.currentPage, this.pageSize);
-  }
-
-  // Get page numbers for pagination display
-  getPageNumbers(): number[] {
-    const maxPages = 5;
-    const pages: number[] = [];
-    const start = Math.max(0, this.currentPage - Math.floor(maxPages / 2));
-    const end = Math.min(this.totalPages, start + maxPages);
-    
-    for (let i = start; i < end; i++) {
-      pages.push(i);
-    }
-    return pages;
   }
 
   filterLogs(): void {
-    if (!this.searchQuery.trim()) {
-      this.filteredLogs = this.logs;
-      return;
-    }
-    
     this.filteredLogs = this.logs.filter(log =>
       log.action.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       log.performedBy.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       log.entityName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      log.entityId.toString().includes(this.searchQuery) ||
-      (log.details && log.details.toLowerCase().includes(this.searchQuery.toLowerCase()))
+      log.entityId.toString().includes(this.searchQuery)
     );
+  }
+
+  // Enhanced filtering methods
+  onLogSearch(): void {
+    this.applyLogFilters();
+  }
+
+  applyLogFilters(): void {
+    let filtered = [...this.logs];
+
+    // Apply text search
+    if (this.logSearchQuery.trim()) {
+      const searchTerm = this.logSearchQuery.toLowerCase().trim();
+      filtered = filtered.filter(log =>
+        log.action.toLowerCase().includes(searchTerm) ||
+        log.performedBy.toLowerCase().includes(searchTerm) ||
+        log.entityName.toLowerCase().includes(searchTerm) ||
+        log.entityId.toString().toLowerCase().includes(searchTerm) ||
+        log.details.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Apply action filter
+    if (this.logFilters.action) {
+      filtered = filtered.filter(log =>
+        log.action.toLowerCase().includes(this.logFilters.action.toLowerCase())
+      );
+    }
+
+    // Apply entity filter
+    if (this.logFilters.entityName) {
+      filtered = filtered.filter(log =>
+        log.entityName.toLowerCase() === this.logFilters.entityName.toLowerCase()
+      );
+    }
+
+    // Apply performed by filter
+    if (this.logFilters.performedBy) {
+      filtered = filtered.filter(log =>
+        log.performedBy.toLowerCase().includes(this.logFilters.performedBy.toLowerCase())
+      );
+    }
+
+    // Apply date range filters
+    if (this.logFilters.fromDate) {
+      const fromDate = new Date(this.logFilters.fromDate);
+      filtered = filtered.filter(log => new Date(log.timestamp) >= fromDate);
+    }
+
+    if (this.logFilters.toDate) {
+      const toDate = new Date(this.logFilters.toDate);
+      filtered = filtered.filter(log => new Date(log.timestamp) <= toDate);
+    }
+
+    this.filteredLogs = filtered;
+    this.sortLogs();
+  }
+
+  clearLogFilters(): void {
+    this.logSearchQuery = '';
+    this.logFilters = {
+      action: '',
+      entityName: '',
+      performedBy: '',
+      fromDate: '',
+      toDate: ''
+    };
+    this.applyLogFilters();
+  }
+
+  setQuickFilter(period: string): void {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    switch (period) {
+      case 'today':
+        this.logFilters.fromDate = this.formatDateForInput(today);
+        this.logFilters.toDate = this.formatDateForInput(now);
+        break;
+      case 'yesterday':
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        this.logFilters.fromDate = this.formatDateForInput(yesterday);
+        this.logFilters.toDate = this.formatDateForInput(today);
+        break;
+      case 'last7days':
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        this.logFilters.fromDate = this.formatDateForInput(sevenDaysAgo);
+        this.logFilters.toDate = this.formatDateForInput(now);
+        break;
+      case 'last30days':
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        this.logFilters.fromDate = this.formatDateForInput(thirtyDaysAgo);
+        this.logFilters.toDate = this.formatDateForInput(now);
+        break;
+    }
+    this.applyLogFilters();
+  }
+
+  sortLogs(): void {
+    const sortField = this.logSortBy.split('_')[0];
+    const sortDirection = this.logSortBy.split('_')[1];
+
+    this.filteredLogs.sort((a: any, b: any) => {
+      let valueA = a[sortField];
+      let valueB = b[sortField];
+
+      // Handle date sorting
+      if (sortField === 'timestamp') {
+        valueA = new Date(valueA).getTime();
+        valueB = new Date(valueB).getTime();
+      }
+
+      // Handle string sorting
+      if (typeof valueA === 'string') {
+        valueA = valueA.toLowerCase();
+        valueB = valueB.toLowerCase();
+      }
+
+      if (sortDirection === 'asc') {
+        return valueA > valueB ? 1 : -1;
+      } else {
+        return valueA < valueB ? 1 : -1;
+      }
+    });
+  }
+
+  sortBy(field: string): void {
+    const currentField = this.logSortBy.split('_')[0];
+    const currentDirection = this.logSortBy.split('_')[1];
+    
+    if (currentField === field) {
+      // Toggle direction
+      this.logSortBy = `${field}_${currentDirection === 'asc' ? 'desc' : 'asc'}`;
+    } else {
+      // Default to desc for new field
+      this.logSortBy = `${field}_desc`;
+    }
+    
+    this.sortLogs();
+  }
+
+  // Pagination methods for logs
+  nextLogPage(): void {
+    if (this.hasNextLogPage) {
+      this.fetchLogs(this.currentLogPage + 1);
+    }
+  }
+
+  previousLogPage(): void {
+    if (this.hasPreviousLogPage) {
+      this.fetchLogs(this.currentLogPage - 1);
+    }
+  }
+
+  goToLogPage(page: number): void {
+    if (page >= 0 && page < this.totalLogPages) {
+      this.fetchLogs(page);
+    }
+  }
+
+  getDisplayPages(): number[] {
+    const maxDisplayPages = 5;
+    const pages: number[] = [];
+    
+    if (this.totalLogPages <= maxDisplayPages) {
+      // Show all pages if total is small
+      for (let i = 0; i < this.totalLogPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Show pages around current page
+      const start = Math.max(0, this.currentLogPage - Math.floor(maxDisplayPages / 2));
+      const end = Math.min(this.totalLogPages, start + maxDisplayPages);
+      
+      for (let i = start; i < end; i++) {
+        pages.push(i);
+      }
+    }
+    
+    return pages;
+  }
+
+  refreshLogs(): void {
+    this.fetchLogs(this.currentLogPage);
+  }
+
+  exportLogs(): void {
+    this.isExporting = true;
+    
+    // Prepare data for export
+    const exportData = this.filteredLogs.map(log => ({
+      'Timestamp': new Date(log.timestamp).toLocaleString(),
+      'Action': log.action,
+      'Performed By': log.performedBy,
+      'Entity Type': log.entityName,
+      'Entity ID': log.entityId,
+      'Details': log.details
+    }));
+
+    // Convert to CSV format
+    const headers = Object.keys(exportData[0] || {});
+    const csvContent = [
+      headers.join(','),
+      ...exportData.map(row => 
+        headers.map(header => `"${row[header as keyof typeof row] || ''}"`).join(',')
+      )
+    ].join('\n');
+
+    // Download file
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `logs_export_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+    
+    this.isExporting = false;
+  }
+
+  private formatDateForInput(date: Date): string {
+    return date.toISOString().slice(0, 16);
   }
 
   ngOnInit(): void {
     this.loadDashboardData();
     this.loadAllDashboardComponents();
+    this.fetchLogs(); // Initialize logs data
     // Initialize yearly reports data
     this.selectedYear = new Date().getFullYear();
   }
-
-  // Add Math property to access Math functions in template
-  Math = Math;
 
   loadAllDashboardComponents(): void {
     // Load all dashboard components - temporarily commented out until service methods are ready
@@ -440,6 +394,7 @@ throw new Error('Method not implemented.');
     
     if (!this.fetchedTabs.has(title)) {
       this.loadTabData(title);
+      this.fetchedTabs.add(title);
     }
   }
   
@@ -694,7 +649,7 @@ onDeleteTpoUser(id: number) {
 }
 
 // Update loadTabData method to include TPO Users
-onProfileLog(id: number | string) {
+onProfileLog(id: number) {
   this.router.navigate(['/view-profile', id]);
   console.log('Navigating to profile with ID:', id);
   this.selectedTab = 'Profile';
