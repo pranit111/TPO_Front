@@ -105,12 +105,14 @@ export class ApplicationserviceService {
     status?: string;
     company?: string;
     department?: string;
-    position?: string;
+    designation?: string;
     jobtype?: string;
     minSalary?: number;
     maxSalary?: number;
     fromDate?: string;
     toDate?: string;
+    page?: number;
+    size?: number;
   }): Observable<PaginatedResponse<Application>> {
     let params = new HttpParams();
   
@@ -126,8 +128,8 @@ export class ApplicationserviceService {
     if (filters.department) {
       params = params.set('department', filters.department);
     }
-    if (filters.position) {
-      params = params.set('position', filters.position);
+    if (filters.designation) {
+      params = params.set('designation', filters.designation);
     }
     if (filters.jobtype) {
       params = params.set('jobtype', filters.jobtype);
@@ -144,6 +146,12 @@ export class ApplicationserviceService {
     if (filters.toDate) {
       params = params.set('toDate', new Date(filters.toDate).toISOString().split('T')[0]);
     }
+    if (filters.page !== undefined) {
+      params = params.set('page', filters.page.toString());
+    }
+    if (filters.size !== undefined) {
+      params = params.set('size', filters.size.toString());
+    }
   
     return this.http.get<PaginatedResponse<Application>>(`${this.apiUrl}/Application/Search`, { params });
   }
@@ -153,7 +161,7 @@ export class ApplicationserviceService {
     status?: string;
     company?: string;
     department?: string;
-    position?: string;
+    designation?: string;
     jobtype?: string;
     minSalary?: number;
     maxSalary?: number;
@@ -174,8 +182,8 @@ export class ApplicationserviceService {
     if (filters.department) {
       params = params.set('department', filters.department);
     }
-    if (filters.position) {
-      params = params.set('position', filters.position);
+    if (filters.designation) {
+      params = params.set('designation', filters.designation);
     }
     if (filters.jobtype) {
       params = params.set('jobtype', filters.jobtype);

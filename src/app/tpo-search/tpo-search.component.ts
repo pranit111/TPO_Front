@@ -9,10 +9,15 @@ import { PlacementServiceService } from '../placement-service.service';
 
 interface PaginatedResponse<T> {
   content: T[];
-  pageable: any;
-  last: boolean;
-  totalPages: number;
-  totalElements: number;
+  pageable?: any;
+  last?: boolean;
+  totalPages?: number;
+  totalElements?: number;
+  size?: number;
+  number?: number;
+  first?: boolean;
+  numberOfElements?: number;
+  empty?: boolean;
 }
 
 interface Post {
@@ -175,7 +180,19 @@ OnStudentAction(id:number){
     academicYear: '',
     minAvgMarks: undefined as number | undefined,
     maxAvgMarks: undefined as number | undefined,
-    yearOfPassing: undefined as number | undefined
+    yearOfPassing: undefined as number | undefined,
+    page: 0,
+    size: 10
+  };
+
+  // Student pagination properties
+  studentPagination = {
+    totalPages: 0,
+    totalElements: 0,
+    currentPage: 0,
+    pageSize: 10,
+    first: true,
+    last: true
   };
 
   // Post section properties
@@ -205,8 +222,29 @@ searchText = '';
     minSalary: undefined as number | undefined,  // Filter by minimum salary
     maxSalary: undefined as number | undefined,  // Filter by maximum salary
     fromDate: '',          // Filter by application date range
-    toDate: ''  
-              // Filter by application date range
+    toDate: '',              // Filter by application date range
+    page: 0,
+    size: 10
+  };
+
+  // Application pagination properties
+  applicationPagination = {
+    totalPages: 0,
+    totalElements: 0,
+    currentPage: 0,
+    pageSize: 10,
+    first: true,
+    last: true
+  };
+
+  // Post pagination properties
+  postPagination = {
+    totalPages: 0,
+    totalElements: 0,
+    currentPage: 0,
+    pageSize: 10,
+    first: true,
+    last: true
   };
 
   // Placement section properties
@@ -220,6 +258,16 @@ searchText = '';
     toDate: '',               // Filter by joining date range
     page: 0,
     size: 10
+  };
+
+  // Placement pagination properties
+  placementPagination = {
+    totalPages: 0,
+    totalElements: 0,
+    currentPage: 0,
+    pageSize: 10,
+    first: true,
+    last: true
   };
 
   constructor(
@@ -255,9 +303,18 @@ searchText = '';
   }
 
   loadStudents(): void {
+    console.log('Loading students with filters:', this.filters);
     this.studentService.getStudents(this.filters).subscribe({
       next: (response: PaginatedResponse<Student>) => {
         this.students = response.content || [];
+        this.studentPagination = {
+          totalPages: response.totalPages || 0,
+          totalElements: response.totalElements || 0,
+          currentPage: response.number || 0,
+          pageSize: response.size || 10,
+          first: response.first || true,
+          last: response.last || true
+        };
       },
       error: (error: Error) => {
         console.error('Error fetching students:', error);
@@ -267,9 +324,18 @@ searchText = '';
   }
 
   loadPosts(): void {
+    console.log('Loading posts with filters:', this.postFilters);
     this.postService.searchPosts(this.postFilters).subscribe({
       next: (response: PaginatedResponse<Post>) => {
         this.posts = response.content || [];
+        this.postPagination = {
+          totalPages: response.totalPages || 0,
+          totalElements: response.totalElements || 0,
+          currentPage: response.number || 0,
+          pageSize: response.size || 10,
+          first: response.first || true,
+          last: response.last || true
+        };
       },
       error: (error: Error) => {
         console.error('Error fetching posts:', error);
@@ -279,9 +345,18 @@ searchText = '';
   }
 
   loadApplications(): void {
+    console.log('Loading applications with filters:', this.applicationFilters);
     this.applicationservice.getapplicationssearch(this.applicationFilters).subscribe({
       next: (response: PaginatedResponse<Application>) => {
         this.applications = response.content || [];
+        this.applicationPagination = {
+          totalPages: response.totalPages || 0,
+          totalElements: response.totalElements || 0,
+          currentPage: response.number || 0,
+          pageSize: response.size || 10,
+          first: response.first || true,
+          last: response.last || true
+        };
       },
       error: (error: Error) => {
         console.error('Error fetching applications:', error);
@@ -291,9 +366,18 @@ searchText = '';
   }
 
   loadPlacements(): void {
+    console.log('Loading placements with filters:', this.placementFilters);
     this.placementsService.searchPlacements(this.placementFilters).subscribe({
       next: (response: PaginatedResponse<PlacementDTO>) => {
         this.placements = response.content || [];
+        this.placementPagination = {
+          totalPages: response.totalPages || 0,
+          totalElements: response.totalElements || 0,
+          currentPage: response.number || 0,
+          pageSize: response.size || 10,
+          first: response.first || true,
+          last: response.last || true
+        };
       },
       error: (error: Error) => {
         console.error('Error fetching placements:', error);
@@ -398,12 +482,16 @@ searchText = '';
 
   onFilterChange(): void {
     if (this.activeTab === 'students') {
+      this.filters.page = 0; // Reset to first page
       this.loadStudents();
     } else if (this.activeTab === 'posts') {
+      this.postFilters.page = 0; // Reset to first page
       this.loadPosts();
     } else if (this.activeTab === 'applications') {
+      this.applicationFilters.page = 0; // Reset to first page
       this.loadApplications();
     } else if (this.activeTab === 'placements') {
+      this.placementFilters.page = 0; // Reset to first page
       this.loadPlacements();
     }
   }
@@ -590,5 +678,118 @@ searchText = '';
 
   onPlacementDetailsClose() {
     this.showPlacementDetailsModal = false;
+  }
+
+  // Pagination methods for Students
+  onStudentPageChange(page: number): void {
+    this.filters.page = page;
+    this.loadStudents();
+  }
+
+  onStudentPageSizeChange(size: number): void {
+    this.filters.size = size;
+    this.filters.page = 0;
+    this.studentPagination.pageSize = size;
+    this.loadStudents();
+  }
+
+  getStudentPageNumbers(): number[] {
+    const pages = [];
+    const start = Math.max(0, this.studentPagination.currentPage - 2);
+    const end = Math.min(this.studentPagination.totalPages - 1, this.studentPagination.currentPage + 2);
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // Pagination methods for Posts
+  onPostPageChange(page: number): void {
+    this.postFilters.page = page;
+    this.loadPosts();
+  }
+
+  onPostPageSizeChange(size: number): void {
+    this.postFilters.size = size;
+    this.postFilters.page = 0;
+    this.postPagination.pageSize = size;
+    this.loadPosts();
+  }
+
+  getPostPageNumbers(): number[] {
+    const pages = [];
+    const start = Math.max(0, this.postPagination.currentPage - 2);
+    const end = Math.min(this.postPagination.totalPages - 1, this.postPagination.currentPage + 2);
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // Pagination methods for Applications
+  onApplicationPageChange(page: number): void {
+    this.applicationFilters.page = page;
+    this.loadApplications();
+  }
+
+  onApplicationPageSizeChange(size: number): void {
+    this.applicationFilters.size = size;
+    this.applicationFilters.page = 0;
+    this.applicationPagination.pageSize = size;
+    this.loadApplications();
+  }
+
+  getApplicationPageNumbers(): number[] {
+    const pages = [];
+    const start = Math.max(0, this.applicationPagination.currentPage - 2);
+    const end = Math.min(this.applicationPagination.totalPages - 1, this.applicationPagination.currentPage + 2);
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // Pagination methods for Placements
+  onPlacementPageChange(page: number): void {
+    this.placementFilters.page = page;
+    this.loadPlacements();
+  }
+
+  onPlacementPageSizeChange(size: number): void {
+    this.placementFilters.size = size;
+    this.placementFilters.page = 0;
+    this.placementPagination.pageSize = size;
+    this.loadPlacements();
+  }
+
+  getPlacementPageNumbers(): number[] {
+    const pages = [];
+    const start = Math.max(0, this.placementPagination.currentPage - 2);
+    const end = Math.min(this.placementPagination.totalPages - 1, this.placementPagination.currentPage + 2);
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // Helper methods for pagination display
+  getStudentEndIndex(): number {
+    return Math.min((this.studentPagination.currentPage + 1) * this.studentPagination.pageSize, this.studentPagination.totalElements);
+  }
+
+  getPostEndIndex(): number {
+    return Math.min((this.postPagination.currentPage + 1) * this.postPagination.pageSize, this.postPagination.totalElements);
+  }
+
+  getApplicationEndIndex(): number {
+    return Math.min((this.applicationPagination.currentPage + 1) * this.applicationPagination.pageSize, this.applicationPagination.totalElements);
+  }
+
+  getPlacementEndIndex(): number {
+    return Math.min((this.placementPagination.currentPage + 1) * this.placementPagination.pageSize, this.placementPagination.totalElements);
   }
 }

@@ -216,6 +216,76 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Student Pagination Controls -->
+  <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+    <div class="flex-1 flex justify-between sm:hidden">
+      <button [disabled]="studentPagination.first" 
+              (click)="onStudentPageChange(studentPagination.currentPage - 1)"
+              class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+        Previous
+      </button>
+      <button [disabled]="studentPagination.last" 
+              (click)="onStudentPageChange(studentPagination.currentPage + 1)"
+              class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+        Next
+      </button>
+    </div>
+    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div class="flex items-center space-x-2">
+        <p class="text-sm text-gray-700">
+          Showing
+          <span class="font-medium">{{ studentPagination.currentPage * studentPagination.pageSize + 1 }}</span>
+          to
+          <span class="font-medium">{{ getStudentEndIndex() }}</span>
+          of
+          <span class="font-medium">{{ studentPagination.totalElements }}</span>
+          results
+        </p>
+        <select [(ngModel)]="studentPagination.pageSize" 
+                (ngModelChange)="onStudentPageSizeChange($event)"
+                class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <option [value]="5">5 per page</option>
+          <option [value]="10">10 per page</option>
+          <option [value]="25">25 per page</option>
+          <option [value]="50">50 per page</option>
+        </select>
+      </div>
+      <div>
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          <button [disabled]="studentPagination.first" 
+                  (click)="onStudentPageChange(studentPagination.currentPage - 1)"
+                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="sr-only">Previous</span>
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          
+          <button *ngFor="let page of getStudentPageNumbers()" 
+                  (click)="onStudentPageChange(page)"
+                  [class.bg-blue-50]="page === studentPagination.currentPage"
+                  [class.border-blue-500]="page === studentPagination.currentPage"
+                  [class.text-blue-600]="page === studentPagination.currentPage"
+                  [class.bg-white]="page !== studentPagination.currentPage"
+                  [class.border-gray-300]="page !== studentPagination.currentPage"
+                  [class.text-gray-500]="page !== studentPagination.currentPage"
+                  class="relative inline-flex items-center px-4 py-2 border text-sm font-medium hover:bg-gray-50">
+            {{ page + 1 }}
+          </button>
+          
+          <button [disabled]="studentPagination.last" 
+                  (click)="onStudentPageChange(studentPagination.currentPage + 1)"
+                  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="sr-only">Next</span>
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- Placements Search Section -->
 <div *ngIf="activeTab === 'placements'" class="bg-white rounded-xl shadow-lg p-6">
@@ -281,6 +351,76 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- Placement Pagination Controls -->
+  <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+    <div class="flex-1 flex justify-between sm:hidden">
+      <button [disabled]="placementPagination.first" 
+              (click)="onPlacementPageChange(placementPagination.currentPage - 1)"
+              class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+        Previous
+      </button>
+      <button [disabled]="placementPagination.last" 
+              (click)="onPlacementPageChange(placementPagination.currentPage + 1)"
+              class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+        Next
+      </button>
+    </div>
+    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div class="flex items-center space-x-2">
+        <p class="text-sm text-gray-700">
+          Showing
+          <span class="font-medium">{{ placementPagination.currentPage * placementPagination.pageSize + 1 }}</span>
+          to
+          <span class="font-medium">{{ getPlacementEndIndex() }}</span>
+          of
+          <span class="font-medium">{{ placementPagination.totalElements }}</span>
+          results
+        </p>
+        <select [(ngModel)]="placementPagination.pageSize" 
+                (ngModelChange)="onPlacementPageSizeChange($event)"
+                class="border border-gray-300 rounded px-2 py-1 text-sm">
+          <option [value]="5">5 per page</option>
+          <option [value]="10">10 per page</option>
+          <option [value]="25">25 per page</option>
+          <option [value]="50">50 per page</option>
+        </select>
+      </div>
+      <div>
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          <button [disabled]="placementPagination.first" 
+                  (click)="onPlacementPageChange(placementPagination.currentPage - 1)"
+                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="sr-only">Previous</span>
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          
+          <button *ngFor="let page of getPlacementPageNumbers()" 
+                  (click)="onPlacementPageChange(page)"
+                  [class.bg-blue-50]="page === placementPagination.currentPage"
+                  [class.border-blue-500]="page === placementPagination.currentPage"
+                  [class.text-blue-600]="page === placementPagination.currentPage"
+                  [class.bg-white]="page !== placementPagination.currentPage"
+                  [class.border-gray-300]="page !== placementPagination.currentPage"
+                  [class.text-gray-500]="page !== placementPagination.currentPage"
+                  class="relative inline-flex items-center px-4 py-2 border text-sm font-medium hover:bg-gray-50">
+            {{ page + 1 }}
+          </button>
+          
+          <button [disabled]="placementPagination.last" 
+                  (click)="onPlacementPageChange(placementPagination.currentPage + 1)"
+                  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span class="sr-only">Next</span>
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </div>
   </div>
 
   <!-- Placement Details Modal -->
@@ -435,7 +575,79 @@
               </td>
             </tr>
           </tbody>
-        </table><div *ngIf="showEditPostModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        </table>
+        
+        <!-- Post Pagination Controls -->
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <div class="flex-1 flex justify-between sm:hidden">
+            <button [disabled]="postPagination.first" 
+                    (click)="onPostPageChange(postPagination.currentPage - 1)"
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Previous
+            </button>
+            <button [disabled]="postPagination.last" 
+                    (click)="onPostPageChange(postPagination.currentPage + 1)"
+                    class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Next
+            </button>
+          </div>
+          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div class="flex items-center space-x-2">
+              <p class="text-sm text-gray-700">
+                Showing
+                <span class="font-medium">{{ postPagination.currentPage * postPagination.pageSize + 1 }}</span>
+                to
+                <span class="font-medium">{{ getPostEndIndex() }}</span>
+                of
+                <span class="font-medium">{{ postPagination.totalElements }}</span>
+                results
+              </p>
+              <select [(ngModel)]="postPagination.pageSize" 
+                      (ngModelChange)="onPostPageSizeChange($event)"
+                      class="border border-gray-300 rounded px-2 py-1 text-sm">
+                <option [value]="5">5 per page</option>
+                <option [value]="10">10 per page</option>
+                <option [value]="25">25 per page</option>
+                <option [value]="50">50 per page</option>
+              </select>
+            </div>
+            <div>
+              <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button [disabled]="postPagination.first" 
+                        (click)="onPostPageChange(postPagination.currentPage - 1)"
+                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <span class="sr-only">Previous</span>
+                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                
+                <button *ngFor="let page of getPostPageNumbers()" 
+                        (click)="onPostPageChange(page)"
+                        [class.bg-blue-50]="page === postPagination.currentPage"
+                        [class.border-blue-500]="page === postPagination.currentPage"
+                        [class.text-blue-600]="page === postPagination.currentPage"
+                        [class.bg-white]="page !== postPagination.currentPage"
+                        [class.border-gray-300]="page !== postPagination.currentPage"
+                        [class.text-gray-500]="page !== postPagination.currentPage"
+                        class="relative inline-flex items-center px-4 py-2 border text-sm font-medium hover:bg-gray-50">
+                  {{ page + 1 }}
+                </button>
+                
+                <button [disabled]="postPagination.last" 
+                        (click)="onPostPageChange(postPagination.currentPage + 1)"
+                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <span class="sr-only">Next</span>
+                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="showEditPostModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div class="relative top-20 mx-auto p-5 border max-w-4xl shadow-lg rounded-md bg-white">
             <div class="flex justify-between items-center mb-4">
               <h3 class="text-lg font-semibold text-gray-800">Edit Post</h3>
@@ -925,6 +1137,77 @@
             </tr>
           </tbody>
         </table>
+        
+        <!-- Application Pagination Controls -->
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <div class="flex-1 flex justify-between sm:hidden">
+            <button [disabled]="applicationPagination.first" 
+                    (click)="onApplicationPageChange(applicationPagination.currentPage - 1)"
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Previous
+            </button>
+            <button [disabled]="applicationPagination.last" 
+                    (click)="onApplicationPageChange(applicationPagination.currentPage + 1)"
+                    class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              Next
+            </button>
+          </div>
+          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div class="flex items-center space-x-2">
+              <p class="text-sm text-gray-700">
+                Showing
+                <span class="font-medium">{{ applicationPagination.currentPage * applicationPagination.pageSize + 1 }}</span>
+                to
+                <span class="font-medium">{{ getApplicationEndIndex() }}</span>
+                of
+                <span class="font-medium">{{ applicationPagination.totalElements }}</span>
+                results
+              </p>
+              <select [(ngModel)]="applicationPagination.pageSize" 
+                      (ngModelChange)="onApplicationPageSizeChange($event)"
+                      class="border border-gray-300 rounded px-2 py-1 text-sm">
+                <option [value]="5">5 per page</option>
+                <option [value]="10">10 per page</option>
+                <option [value]="25">25 per page</option>
+                <option [value]="50">50 per page</option>
+              </select>
+            </div>
+            <div>
+              <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button [disabled]="applicationPagination.first" 
+                        (click)="onApplicationPageChange(applicationPagination.currentPage - 1)"
+                        class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <span class="sr-only">Previous</span>
+                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                
+                <button *ngFor="let page of getApplicationPageNumbers()" 
+                        (click)="onApplicationPageChange(page)"
+                        [class.bg-blue-50]="page === applicationPagination.currentPage"
+                        [class.border-blue-500]="page === applicationPagination.currentPage"
+                        [class.text-blue-600]="page === applicationPagination.currentPage"
+                        [class.bg-white]="page !== applicationPagination.currentPage"
+                        [class.border-gray-300]="page !== applicationPagination.currentPage"
+                        [class.text-gray-500]="page !== applicationPagination.currentPage"
+                        class="relative inline-flex items-center px-4 py-2 border text-sm font-medium hover:bg-gray-50">
+                  {{ page + 1 }}
+                </button>
+                
+                <button [disabled]="applicationPagination.last" 
+                        (click)="onApplicationPageChange(applicationPagination.currentPage + 1)"
+                        class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <span class="sr-only">Next</span>
+                  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+        
         <div *ngIf="showEditApplicationModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="flex justify-between items-center mb-4">

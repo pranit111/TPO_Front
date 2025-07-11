@@ -29,6 +29,8 @@ export class StudentService {
     minAvgMarks?: number;
     maxAvgMarks?: number;
     yearOfPassing?: number;
+    page?: number;
+    size?: number;
   }): Observable<Blob> {
     let params = new HttpParams();
     
@@ -49,6 +51,12 @@ export class StudentService {
     }
     if (filters?.yearOfPassing !== undefined) {
       params = params.set('yearOfPassing', filters.yearOfPassing.toString());
+    }
+    if (filters?.page !== undefined) {
+      params = params.set('page', filters.page.toString());
+    }
+    if (filters?.size !== undefined) {
+      params = params.set('size', filters.size.toString());
     }
 
     return this.http.post(`${this.apiUrl}/Student/Search/Download`, null, {
@@ -73,6 +81,8 @@ export class StudentService {
     minAvgMarks?: number;
     maxAvgMarks?: number;
     yearOfPassing?: number;
+    page?: number;
+    size?: number;
   }): Observable<PaginatedResponse<Student>> {
     let params = new HttpParams();
 
@@ -93,6 +103,12 @@ export class StudentService {
     }
     if (filters?.yearOfPassing) {
       params = params.set('yearOfPassing', filters.yearOfPassing.toString());
+    }
+    if (filters?.page !== undefined) {
+      params = params.set('page', filters.page.toString());
+    }
+    if (filters?.size !== undefined) {
+      params = params.set('size', filters.size.toString());
     }
 
     return this.http.get<PaginatedResponse<Student>>(`${this.apiUrl}/Student/Search`, { params });
