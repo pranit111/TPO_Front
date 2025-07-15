@@ -71,52 +71,57 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Student Search Section --><div *ngIf="activeTab === 'students'" class="bg-white rounded-xl shadow-lg p-6">
   <div class="flex justify-between mb-4">
-    <!-- Student Search Bar -->
-    <div class="flex-grow mr-4">
-      <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
-        <input [(ngModel)]="filters.firstName" type="text" placeholder="Search for Student"(keyup.enter)="loadStudents()"
-          class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
-        <img src="Search.png" alt="Search Icon" class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
-          (click)="loadStudents()" />
+    <!-- Student Search Bar -->      <div class="flex-grow mr-4">
+        <div class="search-container flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
+          <input [(ngModel)]="filters.firstName" type="text" placeholder="Search for Student"(keyup.enter)="loadStudents()"
+            class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+          <img src="Search.png" alt="Search Icon" class="w-[30px] h-[30px] object-contain cursor-pointer ml-4 action-button"
+            (click)="loadStudents()" />
+        </div>
       </div>
-    </div>
-    <!-- Download Button -->
-    <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-      <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
-    </button>
+      <!-- Buttons -->
+      <div class="flex space-x-2">
+
+        <button (click)="downloadExcel()" class="filter-button text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
+        </button>
+      </div>
   </div>
 
   <!-- Student Filter Bar -->
   <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
-    <select [(ngModel)]="filters.academicYear"
+    <select [(ngModel)]="filters.academicYear" (ngModelChange)="onFilterChange()"
       class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
       <option value="">Year</option>
       <option *ngFor="let year of academicYears" [value]="year">{{ year }}</option>
     </select>
-    <select [(ngModel)]="filters.department"
+    <select [(ngModel)]="filters.department" (ngModelChange)="onFilterChange()"
       class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
       <option value="">Department</option>
       <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
     </select>
-    <select [(ngModel)]="filters.minAvgMarks"
+    <select [(ngModel)]="filters.minAvgMarks" (ngModelChange)="onFilterChange()"
       class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
       <option [ngValue]="undefined">Min Avg Marks</option>
       <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
     </select>
-    <select [(ngModel)]="filters.maxAvgMarks"
+    <select [(ngModel)]="filters.maxAvgMarks" (ngModelChange)="onFilterChange()"
       class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
       <option [ngValue]="undefined">Max Avg Marks</option>
       <option *ngFor="let mark of avgMarks" [ngValue]="mark">{{mark}}%</option>
     </select>
-    <select [(ngModel)]="filters.yearOfPassing"
+    <select [(ngModel)]="filters.yearOfPassing" (ngModelChange)="onFilterChange()"
       class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
       <option [ngValue]="undefined">Year of Passing</option>
       <option *ngFor="let year of passingYears" [ngValue]="year">{{year}}</option>
     </select>
+    <button (click)="resetStudentFilters()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-[20px] text-[14px] font-medium">
+      Clear
+    </button>
   </div>
 
   <!-- Student Table -->
-  <div class="overflow-x-auto">
+  <div class="table-container overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
       <thead>
         <tr>
@@ -137,7 +142,7 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let student of students" class="hover:bg-gray-50">
+        <tr *ngFor="let student of students" class="table-row hover:bg-gray-50 hover-shadow">
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center space-x-4"><a [routerLink]="['/view_profile', student.id]">
               <div class="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center flex-shrink-0">
@@ -145,14 +150,13 @@
               </div>
             </a>
             <a [routerLink]="['/view_profile', student.id]">
-              <div>
-                <div class="text-sm font-medium text-gray-500">{{student.firstName}}</div>
-                
+              <div class="max-w-xs">
+                <div class="text-sm font-medium text-gray-500 truncate">{{student.firstName}}</div>
               </div></a>
             </div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.middleName}}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.lastName}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">{{student.middleName}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">{{student.lastName}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.gender}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.dateOfBirth}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.grNo}}</td>
@@ -299,16 +303,45 @@
           (click)="loadPlacements()" />
       </div>
     </div>
-    <!-- Download Button -->
-    <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-      <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
-    </button>
+    <!-- Buttons -->
+    <div class="flex space-x-2">
+
+      <button (click)="downloadExcel()" class="filter-button text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+        <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
+      </button>
+    </div>
   </div>
 
   <!-- Placements Filter Bar -->
+  <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
+    <select [(ngModel)]="placementFilters.companyName" (ngModelChange)="onPlacementFilterChange()"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option value="">Company</option>
+      <option *ngFor="let company of companies" [value]="company.name">{{company.name}}</option>
+    </select>
+    <select [(ngModel)]="placementFilters.department" (ngModelChange)="onPlacementFilterChange()"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option value="">Department</option>
+      <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+    </select>
+ 
+    <input type="number" [(ngModel)]="placementFilters.minPackage" placeholder="Min Package" (keyup.enter)="onPlacementFilterChange()"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-32 placeholder-gray-300" />
+    <input type="number" [(ngModel)]="placementFilters.maxPackage" placeholder="Max Package" (keyup.enter)="onPlacementFilterChange()"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-32 placeholder-gray-300" />
+    <input type="date" [(ngModel)]="placementFilters.fromDate" (ngModelChange)="onPlacementFilterChange()"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-40" 
+      title="From Date" />
+    <input type="date" [(ngModel)]="placementFilters.toDate" (ngModelChange)="onPlacementFilterChange()"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-40"
+      title="To Date" />
+    <button (click)="resetPlacementFilters()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-[20px] text-[14px] font-medium">
+      Clear
+    </button>
+  </div>
 
   <!-- Placements Table -->
-  <div class="overflow-x-auto">
+  <div class="table-container overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
       <thead>
         <tr>
@@ -322,20 +355,20 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let placement of placements" class="hover:bg-gray-50">
+        <tr *ngFor="let placement of placements" class="table-row hover:bg-gray-50 hover-shadow">
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center space-x-4">
               <div class="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center flex-shrink-0">
                 <span class="text-gray-600 font-medium">{{placement.application.student.firstName[0]}}</span>
               </div>
-              <div>
-                <div class="text-sm font-medium text-gray-900">{{placement.application.student.firstName}}</div>
+              <div class="max-w-xs">
+                <div class="text-sm font-medium text-gray-900 truncate">{{placement.application.student.firstName}}</div>
               </div>
             </div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.application.student.department}}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.application.jobPost.company.name}}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.application.jobPost.jobDesignation}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">{{placement.application.student.department}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">{{placement.application.jobPost.company.name}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-xs truncate">{{placement.application.jobPost.jobDesignation}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{formatCurrency(placement.placedPackage)}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{placement.placementDate}}</td>
 
@@ -485,40 +518,51 @@
               (click)="loadPosts()" />
           </div>
         </div>
-        <!-- Download Button -->
-        <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-          <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
-        </button>
+        <!-- Buttons -->
+        <div class="flex space-x-2">
+        
+          <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
+          </button>
+        </div>
       </div>
 
       <!-- Post Filter Bar -->
       <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
-        <select [(ngModel)]="postFilters.company"
+        <select [(ngModel)]="postFilters.company" (ngModelChange)="onFilterChange()"
           class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
           <option value="">Company</option>
           <option *ngFor="let company of companies" [value]="company.name">{{company.name}}</option>
         </select>
-        <select [(ngModel)]="postFilters.jobType"
+        <select [(ngModel)]="postFilters.jobType" (ngModelChange)="onFilterChange()"
           class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
           <option value="">Job Type</option>
           <option value="Full-Time">Full Time</option>
           <option value="Part-Time">Part Time</option>
           <option value="Internship">Internship</option>
         </select>
-        <select [(ngModel)]="postFilters.status"
+        <select [(ngModel)]="postFilters.status" (ngModelChange)="onFilterChange()"
           class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
           <option value="">Status</option>
           <option value="Taking Applications">Taking Applications</option>
           <option value="Closed">Closed</option>
         </select>
-        <input type="number" [(ngModel)]="postFilters.minSalary" placeholder="Min Package"
+        <select [(ngModel)]="postFilters.studentYear" (ngModelChange)="onFilterChange()"
+          class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+          <option value="">Student Year</option>
+          <option *ngFor="let year of studentYearOptions" [value]="year.value">{{year.label}}</option>
+        </select>
+        <input type="number" [(ngModel)]="postFilters.minSalary" placeholder="Min Package" (keyup.enter)="onFilterChange()"
           class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-32" />
-        <input type="number" [(ngModel)]="postFilters.maxSalary" placeholder="Max Package"
+        <input type="number" [(ngModel)]="postFilters.maxSalary" placeholder="Max Package" (keyup.enter)="onFilterChange()"
           class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-32" />
+           <button (click)="resetPostFilters()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-[20px] text-[14px] font-medium">
+          Clear
+        </button>
       </div>
 
       <!-- Post Table -->
-      <div class="overflow-x-auto">
+      <div class="table-container overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead>
             <tr>
@@ -528,13 +572,14 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Type</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preferred Course</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Min %</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let post of posts" class="hover:bg-gray-50">
+            <tr *ngFor="let post of posts" class="table-row hover:bg-gray-50 hover-shadow">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center space-x-4">
                   <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
@@ -548,12 +593,15 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.company.industryType}}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{post.jobDesignation}}</div>
-                <div class="text-sm text-gray-500">{{post.description}}</div>
+                <div class="max-w-xs">
+                  <div class="text-sm font-medium text-gray-900 truncate">{{post.jobDesignation}}</div>
+                  <div class="text-sm text-gray-500 truncate" [title]="post.description">{{post.description}}</div>
+                </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.location}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.jobType}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.packageAmount}} LPA</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.preferredCourse || 'All Years'}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{post.minPercentage}}%</td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + 
@@ -666,7 +714,7 @@
                   <!-- Job Designation -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700">Job Designation</label>
-                    <input type="text" [(ngModel)]="selectedPost.jobType" name="jobDesignation" #jobDesignationField="ngModel" required
+                    <input type="text" [(ngModel)]="selectedPost.title" name="jobDesignation" #jobDesignationField="ngModel" required
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <div class="text-red-500 text-sm mt-1" *ngIf="jobDesignationField.invalid && (jobDesignationField.dirty || jobDesignationField.touched || editPostForm.submitted)">
                       <div *ngIf="jobDesignationField.errors?.['required']">Job designation is required</div>
@@ -810,6 +858,23 @@
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <div class="text-red-500 text-sm mt-1" *ngIf="preferredCourseField.invalid && (preferredCourseField.dirty || preferredCourseField.touched || editPostForm.submitted)">
                       <div *ngIf="preferredCourseField.errors?.['required']">Preferred course is required</div>
+                    </div>
+                  </div>
+
+                  <!-- Student Year -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Student Year</label>
+                    <select [(ngModel)]="selectedPost.studentYear" name="studentYear" #studentYearField="ngModel" required
+                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="">Select Student Year</option>
+                      <option value="FE">FE (First Year)</option>
+                      <option value="SE">SE (Second Year)</option>
+                      <option value="TE">TE (Third Year)</option>
+                      <option value="BE">BE (Final Year)</option>
+                      <option value="ALL">All Years</option>
+                    </select>
+                    <div class="text-red-500 text-sm mt-1" *ngIf="studentYearField.invalid && (studentYearField.dirty || studentYearField.touched || editPostForm.submitted)">
+                      <div *ngIf="studentYearField.errors?.['required']">Student year is required</div>
                     </div>
                   </div>
                 </div>
@@ -1020,50 +1085,54 @@
        </div>
           
     <!-- Application Search Section -->
-    <div *ngIf="activeTab === 'applications'" class="bg-white rounded-xl shadow-lg p-6">
-      <div class="flex justify-between mb-4">
-        <!-- Application Search Bar -->
-        <div class="flex-grow mr-4">
-          <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
-            <input [(ngModel)]="applicationFilters.studentName" type="text" placeholder="Search by Student Name"  (keyup.enter)="loadApplications()"
-              class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
-            <img src="Search.png" alt="Search Icon"
-              class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
-              (click)="loadApplications()" />
-          </div>
+    <div *ngIf="activeTab === 'applications'" class="bg-white rounded-xl shadow-lg p-6">    <div class="flex justify-between mb-4">
+      <!-- Application Search Bar -->
+      <div class="flex-grow mr-4">
+        <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 bg-white shadow-md relative z-10">
+          <input [(ngModel)]="applicationFilters.studentName" type="text" placeholder="Search by Student Name"  (keyup.enter)="loadApplications()"
+            class="text-[#878787] text-[16px] font-roboto-flex font-extralight italic w-full bg-transparent outline-none" />
+          <img src="Search.png" alt="Search Icon"
+            class="w-[30px] h-[30px] object-contain cursor-pointer ml-4"
+            (click)="loadApplications()" />
         </div>
-        <!-- Download Button -->
+      </div>
+      <!-- Buttons -->
+      <div class="flex space-x-2">
+     
         <button (click)="downloadExcel()" class="text-white px-4 py-2 rounded-lg hover:bg-blue-700">
           <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
         </button>
       </div>
+    </div>
 
       <!-- Application Filter Bar -->
       <div class="flex justify-between items-center border-[2px] border-gray-500 rounded-[20px] w-full h-[42px] px-4 mb-6 bg-[#4073BF] shadow-md relative z-10">
-        <select [(ngModel)]="applicationFilters.status" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+        <select [(ngModel)]="applicationFilters.status" (ngModelChange)="onFilterChange()" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
           <option selected value="APPLIED">APPLIED</option>
           <option value="UNDER_REVIEW">UNDER REVIEW</option>
           <option value="SHORTLISTED">SHORTLISTED</option>
-
-            <option value="INTERVIEWED">INTERVIEWED</option>
+          <option value="INTERVIEWED">INTERVIEWED</option>
           <option value="REJECTED">REJECTED</option>
           <option value="OFFERED">OFFERED</option>
           <option value="HIRED">HIRED</option>
         </select>
-        <select [(ngModel)]="applicationFilters.department" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+        <select [(ngModel)]="applicationFilters.department" (ngModelChange)="onFilterChange()" class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
           <option value="">Department</option>
           <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
         </select>
-        <input type="date" [(ngModel)]="applicationFilters.fromDate" 
+        <input type="date" [(ngModel)]="applicationFilters.fromDate" (ngModelChange)="onFilterChange()"
           class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none"
           placeholder="From Date"/>
-        <input type="date" [(ngModel)]="applicationFilters.toDate" 
+        <input type="date" [(ngModel)]="applicationFilters.toDate" (ngModelChange)="onFilterChange()"
           class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none"
           placeholder="To Date"/>
+        <button (click)="resetApplicationFilters()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-[20px] text-[14px] font-medium">
+          Clear
+        </button>
       </div>
 
       <!-- Application Table -->
-      <div class="overflow-x-auto">
+      <div class="table-container overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead>
             <tr class="bg-gray-50">
@@ -1092,22 +1161,22 @@
                       <span class="text-gray-600">{{application.student.firstName[0]}}</span>
                     </div>
                   </div></a>  <a [routerLink]="['/view_profile', application.student.id]">
-                  <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">
+                  <div class="ml-4 max-w-xs">
+                    <div class="text-sm font-medium text-gray-900 truncate">
                       {{application.student.firstName}} {{application.student.middleName}} {{application.student.lastName}}
                     </div>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-gray-500 truncate">
                       {{application.student.user.email}}
                     </div>
                   </div></a>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{application.jobPost.company.name}}</div>
-                <div class="text-sm text-gray-500">{{application.jobPost.company.industry}}</div>
+              <td class="px-6 py-4 whitespace-nowrap max-w-xs">
+                <div class="text-sm text-gray-900 truncate">{{application.jobPost.company.name}}</div>
+                <div class="text-sm text-gray-500 truncate">{{application.jobPost.company.industry}}</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{application.designation}}</div>
+              <td class="px-6 py-4 whitespace-nowrap max-w-xs">
+                <div class="text-sm text-gray-900 truncate">{{application.designation}}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {{application.student.department}}

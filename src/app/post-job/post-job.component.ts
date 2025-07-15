@@ -21,6 +21,7 @@ interface JobData {
   minPercentage: number;
   backlogAllowance: number;
   preferredCourse: string;
+  studentYear: string;
   skillsRequirements: string;
   selectionRounds: string;
   modeOfRecruitment: string;
@@ -57,6 +58,7 @@ export class PostJobComponent implements OnInit {
     aptitude: false,
     backlogAllowance: 0,
     preferredCourse: '',
+    studentYear: '',
     skillsRequirements: '',
     selectionRounds: '',
     modeOfRecruitment: '',
@@ -87,6 +89,7 @@ export class PostJobComponent implements OnInit {
       minHsc: ['', [Validators.required, Validators.min(35), Validators.max(100)]],
       backlogAllowance: ['', [Validators.required, Validators.min(0), Validators.max(10)]],
       preferredCourse: ['', Validators.required],
+      studentYear: ['', Validators.required],
       skillsRequirements: ['', Validators.required],
       selectionRounds: ['', Validators.required],
       modeOfRecruitment: ['', Validators.required],
@@ -128,6 +131,15 @@ export class PostJobComponent implements OnInit {
   onSubmit() {
 
     if (this.jobForm.valid) {
+      // Get form values
+      const formValues = this.jobForm.value;
+      
+      // Update jobData with form values
+      this.jobData = {
+        ...this.jobData,
+        ...formValues
+      };
+
       // Validate dates
       const startDate = new Date(this.jobData.applicationStartDate);
       const endDate = new Date(this.jobData.applicationEndDate);
@@ -190,6 +202,7 @@ export class PostJobComponent implements OnInit {
       aptitude: false,
       backlogAllowance: 0,
       preferredCourse: '',
+      studentYear: '',
       skillsRequirements: '',
       selectionRounds: '',
       modeOfRecruitment: '',

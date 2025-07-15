@@ -42,6 +42,7 @@ interface Post {
   minPercentage: number;
   backlogAllowance: number;
   preferredCourse: string;
+  studentYear?: string;
   skillRequirements: string;
   selectionRounds: string;
   modeOfRecruitment: string;
@@ -205,9 +206,19 @@ OnStudentAction(id:number){
     jobType: '',
     minSalary: undefined as number | undefined,
     maxSalary: undefined as number | undefined,
+    studentYear: '', // Add student year filter
     page: 0,
     size: 10
   };
+  
+  // Student year options
+  studentYearOptions = [
+    { value: 'FE', label: 'FE (First Year)' },
+    { value: 'SE', label: 'SE (Second Year)' },
+    { value: 'TE', label: 'TE (Third Year)' },
+    { value: 'BE', label: 'BE (Final Year)' }
+  ];
+  
 searchText = '';
 
   // Application section properties
@@ -251,7 +262,9 @@ searchText = '';
   placements: PlacementDTO[] = [];
   placementFilters = {
     keyword: '',              // Search by keyword (student name, company name, position)
+    companyName: '',          // Filter by company name
     department: '',           // Filter by department
+    studentYear: '',          // Filter by student year
     minPackage: undefined as number | undefined,    // Filter by minimum package
     maxPackage: undefined as number | undefined,    // Filter by maximum package
     fromDate: '',             // Filter by joining date range
@@ -367,7 +380,32 @@ searchText = '';
 
   loadPlacements(): void {
     console.log('Loading placements with filters:', this.placementFilters);
-    this.placementsService.searchPlacements(this.placementFilters).subscribe({
+    
+    // Choose the most specific filter method if only one filter is applied
+    const filters = this.placementFilters;
+    let serviceCall;
+    
+    if (filters.companyName && !filters.department && !filters.studentYear && !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+      // Use company-specific filter
+      serviceCall = this.placementsService.filterByCompany(filters.companyName, filters.page, filters.size);
+    } else if (filters.department && !filters.companyName && !filters.studentYear && !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+      // Use department-specific filter
+      serviceCall = this.placementsService.filterByDepartment(filters.department, filters.page, filters.size);
+    } else if (filters.studentYear && !filters.companyName && !filters.department && !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+      // Use student year-specific filter
+      serviceCall = this.placementsService.filterByStudentYear(filters.studentYear, filters.page, filters.size);
+    } else if (filters.minPackage !== undefined && filters.maxPackage !== undefined && !filters.companyName && !filters.department && !filters.studentYear && !filters.fromDate && !filters.toDate) {
+      // Use package range-specific filter
+      serviceCall = this.placementsService.filterByPackageRange(filters.minPackage, filters.maxPackage, filters.page, filters.size);
+    } else if (filters.fromDate && filters.toDate && !filters.companyName && !filters.department && !filters.studentYear && !filters.minPackage && !filters.maxPackage) {
+      // Use date range-specific filter
+      serviceCall = this.placementsService.filterByDateRange(filters.fromDate, filters.toDate, filters.page, filters.size);
+    } else {
+      // Use general search with all filters
+      serviceCall = this.placementsService.searchPlacements(this.placementFilters);
+    }
+    
+    serviceCall.subscribe({
       next: (response: PaginatedResponse<PlacementDTO>) => {
         this.placements = response.content || [];
         this.placementPagination = {
@@ -572,6 +610,7 @@ searchText = '';
     
       backlogAllowance: null,      // Backlog Allowed
       preferredCourse: '',         // Preferred Course
+      studentYear: '',             // Student Year
       skillRequirements: '',       // Skills Required
       selectionRounds: '',         // Rounds of Selection
       modeOfRecruitment: '',       // Recruitment Mode
@@ -593,10 +632,35 @@ searchText = '';
   onPostEdit(id: number) {
     this.postService.getPostById(id).subscribe({
       next: (data) => {
-     
-        this.selectedPost = { ...data };
+        // Map API response to selectedPost object with correct property names
+        this.selectedPost = {
+          id: data.id,
+          title: data.jobDesignation,           // Map jobDesignation to title
+          description: data.description,
+          location: data.location,
+          jobType: data.jobType,
+          status: data.status,
+          packageAmount: data.packageAmount,
+          minimumSsc: data.minSsc,              // Map minSsc to minimumSsc
+          minimumHsc: data.minHsc,              // Map minHsc to minimumHsc
+          minPercentage: data.minPercentage,
+          backlogAllowance: data.backlogAllowance,
+          preferredCourse: data.preferredCourse,
+          studentYear: data.studentYear || '',  // Add studentYear field
+          skillRequirements: data.skillsRequirements || data.skillRequirements,
+          selectionRounds: data.selectionRounds,
+          modeOfRecruitment: data.modeOfRecruitment,
+          testPlatform: data.testPlatform,
+          applicationStartDate: data.applicationStartDate,
+          applicationEndDate: data.applicationEndDate,
+          selectionStartDate: data.selectionStartDate,
+          selectionEndDate: data.selectionEndDate,
+          aptitudeDate: data.aptitudeDate,
+          aptitude: data.aptitude,
+          portalLink: data.portalLink || ''
+        };
         this.showEditPostModal = true;
-        console.log(this.showEditPostModal);
+        console.log('Selected post:', this.selectedPost);
       },
       error: (error) => {
         console.error('Error fetching post data:', error);
@@ -606,12 +670,39 @@ searchText = '';
 
   // Update the post
   onUpdatePost() {
-    this.postService.updatePost(this.selectedPost).subscribe({
+    // Map selectedPost back to API format
+    const updateData = {
+      id: this.selectedPost.id,
+      jobDesignation: this.selectedPost.title,           // Map title back to jobDesignation
+      description: this.selectedPost.description,
+      location: this.selectedPost.location,
+      jobType: this.selectedPost.jobType,
+      status: this.selectedPost.status,
+      packageAmount: this.selectedPost.packageAmount,
+      minSsc: this.selectedPost.minimumSsc,              // Map minimumSsc back to minSsc
+      minHsc: this.selectedPost.minimumHsc,              // Map minimumHsc back to minHsc
+      minPercentage: this.selectedPost.minPercentage,
+      backlogAllowance: this.selectedPost.backlogAllowance,
+      preferredCourse: this.selectedPost.preferredCourse,
+      studentYear: this.selectedPost.studentYear,        // Include studentYear
+      skillsRequirements: this.selectedPost.skillRequirements,
+      selectionRounds: this.selectedPost.selectionRounds,
+      modeOfRecruitment: this.selectedPost.modeOfRecruitment,
+      testPlatform: this.selectedPost.testPlatform,
+      applicationStartDate: this.selectedPost.applicationStartDate,
+      applicationEndDate: this.selectedPost.applicationEndDate,
+      selectionStartDate: this.selectedPost.selectionStartDate,
+      selectionEndDate: this.selectedPost.selectionEndDate,
+      aptitudeDate: this.selectedPost.aptitudeDate,
+      aptitude: this.selectedPost.aptitude,
+      portalLink: this.selectedPost.portalLink
+    };
+
+    this.postService.updatePost(updateData).subscribe({
       next: (response) => {
         console.log('Post updated successfully:', response);
         this.loadPosts(); // Refresh the post list
         this.resetSelectedPost();
-        this.loadPosts();
       },
       error: (error) => {
         console.error('Error updating post:', error);
@@ -643,6 +734,7 @@ searchText = '';
 
     backlogAllowance: null,      // Backlog Allowed
     preferredCourse: '',         // Preferred Course
+    studentYear: '',             // Student Year
     skillRequirements: '',       // Skills Required
     selectionRounds: '',         // Rounds of Selection
     modeOfRecruitment: '',       // Recruitment Mode
@@ -791,5 +883,77 @@ searchText = '';
 
   getPlacementEndIndex(): number {
     return Math.min((this.placementPagination.currentPage + 1) * this.placementPagination.pageSize, this.placementPagination.totalElements);
+  }
+
+  // Reset post filters
+  resetPostFilters(): void {
+    this.postFilters = {
+      status: '',
+      company: '',
+      position: '',
+      jobType: '',
+      minSalary: undefined,
+      maxSalary: undefined,
+      studentYear: '',
+      page: 0,
+      size: 10
+    };
+    this.loadPosts();
+  }
+
+  // Reset student filters
+  resetStudentFilters(): void {
+    this.filters = {
+      firstName: '',
+      department: '',
+      academicYear: '',
+      minAvgMarks: undefined,
+      maxAvgMarks: undefined,
+      yearOfPassing: undefined,
+      page: 0,
+      size: 10
+    };
+    this.loadStudents();
+  }
+
+  // Reset application filters
+  resetApplicationFilters(): void {
+    this.applicationFilters = {
+      studentName: '',
+      status: '',
+      company: '',
+      department: '',
+      designation: '',
+      jobtype: '',
+      minSalary: undefined,
+      maxSalary: undefined,
+      fromDate: '',
+      toDate: '',
+      page: 0,
+      size: 10
+    };
+    this.loadApplications();
+  }
+
+  // Reset placement filters
+  resetPlacementFilters(): void {
+    this.placementFilters = {
+      keyword: '',
+      companyName: '',
+      department: '',
+      studentYear: '',
+      minPackage: undefined,
+      maxPackage: undefined,
+      fromDate: '',
+      toDate: '',
+      page: 0,
+      size: 10
+    };
+    this.loadPlacements();
+  }
+
+  onPlacementFilterChange(): void {
+    this.placementFilters.page = 0; // Reset to first page
+    this.loadPlacements();
   }
 }

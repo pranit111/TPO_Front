@@ -73,6 +73,7 @@ export class PostService {
     jobType?: string;
     minSalary?: number;
     maxSalary?: number;
+    studentYear?: string;
     page?: number;
     size?: number;
   }): Observable<PaginatedResponse<any>> {
@@ -98,6 +99,9 @@ export class PostService {
     if (filters.maxSalary) {
       params = params.set('maxSalary', filters.maxSalary.toString());
     }
+    if (filters.studentYear) {
+      params = params.set('studentYear', filters.studentYear);
+    }
 
     return this.http.get<PaginatedResponse<any>>(`${this.apiUrl}/Post/Search`, { params });
   }
@@ -109,6 +113,7 @@ export class PostService {
     jobType?: string;
     minSalary?: number;
     maxSalary?: number;
+    studentYear?: string;
   }): Observable<Blob> {
     let params = new HttpParams();
 
@@ -129,6 +134,9 @@ export class PostService {
     }
     if (filters.maxSalary) {
       params = params.set('maxSalary', filters.maxSalary.toString());
+    }
+    if (filters.studentYear) {
+      params = params.set('studentYear', filters.studentYear);
     }
 
     return this.http.post(`${this.apiUrl}/Post/Search/Download`, {}, {

@@ -31,7 +31,7 @@ export class TpoAdminService {
   constructor(private http:HttpClient) { }
   tpoBaseUrl=environment.apiUrls.tpoService;
   getLogs(page: number = 0, size: number = 20): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api8?page=${page}&size=${size}`);
+    return this.http.get<any>(`${this.baseUrl}/api8/?page=${page}&size=${size}`);
   }
  getAllCompanies(){
   return this.http.get(this.companyBaseUrl);

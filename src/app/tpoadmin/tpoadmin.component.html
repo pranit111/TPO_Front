@@ -134,10 +134,10 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm text-gray-600 font-medium mb-1">Avg. Package</p>
-                <p class="text-3xl font-bold text-gray-800">{{dashboardData?.insightsData?.averagePackage || 'N/A'}}</p>
+                <p class="text-3xl font-bold text-gray-800">{{formatPackageForDisplay(dashboardData?.insightsData?.averagePackage)}}</p>
                 <p class="text-xs text-teal-600 mt-1">
                   <i class="fas fa-rupee-sign mr-1"></i>
-                  Highest: {{dashboardData?.insightsData?.highestPackage || 'N/A'}}
+                  Highest: {{formatPackageForDisplay(dashboardData?.insightsData?.highestPackage)}}
                 </p>
               </div>
               <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center">
@@ -284,7 +284,7 @@
               <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
                 <div class="flex justify-between items-center mb-3">
                   <span class="text-sm font-medium text-purple-600">Highest Package</span>
-                  <span class="text-lg font-bold text-purple-800">{{dashboardData?.insightsData?.highestPackage || 'N/A'}}</span>
+                  <span class="text-lg font-bold text-purple-800">{{formatPackageForDisplay(dashboardData?.insightsData?.highestPackage)}}</span>
                 </div>
               </div>
               
@@ -292,7 +292,7 @@
               <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-4 border border-teal-200">
                 <div class="flex justify-between items-center mb-3">
                   <span class="text-sm font-medium text-teal-600">Average Package</span>
-                  <span class="text-lg font-bold text-teal-800">{{dashboardData?.insightsData?.averagePackage || 'N/A'}}</span>
+                  <span class="text-lg font-bold text-teal-800">{{formatPackageForDisplay(dashboardData?.insightsData?.averagePackage)}}</span>
                 </div>
               </div>
               
@@ -460,7 +460,7 @@
                       <p class="text-xs text-gray-500">{{student.department}}</p>
                     </div>
                     <div class="text-right">
-                      <p class="text-sm font-bold text-blue-600">{{student.packageAmount}}</p>
+                      <p class="text-sm font-bold text-blue-600">{{formatPackageForDisplay(student.packageAmount)}}</p>
                       <p class="text-xs text-gray-500">{{student.company}}</p>
                     </div>
                   </div>

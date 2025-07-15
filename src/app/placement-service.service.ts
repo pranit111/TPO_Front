@@ -45,6 +45,14 @@ export class PlacementServiceService {
       .set('size', filters.size || 10);
     
     // Add optional parameters if they exist
+    if (filters.companyName) {
+      params = params.set('companyName', filters.companyName);
+    }
+    
+    if (filters.studentYear) {
+      params = params.set('studentYear', filters.studentYear);
+    }
+    
     if (filters.department) {
       params = params.set('department', filters.department);
     }
@@ -76,8 +84,16 @@ export class PlacementServiceService {
       params = params.set('q', filters.keyword);
     }
     
+    if (filters.companyName) {
+      params = params.set('companyName', filters.companyName);
+    }
+    
     if (filters.department) {
       params = params.set('department', filters.department);
+    }
+    
+    if (filters.studentYear) {
+      params = params.set('studentYear', filters.studentYear);
     }
     
     if (filters.minPackage !== undefined) {
@@ -161,5 +177,57 @@ export class PlacementServiceService {
     
     // Return as is if already in DTO format
     return rawData as PlacementDTO;
+  }
+
+  // Filter placements by company name
+  filterByCompany(companyName: string, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('companyName', companyName)
+      .set('page', page.toString())
+      .set('size', size.toString());
+    
+    return this.http.get<any>(`${this.baseUrl}/filter/company`, { params });
+  }
+
+  // Filter placements by package range
+  filterByPackageRange(minPackage: number, maxPackage: number, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('minPackage', minPackage.toString())
+      .set('maxPackage', maxPackage.toString())
+      .set('page', page.toString())
+      .set('size', size.toString());
+    
+    return this.http.get<any>(`${this.baseUrl}/filter/package-range`, { params });
+  }
+
+  // Filter placements by date range
+  filterByDateRange(fromDate: string, toDate: string, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('fromDate', fromDate)
+      .set('toDate', toDate)
+      .set('page', page.toString())
+      .set('size', size.toString());
+    
+    return this.http.get<any>(`${this.baseUrl}/filter/date-range`, { params });
+  }
+
+  // Filter placements by student year
+  filterByStudentYear(studentYear: string, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('studentYear', studentYear)
+      .set('page', page.toString())
+      .set('size', size.toString());
+    
+    return this.http.get<any>(`${this.baseUrl}/filter/student-year`, { params });
+  }
+
+  // Filter placements by department
+  filterByDepartment(department: string, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('department', department)
+      .set('page', page.toString())
+      .set('size', size.toString());
+    
+    return this.http.get<any>(`${this.baseUrl}/filter/department`, { params });
   }
 }

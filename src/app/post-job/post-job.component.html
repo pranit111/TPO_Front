@@ -214,6 +214,24 @@
                                 Preferred course is required
                             </div>
                         </div>
+
+                        <!-- Student Year -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-600 mb-2">Student Year</label>
+                            <select formControlName="studentYear" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <option value="">Select Student Year</option>
+                                <option value="FE">FE (First Year)</option>
+                                <option value="SE">SE (Second Year)</option>
+                                <option value="TE">TE (Third Year)</option>
+                                <option value="BE">BE (Final Year)</option>
+                                <option value="ALL">All Years</option>
+                            </select>
+                            <div class="text-red-500 text-sm mt-1" 
+                                 *ngIf="jobForm.get('studentYear')?.invalid && 
+                                       (jobForm.get('studentYear')?.dirty || jobForm.get('studentYear')?.touched)">
+                                Student year is required
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Skills Requirements -->

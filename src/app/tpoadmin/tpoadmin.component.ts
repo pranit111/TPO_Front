@@ -666,26 +666,54 @@ getProgressPercentage(current: number, total: number): number {
 }
 
 // Add these helper methods to format package amounts
-formatPackageAmount(packageAmount: number): string {
-  if (packageAmount >= 10000000) {
-    return (packageAmount / 10000000).toFixed(1) + ' Cr';
-  } else if (packageAmount >= 100000) {
-    return (packageAmount / 100000).toFixed(1) + ' LPA';
-  } else if (packageAmount > 0) {
-    return packageAmount.toString();
+formatPackageAmount(packageAmount: number | string | null | undefined): string {
+  if (!packageAmount || packageAmount === 'N/A') {
+    return 'N/A';
   }
-  return '0';
+  
+  const numValue = typeof packageAmount === 'string' ? parseFloat(packageAmount) : packageAmount;
+  
+  if (isNaN(numValue) || numValue <= 0) {
+    return 'N/A';
+  }
+  
+  if (numValue >= 10000000) {
+    return '₹' + (numValue / 10000000).toFixed(1) + ' Cr';
+  } else if (numValue >= 100000) {
+    return '₹' + (numValue / 100000).toFixed(1) + ' LPA';
+  } else {
+    return '₹' + numValue.toString();
+  }
 }
 
-formatPackageForDisplay(packageAmount: number): string {
-  if (packageAmount >= 10000000) {
-    return '₹' + (packageAmount / 10000000).toFixed(1) + ' Cr';
-  } else if (packageAmount >= 100000) {
-    return '₹' + (packageAmount / 100000).toFixed(1) + ' LPA';
-  } else if (packageAmount > 0) {
-    return '₹' + packageAmount.toString();
+formatPackageForDisplay(packageAmount: number | string | null | undefined): string {
+  if (!packageAmount || packageAmount === 'N/A') {
+    return 'Not Available';
   }
-  return 'Not Available';
+  
+  const numValue = typeof packageAmount === 'string' ? parseFloat(packageAmount) : packageAmount;
+  
+  if (isNaN(numValue) || numValue <= 0) {
+    return 'Not Available';
+  }
+  
+  if (numValue >= 10000000) {
+    return '₹' + (numValue / 10000000).toFixed(1) + ' Cr';
+  } else if (numValue >= 100000) {
+    return '₹' + (numValue / 100000).toFixed(1) + ' LPA';
+  } else {
+    return '₹' + numValue.toString();
+  }
+}
+
+// Debug helper method - remove this after testing
+debugPackageValue(value: any, label: string): void {
+  console.log(`${label}:`, {
+    value: value,
+    type: typeof value,
+    isNumber: !isNaN(parseFloat(value)),
+    converted: this.formatPackageForDisplay(value)
+  });
 }
 
 // Update the existing methods to handle the new data structure
