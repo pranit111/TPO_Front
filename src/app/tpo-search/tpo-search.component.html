@@ -31,7 +31,7 @@
         <!-- Logo -->
 
         <!-- Navigation Links -->
-        <div class="hidden sm:ml-6 sm:flex sm:space-x-2">
+        <div class="hidden sm:ml-6 sm:flex sm:space-x-4">
           <button (click)="setActiveTab('students')"
             [class.border-blue-500]="activeTab === 'students'"
             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
@@ -134,6 +134,8 @@
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SSC%</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSC%</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diploma%</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verification Status</th>
+
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average%</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
@@ -163,58 +165,21 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.sscMarks}}%</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.hscMarks || '-'}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.diplomaMarks || '-'}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + 
+              (student.resultVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+              {{ student.resultVerified ? 'Verified' : 'Not Verified' }}
+            </span>
+          </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.avgMarks | number:'1.3-3'}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.department}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.academicYear}}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{student.noOfBacklogs}}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" ><button class="text-indigo-600 hover:text-indigo-900"
-             >
-              <img (click)="OnStudentAction(student.id)" src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
-      
-            
-          </button>
-          <div *ngIf="showStudentActionModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">Actions</h3>
-                <button (click)="showStudentActionModal=false" class="text-gray-400 hover:text-gray-500">
-                  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              <div class="flex flex-col space-y-4">
-                <button
-                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
-                  (click)="onResult('ssc', selectedstudent.id)">
-                  View SSC Result
-                </button>
-                
-                <button *ngIf="selectedstudent.hscMarks !== null && selectedstudent.hscMarks > 0"
-                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
-                  (click)="onResult('hsc', selectedstudent.id)">
-                  View HSC Result
-                </button>
-
-
-                
-                <button  *ngIf="selectedstudent.diplomaMarks !== null && selectedstudent.diplomaMarks > 0"
-                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
-                  (click)="onResult('diploma', selectedstudent.id)">
-                  View Diploma Result
-                </button>
-                
-                <button
-                  class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
-                  (click)="onResume(student.id)">
-                  View Resume
-                </button>
-              </div>
-            </div>
-          </div>
           
-        
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button class="text-indigo-600 hover:text-indigo-900" (click)="OnStudentAction(student.id)">
+              <img src="edit.png" alt="Edit" class="w-[20px] h-[20px] sm:w-[26px] sm:h-[24px] object-contain" />
+            </button>
           </td>
         </tr>
       </tbody>
@@ -291,6 +256,162 @@
     </div>
   </div>
 </div>
+
+<!-- Student Action Modal -->
+<div *ngIf="showStudentActionModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+  <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">Actions</h3>
+      <button (click)="showStudentActionModal=false" class="text-gray-400 hover:text-gray-500">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <div class="flex flex-col space-y-4">
+      <button *ngIf="selectedstudent"
+        class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+        (click)="onResult('ssc', selectedstudent.id)">
+        View SSC Result
+      </button>
+      
+      <button *ngIf="selectedstudent && selectedstudent.hscMarks !== null && selectedstudent.hscMarks > 0"
+        class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+        (click)="onResult('hsc', selectedstudent.id)">
+        View HSC Result
+      </button>
+      
+      <button *ngIf="selectedstudent && selectedstudent.diplomaMarks !== null && selectedstudent.diplomaMarks > 0"
+        class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+        (click)="onResult('diploma', selectedstudent.id)">
+        View Diploma Result
+      </button>
+      
+      <button *ngIf="selectedstudent"
+        class="rounded-md bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 w-full"
+        (click)="onResume(selectedstudent.id)">
+        View Resume
+      </button>
+      
+      <!-- Verification Actions -->
+      <hr class="my-2">
+      <h4 class="text-sm font-medium text-gray-700 text-center">Result Verification</h4>
+      
+      <!-- Current Verification Status -->
+      <div *ngIf="selectedstudent" class="bg-gray-50 p-3 rounded-md">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-gray-700">Status:</span>
+          <span [class]="'px-2 py-1 text-xs rounded-full ' + 
+            (selectedstudent.resultVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+            {{ selectedstudent.resultVerified ? 'Verified' : 'Not Verified' }}
+          </span>
+        </div>
+        <div *ngIf="selectedstudent.verificationRemarks" class="mb-2">
+          <span class="text-sm font-medium text-gray-700">Remarks:</span>
+          <p class="text-sm text-gray-600 mt-1">{{ selectedstudent.verificationRemarks }}</p>
+        </div>
+        <div *ngIf="selectedstudent.verifiedBy" class="text-xs text-gray-500">
+          Verified by: {{ selectedstudent.verifiedBy }}
+          <span *ngIf="selectedstudent.verificationDate"> on {{ selectedstudent.verificationDate | date:'short' }}</span>
+        </div>
+      </div>
+      
+      <button *ngIf="selectedstudent && !selectedstudent.resultVerified"
+        class="rounded-md bg-green-500 text-white px-4 py-2 hover:bg-green-600 w-full"
+        (click)="onVerifyResults(selectedstudent.id)">
+        Verify Results
+      </button>
+      
+      <button *ngIf="selectedstudent && selectedstudent.resultVerified"
+        class="rounded-md bg-orange-500 text-white px-4 py-2 hover:bg-orange-600 w-full"
+        (click)="onUnverifyResults(selectedstudent.id)">
+        Unverify Results
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Result Verification Modal -->
+<div *ngIf="showVerificationModal" class="fixed inset-0 backdrop-blur bg-opacity-50 overflow-y-auto h-full w-full z-50">
+  <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">
+        {{ verificationForm.verified ? 'Verify' : 'Unverify' }} Student Results
+      </h3>
+      <button (click)="closeVerificationModal()" class="text-gray-400 hover:text-gray-500">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <form (ngSubmit)="submitVerification()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Action: {{ verificationForm.verified ? 'Verify Results' : 'Unverify Results' }}
+        </label>
+        <p class="text-sm text-gray-600">
+          {{ verificationForm.verified ? 'Mark this student\'s results as verified.' : 'Remove verification status from this student\'s results.' }}
+        </p>
+      </div>
+      
+      <div>
+        <label for="remarks" class="block text-sm font-medium text-gray-700 mb-2">
+          Remarks (Optional)
+        </label>
+        <textarea
+          id="remarks"
+          [(ngModel)]="verificationForm.remarks"
+          name="remarks"
+          rows="3"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Add any remarks or comments...">
+        </textarea>
+      </div>
+      
+      <div class="flex justify-end space-x-3">
+        <button
+          type="button"
+          (click)="closeVerificationModal()"
+          class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [class]="'px-4 py-2 rounded-md text-white ' + 
+            (verificationForm.verified ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600')">
+          {{ verificationForm.verified ? 'Verify' : 'Unverify' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Notification Toast -->
+<div *ngIf="notification.show" 
+     [class]="'fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ' + 
+       (notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white')">
+  <div class="flex items-center">
+    <div class="flex-shrink-0">
+      <svg *ngIf="notification.type === 'success'" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+      <svg *ngIf="notification.type === 'error'" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+      </svg>
+    </div>
+    <div class="ml-3">
+      <p class="text-sm">{{ notification.message }}</p>
+    </div>
+    <button (click)="notification.show = false" class="ml-4 flex-shrink-0">
+      <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
+</div>
+
 <!-- Placements Search Section -->
 <div *ngIf="activeTab === 'placements'" class="bg-white rounded-xl shadow-lg p-6">
   <div class="flex justify-between mb-4">

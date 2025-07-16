@@ -44,6 +44,12 @@ export enum Gender {
     sem5KT: boolean = false;
     sem6KT: boolean = false;
     jobApplications!: JobApplication[];
+    
+    // Result verification fields
+    resultVerified?: boolean;
+    verificationRemarks?: string;
+    verifiedBy?: string;
+    verificationDate?: Date;
   
     constructor(data?: Partial<Student>) {
       Object.assign(this, data);

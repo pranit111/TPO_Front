@@ -126,4 +126,29 @@ export class StudentService {
   deleteStudent(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  // Verify student results (TPO only)
+  verifyStudentResults(studentId: number, verified: boolean, remarks?: string): Observable<any> {
+    let params = new HttpParams().set('verified', verified.toString());
+    if (remarks) {
+      params = params.set('remarks', remarks);
+    }
+
+    return this.http.put(
+      `${this.apiUrl}/tpo/Student/verify-results/${studentId}`,
+      null,
+      {
+        params,
+        headers: this.headers
+      }
+    );
+  }
+
+  // Get student verification status (TPO only)
+  getStudentVerificationStatus(studentId: number): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/tpo/Student/verification-status/${studentId}`,
+      { headers: this.headers }
+    );
+  }
 }

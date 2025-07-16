@@ -161,12 +161,99 @@ onOfferLetter(arg0: number) {
 }
 selectedstudent: Student = new Student(); 
 showStudentActionModal = false;
+showVerificationModal = false;
+verificationForm = {
+  studentId: 0,
+  verified: false,
+  remarks: ''
+};
+notification = {
+  show: false,
+  message: '',
+  type: 'success' as 'success' | 'error'
+};
+
 OnStudentAction(id:number){
   this.showStudentActionModal = true;
   this.selectedstudent = this.students.find((student) => student.id === id) || new Student();
+  
+  // Fetch the latest verification status
+  this.studentService.getStudentVerificationStatus(id).subscribe({
+    next: (verificationData) => {
+      if (this.selectedstudent) {
+        this.selectedstudent.resultVerified = verificationData.verified;
+        this.selectedstudent.verificationRemarks = verificationData.remarks;
+        this.selectedstudent.verifiedBy = verificationData.verifiedBy;
+        this.selectedstudent.verificationDate = verificationData.verificationDate;
+      }
+    },
+    error: (error) => {
+      console.error('Error fetching verification status:', error);
+      // Handle error silently or show notification
+    }
+  });
 }
 
-  // Active tab tracking
+// Verification methods
+onVerifyResults(studentId: number) {
+  this.verificationForm.studentId = studentId;
+  this.verificationForm.verified = true;
+  this.verificationForm.remarks = '';
+  this.showVerificationModal = true;
+  this.showStudentActionModal = false;
+}
+
+onUnverifyResults(studentId: number) {
+  this.verificationForm.studentId = studentId;
+  this.verificationForm.verified = false;
+  this.verificationForm.remarks = '';
+  this.showVerificationModal = true;
+  this.showStudentActionModal = false;
+}
+
+submitVerification() {
+  this.studentService.verifyStudentResults(
+    this.verificationForm.studentId,
+    this.verificationForm.verified,
+    this.verificationForm.remarks
+  ).subscribe({
+    next: (response) => {
+      console.log('Verification updated successfully', response);
+      this.showVerificationModal = false;
+      this.showNotification(
+        `Student results ${this.verificationForm.verified ? 'verified' : 'unverified'} successfully!`,
+        'success'
+      );
+      this.loadStudents(); // Refresh the student list
+    },
+    error: (error) => {
+      console.error('Error updating verification:', error);
+      this.showNotification(
+        `Error ${this.verificationForm.verified ? 'verifying' : 'unverifying'} student results. Please try again.`,
+        'error'
+      );
+    }
+  });
+}
+
+showNotification(message: string, type: 'success' | 'error') {
+  this.notification = { show: true, message, type };
+  // Auto-hide notification after 5 seconds
+  setTimeout(() => {
+    this.notification.show = false;
+  }, 5000);
+}
+
+closeVerificationModal() {
+  this.showVerificationModal = false;
+  this.verificationForm = {
+    studentId: 0,
+    verified: false,
+    remarks: ''
+  };
+}
+
+// Active tab tracking
   activeTab: 'students' | 'posts' | 'applications'| 'placements' = 'students';
 
   // Student section properties

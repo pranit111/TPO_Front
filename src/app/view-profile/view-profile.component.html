@@ -181,6 +181,13 @@
             <span class="roboto-flex text-gray-600 info-label font-medium text-sm sm:text-base">Diploma:</span>
             <span class="roboto-flex text-sm sm:text-base">{{ profileData.diplomaMarks }}</span>
           </div>
+          <div class="flex flex-row">
+            <span class="roboto-flex text-gray-600 info-label font-medium text-sm sm:text-base">Verification:</span>
+            <span [class]="'px-2 py-1 text-xs rounded-full ' + 
+              (profileData.resultsVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+              {{ profileData.resultsVerified ? 'Verified' : 'Not Verified' }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -222,8 +229,117 @@
       </div>
     </div>
 
-    <!-- Admin Actions -->
+    <!-- Result Verification Section -->
+    <div class="mt-4 sm:mt-6">
+      <div class="flex justify-between items-center mb-2 sm:mb-4">
+        <h3 class="onest-font text-base sm:text-lg font-semibold text-gray-800 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Result Verification Status
+        </h3>
+        <button 
+          *ngIf="!profileData.resultsVerified"
+          (click)="openVerificationModal()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 sm:px-4 sm:py-2 rounded text-sm font-medium transition-colors"
+        >
+          Verify Results
+        </button>
+        <button 
+          *ngIf="profileData.resultsVerified"
+          (click)="revokeVerification()"
+          class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 sm:px-4 sm:py-2 rounded text-sm font-medium transition-colors"
+        >
+          Revoke Verification
+        </button>
+      </div>
+      <div class="bg-gray-50 p-3 sm:p-4 rounded-lg shadow-sm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Verification Status -->
+          <div class="space-y-2">
+            <div class="flex flex-row items-center">
+              <span class="roboto-flex text-gray-600 info-label font-medium text-sm sm:text-base">Status:</span>
+              <span [class]="'px-3 py-1 text-sm rounded-full font-medium ' + 
+                (profileData.resultsVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+                {{ profileData.resultsVerified ? 'Verified ✓' : 'Not Verified ✗' }}
+              </span>
+            </div>
+            <div *ngIf="profileData.verifiedBy" class="flex flex-row">
+              <span class="roboto-flex text-gray-600 info-label font-medium text-sm sm:text-base">Verified By:</span>
+              <span class="roboto-flex text-sm sm:text-base">{{ profileData.verifiedBy }}</span>
+            </div>
+            <div *ngIf="profileData.verificationDate" class="flex flex-row">
+              <span class="roboto-flex text-gray-600 info-label font-medium text-sm sm:text-base">Date:</span>
+              <span class="roboto-flex text-sm sm:text-base">{{ profileData.verificationDate | date:'medium' }}</span>
+            </div>
+          </div>
+          
+          <!-- Verification Remarks -->
+          <div *ngIf="profileData.verificationRemarks" class="space-y-2">
+            <div class="flex flex-col">
+              <span class="roboto-flex text-gray-600 font-medium text-sm sm:text-base mb-1">Remarks:</span>
+              <div class="bg-white p-2 rounded border text-sm">
+                {{ profileData.verificationRemarks }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Verification Modal -->
+    <div *ngIf="showVerificationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Verify Student Results</h3>
+            <button (click)="closeVerificationModal()" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="mb-4">
+            <p class="text-sm text-gray-600 mb-2">
+              You are about to verify the results for <strong>{{ profileData.firstName }} {{ profileData.lastName }}</strong>.
+            </p>
+            <p class="text-sm text-gray-600">This action cannot be undone.</p>
+          </div>
+          
+          <div class="mb-4">
+            <label for="verificationRemarks" class="block text-sm font-medium text-gray-700 mb-2">
+              Verification Remarks (Optional)
+            </label>
+            <textarea
+              id="verificationRemarks"
+              [(ngModel)]="verificationRemarks"
+              rows="3"
+              class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter any remarks about the verification..."
+            ></textarea>
+          </div>
+          
+          <div class="flex justify-end space-x-3">
+            <button
+              (click)="closeVerificationModal()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+              [disabled]="isVerifying"
+            >
+              Cancel
+            </button>
+            <button
+              (click)="verifyStudent()"
+              [disabled]="isVerifying"
+              class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span *ngIf="!isVerifying">Verify Results</span>
+              <span *ngIf="isVerifying">Verifying...</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <div class="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-500">
