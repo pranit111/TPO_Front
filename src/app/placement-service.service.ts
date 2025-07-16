@@ -76,7 +76,26 @@ export class PlacementServiceService {
     return this.http.get<any>(`${this.baseUrl}/search`, { params });
   }
 
-  // Download placements as Excel file
+  // Download all placements as Excel file
+  downloadAllPlacementsExcel(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/download/excel`, {
+      responseType: 'blob'
+    });
+  }
+
+  // Download filtered placements as Excel file
+  downloadFilteredPlacementsExcel(filterType: string, filterValue: string): Observable<Blob> {
+    const params = new HttpParams()
+      .set('filterType', filterType)
+      .set('filterValue', filterValue);
+
+    return this.http.get(`${this.baseUrl}/download/excel/filtered`, {
+      params,
+      responseType: 'blob'
+    });
+  }
+
+  // Download placements as Excel file (legacy method with search filters)
   downloadExcel(filters: any): Observable<Blob> {
     let params = new HttpParams();
     

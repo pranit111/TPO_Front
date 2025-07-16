@@ -573,11 +573,19 @@
                                     class="file-upload-input"
                                     (change)="onFileSelectedresume($event)">
                                 <label class="file-upload-label">
-                                    <span class="text-gray-500 truncate">{{'Choose file...'}}</span>
+                                    <span class="text-gray-500 truncate">
+                                        {{ resume ? resume.name : 'Choose file...' }}
+                                    </span>
                                     <span class="file-upload-browse">Browse</span>
                                 </label>
                             </div>
                             <span class="text-xs text-gray-500 mt-1">PDF format preferred (max 1MB)</span>
+                            <div *ngIf="resume" class="flex items-center mt-2 text-xs text-green-600">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Resume uploaded successfully
+                            </div>
                         </div>
                         
                         <!-- Profile Picture Upload -->
@@ -589,11 +597,19 @@
                                     accept="image/*"
                                     (change)="onFileSelectedprof($event)">
                                 <label class="file-upload-label">
-                                    <span class="text-gray-500 truncate">{{ 'Choose file...'}}</span>
+                                    <span class="text-gray-500 truncate">
+                                        {{ profile_pic ? 'Profile picture selected' : 'Choose file...' }}
+                                    </span>
                                     <span class="file-upload-browse">Browse</span>
                                 </label>
                             </div>
                             <span class="text-xs text-gray-500 mt-1">JPG/PNG format (max 1MB)</span>
+                            <div *ngIf="profile_pic" class="flex items-center mt-2 text-xs text-green-600">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Profile picture uploaded successfully
+                            </div>
                             
                             <!-- Image Preview -->
                             <div *ngIf="imageUrl" class="mt-4 flex flex-col items-center">
@@ -617,11 +633,19 @@
                                         (change)="onFileSelectedSSCResult($event)" 
                                         accept=".pdf,.jpg,.jpeg,.png">
                                     <label class="file-upload-label">
-                                        <span class="text-gray-500 truncate">{{ 'Choose file...'}}</span>
+                                        <span class="text-gray-500 truncate">
+                                            {{ sscResult ? sscResult.name : 'Choose file...' }}
+                                        </span>
                                         <span class="file-upload-browse">Browse</span>
                                     </label>
                                 </div>
                                 <span class="text-xs text-gray-500 mt-1">Upload SSC marksheet (PDF max 1MB)</span>
+                                <div *ngIf="sscResult" class="flex items-center mt-2 text-xs text-green-600">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    SSC result uploaded successfully
+                                </div>
                             </div>
                             
                             <!-- HSC Result -->
@@ -633,11 +657,19 @@
                                         (change)="onFileSelectedHSCResult($event)" 
                                         accept=".pdf,.jpg,.jpeg,.png">
                                     <label class="file-upload-label">
-                                        <span class="text-gray-500 truncate">{{'Choose file...'}}</span>
+                                        <span class="text-gray-500 truncate">
+                                            {{ hscResult ? hscResult.name : 'Choose file...' }}
+                                        </span>
                                         <span class="file-upload-browse">Browse</span>
                                     </label>
                                 </div>
                                 <span class="text-xs text-gray-500 mt-1">Upload HSC marksheet (PDF max 1MB)</span>
+                                <div *ngIf="hscResult" class="flex items-center mt-2 text-xs text-green-600">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    HSC result uploaded successfully
+                                </div>
                             </div>
                             
                             <!-- Diploma Result -->
@@ -649,11 +681,19 @@
                                         (change)="onFileSelectedDiplomaResult($event)" 
                                         accept=".pdf,.jpg,.jpeg,.png">
                                     <label class="file-upload-label">
-                                        <span class="text-gray-500 truncate">{{'Choose file...'}}</span>
+                                        <span class="text-gray-500 truncate">
+                                            {{ diplomaResult ? diplomaResult.name : 'Choose file...' }}
+                                        </span>
                                         <span class="file-upload-browse">Browse</span>
                                     </label>
                                 </div>
                                 <span class="text-xs text-gray-500 mt-1">Upload Diploma marksheet (PDF max 1MB)</span>
+                                <div *ngIf="diplomaResult" class="flex items-center mt-2 text-xs text-green-600">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Diploma result uploaded successfully
+                                </div>
                             </div>
                         </div>
                     </div>

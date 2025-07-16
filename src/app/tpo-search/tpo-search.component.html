@@ -305,7 +305,6 @@
     </div>
     <!-- Buttons -->
     <div class="flex space-x-2">
-
       <button (click)="downloadExcel()" class="filter-button text-white px-4 py-2 rounded-lg hover:bg-blue-700">
         <img src="Download.png" alt="Download" class="w-6 h-6 inline-block" />
       </button>
@@ -324,7 +323,11 @@
       <option value="">Department</option>
       <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
     </select>
- 
+    <select [(ngModel)]="placementFilters.studentYear" (ngModelChange)="onPlacementFilterChange()"
+      class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none">
+      <option value="">Student Year</option>
+      <option *ngFor="let year of studentYearOptions" [value]="year.value">{{year.label}}</option>
+    </select>
     <input type="number" [(ngModel)]="placementFilters.minPackage" placeholder="Min Package" (keyup.enter)="onPlacementFilterChange()"
       class="bg-[#4073BF] text-white text-[16px] font-roboto-flex rounded-[20px] px-4 py-1 focus:outline-none w-32 placeholder-gray-300" />
     <input type="number" [(ngModel)]="placementFilters.maxPackage" placeholder="Max Package" (keyup.enter)="onPlacementFilterChange()"

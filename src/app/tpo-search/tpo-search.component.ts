@@ -385,23 +385,40 @@ searchText = '';
     const filters = this.placementFilters;
     let serviceCall;
     
-    if (filters.companyName && !filters.department && !filters.studentYear && !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+    // Check if only keyword is used (general search)
+    if (filters.keyword && !filters.companyName && !filters.department && !filters.studentYear && 
+        !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+      serviceCall = this.placementsService.searchPlacements(this.placementFilters);
+    }
+    // Check for single specific filter usage
+    else if (filters.companyName && !filters.department && !filters.studentYear && 
+             !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate && !filters.keyword) {
       // Use company-specific filter
       serviceCall = this.placementsService.filterByCompany(filters.companyName, filters.page, filters.size);
-    } else if (filters.department && !filters.companyName && !filters.studentYear && !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+    } 
+    else if (filters.department && !filters.companyName && !filters.studentYear && 
+             !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate && !filters.keyword) {
       // Use department-specific filter
       serviceCall = this.placementsService.filterByDepartment(filters.department, filters.page, filters.size);
-    } else if (filters.studentYear && !filters.companyName && !filters.department && !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+    } 
+    else if (filters.studentYear && !filters.companyName && !filters.department && 
+             !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate && !filters.keyword) {
       // Use student year-specific filter
       serviceCall = this.placementsService.filterByStudentYear(filters.studentYear, filters.page, filters.size);
-    } else if (filters.minPackage !== undefined && filters.maxPackage !== undefined && !filters.companyName && !filters.department && !filters.studentYear && !filters.fromDate && !filters.toDate) {
+    } 
+    else if (filters.minPackage !== undefined && filters.maxPackage !== undefined && 
+             !filters.companyName && !filters.department && !filters.studentYear && 
+             !filters.fromDate && !filters.toDate && !filters.keyword) {
       // Use package range-specific filter
       serviceCall = this.placementsService.filterByPackageRange(filters.minPackage, filters.maxPackage, filters.page, filters.size);
-    } else if (filters.fromDate && filters.toDate && !filters.companyName && !filters.department && !filters.studentYear && !filters.minPackage && !filters.maxPackage) {
+    } 
+    else if (filters.fromDate && filters.toDate && !filters.companyName && !filters.department && 
+             !filters.studentYear && !filters.minPackage && !filters.maxPackage && !filters.keyword) {
       // Use date range-specific filter
       serviceCall = this.placementsService.filterByDateRange(filters.fromDate, filters.toDate, filters.page, filters.size);
-    } else {
-      // Use general search with all filters
+    } 
+    else {
+      // Use general search with all filters for complex combinations
       serviceCall = this.placementsService.searchPlacements(this.placementFilters);
     }
     
@@ -489,14 +506,72 @@ searchText = '';
         }
       });
     } else if (this.activeTab === 'placements') {
-      this.placementsService.downloadExcel(this.placementFilters).subscribe({
-        next: (response: Blob) => {
-          this.handleExcelDownload(response, 'placements.xlsx');
-        },
-        error: (error: Error) => {
-          console.error('Error downloading Excel:', error);
-        }
-      });
+      // Determine which download method to use based on applied filters
+      const filters = this.placementFilters;
+      
+      // Check if no filters are applied - download all placements
+      if (!filters.keyword && !filters.companyName && !filters.department && !filters.studentYear && 
+          !filters.minPackage && !filters.maxPackage && !filters.fromDate && !filters.toDate) {
+        // Use the new download all placements endpoint
+        this.placementsService.downloadAllPlacementsExcel().subscribe({
+          next: (response: Blob) => {
+            this.handleExcelDownload(response, 'all_placements.xlsx');
+          },
+          error: (error: Error) => {
+            console.error('Error downloading all placements Excel:', error);
+          }
+        });
+      }
+      // Check for single company filter - use filtered download endpoint
+      else if (filters.companyName && !filters.department && !filters.studentYear && 
+               !filters.keyword && !filters.minPackage && !filters.maxPackage && 
+               !filters.fromDate && !filters.toDate) {
+        this.placementsService.downloadFilteredPlacementsExcel('company', filters.companyName).subscribe({
+          next: (response: Blob) => {
+            this.handleExcelDownload(response, `${filters.companyName}_placements.xlsx`);
+          },
+          error: (error: Error) => {
+            console.error('Error downloading company-filtered placements Excel:', error);
+          }
+        });
+      }
+      // Check for single department filter - use filtered download endpoint
+      else if (filters.department && !filters.companyName && !filters.studentYear && 
+               !filters.keyword && !filters.minPackage && !filters.maxPackage && 
+               !filters.fromDate && !filters.toDate) {
+        this.placementsService.downloadFilteredPlacementsExcel('department', filters.department).subscribe({
+          next: (response: Blob) => {
+            this.handleExcelDownload(response, `${filters.department}_placements.xlsx`);
+          },
+          error: (error: Error) => {
+            console.error('Error downloading department-filtered placements Excel:', error);
+          }
+        });
+      }
+      // Check for single student year filter - use filtered download endpoint
+      else if (filters.studentYear && !filters.companyName && !filters.department && 
+               !filters.keyword && !filters.minPackage && !filters.maxPackage && 
+               !filters.fromDate && !filters.toDate) {
+        this.placementsService.downloadFilteredPlacementsExcel('studentYear', filters.studentYear).subscribe({
+          next: (response: Blob) => {
+            this.handleExcelDownload(response, `${filters.studentYear}_placements.xlsx`);
+          },
+          error: (error: Error) => {
+            console.error('Error downloading student year-filtered placements Excel:', error);
+          }
+        });
+      }
+      // For complex filters or multiple filters, use the legacy method
+      else {
+        this.placementsService.downloadExcel(this.placementFilters).subscribe({
+          next: (response: Blob) => {
+            this.handleExcelDownload(response, 'filtered_placements.xlsx');
+          },
+          error: (error: Error) => {
+            console.error('Error downloading filtered placements Excel:', error);
+          }
+        });
+      }
     }
   }
 
@@ -753,7 +828,6 @@ searchText = '';
 
   // Placement variables & methods
   selectedPlacement :  PlacementDTO | null = null;
-
   showPlacementDetailsModal = false;
 
   onViewPlacementDetails(id: number) {
@@ -956,4 +1030,5 @@ searchText = '';
     this.placementFilters.page = 0; // Reset to first page
     this.loadPlacements();
   }
+
 }
