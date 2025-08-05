@@ -67,10 +67,8 @@ export class ApplicationserviceService {
     return this.http.get<Application>(`${this.apiUrl}/Application?application_id=${id}`);
   }
   updateToPlaced(applicationId: number | null, formData: FormData): Observable<any> {
-      return this.http.post(`${this.baseUrl}/api9/placements?applicationid=${applicationId}`, formData);
-    }
-    
-  updateApplication(selectedApplication: { id: number; status: string; feedback: string; interviewDate: string;  interviewLocation: string; interviewTime: string; }): Observable<any> {
+      return this.http.post(`${environment.apiUrls.placementService}/placements?applicationid=${applicationId}`, formData);
+    }  updateApplication(selectedApplication: { id: number; status: string; feedback: string; interviewDate: string;  interviewLocation: string; interviewTime: string; }): Observable<any> {
     return this.http.put(`${this.apiUrl}/Application?application_id=${selectedApplication.id}`, {
       status: selectedApplication.status,
       feedback: selectedApplication.feedback,

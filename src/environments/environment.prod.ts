@@ -1,13 +1,15 @@
 export const environment = {
   production: true,
   apiUrls: {
-    postService: 'http://localhost:8080/api3',
-    applicationService: 'http://localhost:8080/api4',
-    studentService: 'http://localhost:8080/api1',
-    companyService: 'http://localhost:8080/api4/companies',
-    userService: 'http://localhost:8080',
-    authService: 'http://localhost:8080/api0',
-    tpoService: 'http://localhost:8080/api2'
-    
+    postService: '/api3',
+    applicationService: '/api4',
+    studentService: '/api1',
+    companyService: '/api4/companies',
+    userService: '',
+    authService: '/api0',
+    tpoService: '/api2',
+    dashboardService: '/api7',
+    logsService: '/api8',
+    placementService: '/api9'
   }
 }; 

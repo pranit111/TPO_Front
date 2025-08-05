@@ -8,6 +8,8 @@ export const environment = {
     userService: 'http://localhost:8080',
     authService: 'http://localhost:8080/api0',
     tpoService: 'http://localhost:8080/api2',
-    
+    dashboardService: 'http://localhost:8080/api7',
+    logsService: 'http://localhost:8080/api8',
+    placementService: 'http://localhost:8080/api9'
   }
 }; 

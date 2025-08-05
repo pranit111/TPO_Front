@@ -26,12 +26,14 @@ export class TpoAdminService {
     throw new Error('Method not implemented.');
   }
   baseUrl = environment.apiUrls.userService;
+  dashboardBaseUrl = environment.apiUrls.dashboardService;
+  logsBaseUrl = environment.apiUrls.logsService;
 
   companyBaseUrl= environment.apiUrls.companyService;
   constructor(private http:HttpClient) { }
   tpoBaseUrl=environment.apiUrls.tpoService;
   getLogs(page: number = 0, size: number = 20): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api8/?page=${page}&size=${size}`);
+    return this.http.get<any>(`${this.logsBaseUrl}/?page=${page}&size=${size}`);
   }
  getAllCompanies(){
   return this.http.get(this.companyBaseUrl);
@@ -64,64 +66,64 @@ deleteTpoUser(id: number) {
 
 
 getDashboardData(): Observable<DashboardData> {
-  return this.http.get<DashboardData>(`${this.baseUrl}/api7/dashboard`);
+  return this.http.get<DashboardData>(`${this.dashboardBaseUrl}/dashboard`);
 }
 
 getRealTimeStats(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/stats/real-time`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/stats/real-time`);
 }
 
 getGrowthAnalytics(months: number = 6): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/analytics/growth?months=${months}`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/analytics/growth?months=${months}`);
 }
 
 getRecentActivities(limit: number = 10): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/activities/recent?limit=${limit}`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/activities/recent?limit=${limit}`);
 }
 
 getProcessMetrics(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/metrics/process`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/metrics/process`);
 }
 
 getDepartmentAnalytics(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/analytics/departments`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/analytics/departments`);
 }
 
 getCompanyAnalytics(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/analytics/companies`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/analytics/companies`);
 }
 
 getPlacementTrends(months: number = 12): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/trends/placement?months=${months}`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/trends/placement?months=${months}`);
 }
 
 getPerformanceAnalytics(months: number = 12): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/analytics/performance?months=${months}`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/analytics/performance?months=${months}`);
 }
 
 getPackageDistribution(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/analytics/package-distribution`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/analytics/package-distribution`);
 }
 
 getHiringTrends(months: number = 12): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/analytics/hiring-trends?months=${months}`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/analytics/hiring-trends?months=${months}`);
 }
 
 getSystemHealth(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/system/health`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/system/health`);
 }
 
 getDataIntegrity(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/validation/data-integrity`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/validation/data-integrity`);
 }
 
 getDashboardNotifications(): Observable<any> {
-  return this.http.get<any>(`${this.baseUrl}/api7/dashboard/notifications`);
+  return this.http.get<any>(`${this.dashboardBaseUrl}/dashboard/notifications`);
 }
 
 // Export methods
 exportDashboardData(format: string = 'excel'): Observable<Blob> {
-  return this.http.get(`${this.baseUrl}/api7/dashboard/export/dashboard-data?format=${format}`, {
+  return this.http.get(`${this.dashboardBaseUrl}/dashboard/export/dashboard-data?format=${format}`, {
     responseType: 'blob'
   });
 }
@@ -131,43 +133,43 @@ exportStudentData(format: string = 'excel', department: string = '', status: str
   if (department) params += `&department=${department}`;
   if (status) params += `&status=${status}`;
   
-  return this.http.get(`${this.baseUrl}/api7/dashboard/export/students?${params}`, {
+  return this.http.get(`${this.dashboardBaseUrl}/dashboard/export/students?${params}`, {
     responseType: 'blob'
   });
 }
 
 exportCompanyData(format: string = 'excel'): Observable<Blob> {
-  return this.http.get(`${this.baseUrl}/api7/dashboard/export/companies?format=${format}`, {
+  return this.http.get(`${this.dashboardBaseUrl}/dashboard/export/companies?format=${format}`, {
     responseType: 'blob'
   });
 }
 
 refreshDashboardData(): Observable<any> {
-  return this.http.post<any>(`${this.baseUrl}/api7/dashboard/refresh`, {});
+  return this.http.post<any>(`${this.dashboardBaseUrl}/dashboard/refresh`, {});
 }
 
 generateCustomReport(reportParams: any): Observable<any> {
-  return this.http.post<any>(`${this.baseUrl}/api7/dashboard/reports/custom`, reportParams);
+  return this.http.post<any>(`${this.dashboardBaseUrl}/dashboard/reports/custom`, reportParams);
 }
 getStudentProfile(id:number):Observable<any>{
   return this.http.get(`${this.baseUrl}/api1/tpo/Student/profile/${id}`);   } 
 
 // Yearly Export and Analytics methods
 exportYearlyBackup(year: number, format: string = 'excel'): Observable<Blob> {
-  return this.http.get(`${this.baseUrl}/api7/dashboard/export/yearly-backup?year=${year}&format=${format}`, 
+  return this.http.get(`${this.dashboardBaseUrl}/dashboard/export/yearly-backup?year=${year}&format=${format}`, 
     { responseType: 'blob' });
 }
 
 getYearlyAnalytics(year: number): Observable<any> {
-  return this.http.get(`${this.baseUrl}/api7/dashboard/analytics/yearly/${year}`);
+  return this.http.get(`${this.dashboardBaseUrl}/dashboard/analytics/yearly/${year}`);
 }
 
 getYearlyComparison(years: number = 3): Observable<any> {
-  return this.http.get(`${this.baseUrl}/api7/dashboard/analytics/comparison?years=${years}`);
+  return this.http.get(`${this.dashboardBaseUrl}/dashboard/analytics/comparison?years=${years}`);
 }
 
 // Additional analytics methods
 getCompanyDetails(): Observable<any> {
-  return this.http.get(`${this.baseUrl}/api7/dashboard/analytics/company-details`);
+  return this.http.get(`${this.dashboardBaseUrl}/dashboard/analytics/company-details`);
 }
 }

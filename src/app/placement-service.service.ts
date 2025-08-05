@@ -19,7 +19,7 @@ export interface PlacementDTO {
   providedIn: 'root'
 })
 export class PlacementServiceService {
-  private baseUrl = environment.apiUrls.userService + '/api9/placements';
+  private baseUrl = environment.apiUrls.placementService + '/placements';
 
   constructor(private http: HttpClient) { }
 
