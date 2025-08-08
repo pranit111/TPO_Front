@@ -23,7 +23,7 @@ readonly PDF_MIME_TYPE = 'application/pdf';
   step = 1;
   studentForm: FormGroup;
   student: Student = new Student();
-  departments: string[] = ['CSE', 'DS', 'AIML', 'CIVIL', 'ECE'];
+  departments: string[] = ['CSE', 'DS', 'AIML', 'IT','CIVIL', 'AUTO','MECH'];
   academicYears: string[] = ['FE', 'SE', 'TE', 'BE'];
   genders = Object.values(Gender); // Gender options for radio buttons
   resume: File | null = null; // Store the uploaded file

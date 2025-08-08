@@ -258,7 +258,7 @@ closeVerificationModal() {
 
   // Student section properties
   students: Student[] = [];
-  departments = ['CSE', 'DS', 'AIML', 'CIVIL', 'ECE'];
+  departments = ['CSE', 'DS', 'AIML', 'CIVIL', 'IT','MECH','AUTO'];
   academicYears = ['FE', 'SE', 'TE', 'BE'];
   passingYears = ['2024', '2025', '2026', '2027'];
   avgMarks = [60, 65, 70, 75, 80, 85, 90, 95, 100];
