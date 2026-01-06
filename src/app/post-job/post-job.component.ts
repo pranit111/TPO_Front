@@ -96,6 +96,7 @@ export class PostJobComponent implements OnInit {
       testPlatform: ['', Validators.required],
       recruitmentDetails: ['', Validators.required],
       aptitude: [false, Validators.required],
+      portalLink: [''],
       applicationStartDate: ['', Validators.required],
       applicationEndDate: ['', Validators.required],
       selectionStartDate: ['', Validators.required],

@@ -24,51 +24,51 @@
 </head>
 
 <body class="bg-cover bg-center min-h-screen" style="background-image: url('Main_bg_blue.png');">
-  <!-- Navigation Bar --><nav class="bg-white shadow-lg ml-[350px] mr-[350px] rounded-xl">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="flex justify-between h-16">
-      <div class="flex items-center">
-        <!-- Logo -->
+  <!-- Navigation Bar -->
 
-        <!-- Navigation Links -->
-        <div class="hidden sm:ml-6 sm:flex sm:space-x-4">
-          <button (click)="setActiveTab('students')"
-            [class.border-blue-500]="activeTab === 'students'"
-            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-            [class.text-gray-900]="activeTab === 'students'"
-            [class.text-gray-500]="activeTab !== 'students'">
-            Student Search
-          </button>
-          <button (click)="setActiveTab('posts')"
-            [class.border-blue-500]="activeTab === 'posts'"
-            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-            [class.text-gray-900]="activeTab === 'posts'"
-            [class.text-gray-500]="activeTab !== 'posts'">
-            Post Search
-          </button>
-          <button (click)="setActiveTab('applications')"
-            [class.border-blue-500]="activeTab === 'applications'"
-            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-            [class.text-gray-900]="activeTab === 'applications'"
-            [class.text-gray-500]="activeTab !== 'applications'">
-            Application Search
-          </button>
-          <button (click)="setActiveTab('placements')"
-          [class.border-blue-500]="activeTab === 'placements'"
-          class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-          [class.text-gray-900]="activeTab === 'placements'"
-          [class.text-gray-500]="activeTab !== 'placements'">
-          Placements Search
-        </button>
-        </div>
-      </div>
+  <div class="w-full flex justify-center pt-6">
+    <div class="flex space-x-1 bg-white rounded-xl shadow-lg px-4 py-2">
+      <button (click)="setActiveTab('students')"
+        [class.border-blue-500]="activeTab === 'students'"
+        [class.text-blue-600]="activeTab === 'students'"
+        [class.bg-blue-50]="activeTab === 'students'"
+        class="inline-flex items-center px-6 py-2 border-b-2 text-sm font-medium transition-all duration-200 hover:text-blue-600 hover:bg-blue-50 rounded-t-lg"
+        [class.text-gray-600]="activeTab !== 'students'"
+        [class.border-transparent]="activeTab !== 'students'">
+        Student Search
+      </button>
+      <button (click)="setActiveTab('posts')"
+        [class.border-blue-500]="activeTab === 'posts'"
+        [class.text-blue-600]="activeTab === 'posts'"
+        [class.bg-blue-50]="activeTab === 'posts'"
+        class="inline-flex items-center px-6 py-2 border-b-2 text-sm font-medium transition-all duration-200 hover:text-blue-600 hover:bg-blue-50 rounded-t-lg"
+        [class.text-gray-600]="activeTab !== 'posts'"
+        [class.border-transparent]="activeTab !== 'posts'">
+        Post Search
+      </button>
+      <button (click)="setActiveTab('applications')"
+        [class.border-blue-500]="activeTab === 'applications'"
+        [class.text-blue-600]="activeTab === 'applications'"
+        [class.bg-blue-50]="activeTab === 'applications'"
+        class="inline-flex items-center px-6 py-2 border-b-2 text-sm font-medium transition-all duration-200 hover:text-blue-600 hover:bg-blue-50 rounded-t-lg"
+        [class.text-gray-600]="activeTab !== 'applications'"
+        [class.border-transparent]="activeTab !== 'applications'">
+        Application Search
+      </button>
+      <button (click)="setActiveTab('placements')"
+        [class.border-blue-500]="activeTab === 'placements'"
+        [class.text-blue-600]="activeTab === 'placements'"
+        [class.bg-blue-50]="activeTab === 'placements'"
+        class="inline-flex items-center px-6 py-2 border-b-2 text-sm font-medium transition-all duration-200 hover:text-blue-600 hover:bg-blue-50 rounded-t-lg"
+        [class.text-gray-600]="activeTab !== 'placements'"
+        [class.border-transparent]="activeTab !== 'placements'">
+        Placements Search
+      </button>
     </div>
   </div>
-</nav>
-
 
   <!-- Main Content Area -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="container mx-auto px-4 py-8">
     <!-- Student Search Section --><div *ngIf="activeTab === 'students'" class="bg-white rounded-xl shadow-lg p-6">
   <div class="flex justify-between mb-4">
     <!-- Student Search Bar -->      <div class="flex-grow mr-4">

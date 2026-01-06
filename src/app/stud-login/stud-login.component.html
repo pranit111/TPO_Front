@@ -25,7 +25,7 @@
         <img src="/scoe_logo.png" alt="College Logo" class="w-auto h-auto max-h-28 md:max-h-50 mb-4 lg:mb-6 transition-all duration-300 rounded-full">
 
         <!-- Login Box -->
-        <div class="bg-white p-6 lg:p-8 w-[250px] max-w-xl sm:max-w-lg md:max-w-xl lg:w-[529px] lg:h-[509px] shadow-lg rounded-lg flex flex-col box-content sm:box-border">
+        <div class="bg-white p-6 lg:p-8 w-full max-w-[90vw] sm:max-w-[450px] md:max-w-[480px] lg:w-[529px] lg:h-[509px] shadow-lg rounded-lg flex flex-col">
             <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 lg:mb-10">
                 <div>
                     <h1 class="onest-font text-3xl lg:text-4xl font-semibold text-left mb-2 lg:pt-13">Sign In</h1>
@@ -43,10 +43,10 @@
                 <!-- Email Input -->
                 <input type="email" placeholder="Email address or username" [(ngModel)]="user.email" 
                     name="email" #email="ngModel" required email
-                    class="roboto-flex input-box w-full sm:w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-sm">
+                    class="roboto-flex input-box w-full max-w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-sm">
                 
                 <!-- Email Validation Errors -->
-                <div *ngIf="email.invalid && email.touched" class="text-red-500 text-sm mt-1 w-full sm:w-[408px] text-left">
+                <div *ngIf="email.invalid && email.touched" class="text-red-500 text-sm mt-1 w-full max-w-[408px] text-left">
                     <small *ngIf="email.errors?.['required']">Email is required</small>
                     <small *ngIf="email.errors?.['email']">Invalid email format</small>
                 </div>
@@ -54,16 +54,16 @@
                 <!-- Password Input -->
                 <input type="password" placeholder="Password" [(ngModel)]="user.password" 
                     name="password" #password="ngModel" required minlength="6"
-                    class="roboto-flex input-box w-full sm:w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-sm mt-4">
+                    class="roboto-flex input-box w-full max-w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-sm mt-4">
                 
                 <!-- Password Validation Errors -->
-                <div *ngIf="password.invalid && password.touched" class="text-red-500 text-sm mt-1 w-full sm:w-[408px] text-left">
+                <div *ngIf="password.invalid && password.touched" class="text-red-500 text-sm mt-1 w-full max-w-[408px] text-left">
                     <small *ngIf="password.errors?.['required']">Password is required</small>
                     <small *ngIf="password.errors?.['minlength']">Password must be at least 6 characters</small>
                 </div>
 
                 <!-- Forgot Password Link -->
-                <div class="w-full sm:w-[408px] flex justify-end mt-2">
+                <div class="w-full max-w-[408px] flex justify-end mt-2">
                     <a href="/forgot_password" class="roboto-flex text-xs lg-sm text-[#3939DB]">Forgot password?</a>
                 </div>
 

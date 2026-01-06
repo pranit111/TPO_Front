@@ -47,12 +47,7 @@
             100% { background-position: 1000px 0; }
         }
         
-        @keyframes wave {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(-5%); }
-            100% { transform: translateX(0); }
-        }
-        
+       
         /* Animation classes */
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
@@ -141,27 +136,29 @@
         }
     </style>
 </head>
-<body class="bg-custom flex items-start justify-start min-h-screen px-4">
+<body class="bg-custom flex items-start justify-start min-h-screen px-3 sm:px-4 lg:px-6 py-6">
     <div class="flex flex-col lg:flex-row items-start justify-start min-h-screen w-full fade-in">
-        <div class="container mx-auto p-6 bg-white rounded-lg shadow-md w-full max-w-6xl slide-in-up">
-            <h1 class="text-3xl font-semibold mb-4 text-gray-900 onest-font wave-bg">Placement Offers</h1>
-            <hr class="mb-6 border-teal-700 shine-effect" />
+        <div class="container mx-auto p-5 sm:p-7 md:p-10 bg-white rounded-lg shadow-xl w-full max-w-[95%] lg:max-w-[1400px] slide-in-up">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#156C7D] onest-font pb-2">Placement Offers</h1>
+            </div>
+            <hr class="mb-6 border-[#156C7D] border-b-2 shine-effect" />
             
             <p *ngIf="noJobPostsAvailable" class="text-left text-gray-500 text-lg roboto-flex fade-in" style="animation-delay: 0.2s">
                 No placement offers available at the moment. Check back later!
             </p>
             
-            <div *ngIf="jobPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 fade-in" style="animation-delay: 0.3s">
+            <div *ngIf="jobPosts.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7 fade-in" style="animation-delay: 0.3s">
                 <div *ngFor="let job of jobPosts; let i = index" 
-                     class="bg-gray-100 p-4 rounded-lg shadow-md text-gray-900 bg-opacity-90 hover-scale smooth-transition slide-in-up" 
+                     class="bg-gradient-to-br from-white to-blue-50 p-6 sm:p-7 rounded-lg shadow-md border border-gray-200 text-gray-900 hover-scale smooth-transition slide-in-up" 
                      [style.animation-delay]="(0.1 * i) + 's'">
-                    <h2 class="text-lg md:text-xl font-semibold flex items-center onest-font text-teal-700">
+                    <h2 class="text-lg md:text-xl font-semibold flex items-center onest-font text-[#156C7D]">
                         {{ job.jobDesignation }}
                     </h2>
-                    <p class="text-sm text-teal-600 roboto-flex">{{ job.company.name }}</p>
-                    <hr class="my-2 border-teal-700 opacity-50 shine-effect" />
+                    <p class="text-sm text-[#1E93C6] roboto-flex font-medium">{{ job.company.name }}</p>
+                    <hr class="my-4 border-[#156C7D] opacity-50 shine-effect" />
                     
-                    <div class="space-y-2 roboto-flex fade-in" style="animation-delay: 0.1s">
+                    <div class="space-y-3 roboto-flex fade-in" style="animation-delay: 0.1s">
                         <p class="mt-2 text-sm md:text-base flex items-start">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-teal-700 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
@@ -187,7 +184,7 @@
                     </div>
                     
                     <button 
-                        class="bg-teal-600 text-white px-4 py-2 rounded mt-6 w-full hover:bg-teal-700 smooth-transition btn-pulse"
+                        class="bg-[#156C7D] text-white px-4 py-2.5 rounded-lg mt-6 w-full hover:bg-[#0E4F5D] font-medium smooth-transition btn-pulse shadow-md"
                         (click)="navigateToJobDetails(job.id)">
                         Apply Now
                     </button>

@@ -7,14 +7,15 @@
   <title>User Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Onest:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&family=Roboto+Flex:wght@400;500&display=swap');
 
     .font-onest {
       font-family: 'Onest', sans-serif;
     }
 
-    .font-inter {
-      font-family: 'Inter', sans-serif;
+    .font-inter,
+    .roboto-flex {
+      font-family: 'Roboto Flex', sans-serif;
     }
 
     /* Ensure background covers entire screen */
@@ -148,19 +149,21 @@
 </head>
 
 <body class="font-inter">
-  <div class="pt-4 md:pt-10 pb-10 px-4 md:px-6 fade-in">
+  <div class="min-h-screen py-6 px-3 sm:px-4 lg:px-6 fade-in">
 
     <!-- User Dashboard Box -->
-    <div class="mx-auto bg-white shadow-lg p-4 md:p-8 w-full max-w-7xl rounded-lg slide-in-up">
+    <div class="mx-auto bg-white shadow-xl p-5 sm:p-7 md:p-10 w-full max-w-[95%] lg:max-w-[1400px] rounded-lg slide-in-up">
       <!-- Heading -->
-      <h1 class="text-2xl md:text-4xl lg:text-5xl text-[#053C47] font-onest wave-bg pb-3">User Dashboard</h1>
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl text-[#156C7D] font-onest font-semibold pb-2">User Dashboard</h1>
+      </div>
 
       <!-- Thicker Underline -->
-      <div class="border-b-2 md:border-b-3 mt-2 mb-4 md:mb-6 border-[#053C47] w-full shine-effect"></div>
+      <div class="border-b-2 mt-2 mb-4 md:mb-6 border-[#156C7D] w-full shine-effect"></div>
 
       <!-- Table Container -->
       <div class="table-container">
-        <div class="bg-[#F3F3F3] w-full min-w-[700px] p-4 md:p-6 rounded-md slide-in-up" style="animation-delay: 0.2s">
+        <div class="bg-[#F3F3F3] w-full min-w-[700px] p-5 md:p-8 rounded-md slide-in-up" style="animation-delay: 0.2s">
 
           <!-- Column Headers - Hidden on mobile, shown from sm breakpoint -->
           <div class="hidden sm:grid sm:grid-cols-6 gap-3 mb-4 text-[#156C7D] text-sm md:text-lg font-onest">
@@ -182,16 +185,16 @@
               class="grid grid-cols-1 sm:grid-cols-6 gap-3 items-center bg-white sm:bg-[#F3F3F3] p-3 sm:p-4 text-[#6F6F6F] text-sm md:text-base font-onest rounded-md shadow-sm sm:shadow-none border border-gray-200 sm:border-none mb-3 sm:mb-0 hover-scale slide-in-up"
               [style.animation-delay]="(0.1 * i) + 's'">
               
-<!-- Mobile view as card with improved spacing - FIXED WIDTH AND LAYOUT -->
-<div class="sm:hidden bg-white rounded-md shadow border border-gray-200 p-4 space-y-2 w-full max-w-full mx-auto">
+<!-- Mobile view as card with improved spacing -->
+<div class="sm:hidden bg-white rounded-lg shadow-md border border-gray-200 p-4 space-y-3 hover-scale smooth-transition">
   <!-- Job Title + Status -->
-  <div class="flex justify-between items-center gap-2">
-    <h3 class="text-base font-semibold text-[#053C47] truncate max-w-[70%] pr-2">
+  <div class="flex justify-between items-start gap-2">
+    <h3 class="text-base font-semibold text-[#156C7D] truncate flex-1 min-w-0">
       {{ application.designation }}
     </h3>
-    <div class="flex items-center gap-1 flex-shrink-0">
-      <div class="w-2 h-2 rounded-full" [ngClass]="getStatusColor(application.status)"></div>
-      <span class="text-xs text-gray-600 whitespace-nowrap">{{ application.status }}</span>
+    <div class="flex items-center gap-1.5 flex-shrink-0">
+      <div class="w-2.5 h-2.5 rounded-full" [ngClass]="getStatusColor(application.status)"></div>
+      <span class="text-xs font-medium text-gray-600 whitespace-nowrap">{{ application.status }}</span>
     </div>
   </div>
 

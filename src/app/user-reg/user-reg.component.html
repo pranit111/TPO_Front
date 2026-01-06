@@ -25,7 +25,7 @@
         <img src="/scoe_logo.png" alt="College Logo" class="w-auto h-auto max-h-28 md:max-h-50 mb-4 lg:mb-6 transition-all duration-300 rounded-full">
 
         <!-- Login Box -->
-        <div class="bg-white p-6 lg:p-8 w-[250px] max-w-xl sm:max-w-lg md:max-w-xl lg:w-[529px] lg:h-[409px] shadow-lg rounded-lg flex flex-col box-content sm:box-border">
+        <div class="bg-white p-6 lg:p-8 w-full max-w-[90vw] sm:max-w-[450px] md:max-w-[480px] lg:w-[529px] shadow-lg rounded-lg flex flex-col overflow-y-auto" style="max-height: 90vh;">
             <div class="w-full flex justify-center md:justify-between items-center mb-6">
                 <h1 class="onest-font text-2xl md:text-3xl font-semibold text-center">User Registration</h1>
             </div>
@@ -33,45 +33,45 @@
             <div *ngIf="step==1">
                 <form class="mt-4 w-full flex flex-col items-center" #registerForm="ngForm" (ngSubmit)="getotp()">
                     <input type="text" placeholder="Username" [(ngModel)]="user.username" name="username" required
-                        class="roboto-flex input-box w-full h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm">
+                        class="roboto-flex input-box w-full max-w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm">
                     
                     <input type="email" placeholder="Email Address" [(ngModel)]="user.email" name="email" required
                         #email="ngModel"
                         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+.sce\.edu\.in$"
-                        class="roboto-flex input-box w-full h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
+                        class="roboto-flex input-box w-full max-w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
                     
-                    <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-red-500 text-sm mt-1 w-full">
+                    <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-red-500 text-xs mt-1 w-full max-w-[408px]">
                         <div *ngIf="email.errors?.['required']">Email is required</div>
                         <div *ngIf="email.errors?.['pattern']">Please enter a valid email address</div>
                     </div>
                     
                     <input type="password" placeholder="Password" #password="ngModel" [(ngModel)]="user.password" name="password" required
-                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-                        class="roboto-flex input-box w-full h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{8,}$"
+                        class="roboto-flex input-box w-full max-w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
                     
-                    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-red-500 text-sm mt-1 w-full">
+                    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-red-500 text-xs mt-1 w-full max-w-[408px]">
                         <div *ngIf="password.errors?.['required']">Password is required</div>
-                        <div *ngIf="password.errors?.['pattern']" class="text-xs">
+                        <div *ngIf="password.errors?.['pattern']">
                             Password must contain:
-                            <ul class="list-disc pl-4">
+                            <ul class="list-disc pl-4 text-[10px] leading-tight">
                                 <li>At least 8 characters</li>
-                                <li>At least one uppercase letter</li>
-                                <li>At least one lowercase letter</li>
-                                <li>At least one number</li>
-                                <li>At least one special character</li>
+                                <li>One uppercase letter</li>
+                                <li>One lowercase letter</li>
+                                <li>One number</li>
+                                <li>One special character (&#64;$!%*?&_)</li>
                             </ul>
                         </div>
                     </div>
                     
                     <input type="password" placeholder="Confirm Password" #confirmPassword="ngModel" [(ngModel)]="user.confirmPassword"
                         name="confirmPassword" required
-                        class="roboto-flex input-box w-full h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
+                        class="roboto-flex input-box w-full max-w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm mt-4">
                     
-                    <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="text-red-500 text-sm mt-1 w-full">
+                    <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="text-red-500 text-xs mt-1 w-full max-w-[408px]">
                         <div *ngIf="confirmPassword.errors?.['required']">Please confirm your password</div>
                     </div>
                     
-                    <div *ngIf="user.password !== user.confirmPassword && user.confirmPassword" class="text-red-500 text-sm mt-1 w-full">
+                    <div *ngIf="user.password !== user.confirmPassword && user.confirmPassword" class="text-red-500 text-xs mt-1 w-full max-w-[408px]">
                         Passwords do not match
                     </div>
                     
@@ -90,7 +90,7 @@
                 </button>
                 <form class="mt-4 w-full flex flex-col items-center">
                     <input type="number" placeholder="Enter OTP" name="OTP" [(ngModel)]="otp"
-                        class="roboto-flex input-box w-full h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm">
+                        class="roboto-flex input-box w-full max-w-[408px] h-[38px] p-2 rounded-[5px] border border-[#A8A8A8] text-[#BFB4B4] text-sm">
                     
                     <button type="submit" class="w-full max-w-[200px] h-[40px] bg-[#1E1E1E] text-white rounded-full mt-6" (click)="verifyotp()">
                         Confirm

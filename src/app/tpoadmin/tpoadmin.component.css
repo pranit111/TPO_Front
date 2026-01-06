@@ -90,6 +90,9 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
 }
 
 .kpi-card::before {
@@ -114,6 +117,30 @@
 .kpi-card.amber { --accent-color: #f59e0b; --accent-color-light: #fbbf24; }
 .kpi-card.teal { --accent-color: #14b8a6; --accent-color-light: #5eead4; }
 
+/* Ensure consistent card heights in grids */
+.grid > .kpi-card {
+  height: 100%;
+}
+
+/* Responsive text sizing */
+@media (max-width: 768px) {
+  .kpi-card {
+    min-height: 100px;
+  }
+}
+
+/* Fix flex alignment in cards */
+.kpi-card > div {
+  width: 100%;
+}
+
+/* Better truncation for long text */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Main Dashboard Cards */
 .dashboard-card {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
@@ -125,6 +152,9 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboard-card::before {
@@ -143,6 +173,33 @@
   box-shadow: 
     0 25px 50px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure equal heights in grid */
+.grid > .dashboard-card {
+  height: 100%;
+}
+
+/* Better button alignment */
+.btn-primary,
+.btn-secondary {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .dashboard-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-card h2 {
+    font-size: 1.125rem;
+  }
 }
 
 /* Progress Bars */
@@ -396,3 +453,125 @@
     opacity: 0.5;
   }
 }
+
+/* Smooth Page Transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in;
+}
+
+/* Button Styles - Consistent across all tabs */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: white;
+  color: #3b82f6;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #f3f4f6;
+  border-color: #3b82f6;
+}
+
+/* Table Styles - Consistent across all tabs */
+.table-container {
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+table thead tr {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+table tbody tr {
+  transition: all 0.2s ease;
+}
+
+table tbody tr:hover {
+  background: #f9fafb;
+  transform: translateX(4px);
+}
+
+/* Modal Styles - Consistent across all tabs */
+.modal-backdrop {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.2s ease-in;
+}
+
+.modal-content {
+  animation: slideInUp 0.3s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading Shimmer Effect */
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 50%,
+    #f0f0f0 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmerAnimation {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
