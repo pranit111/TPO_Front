@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-logout',
@@ -9,11 +10,21 @@ import { Router } from '@angular/router';
   styleUrl: './logout.component.css'
 })
 export class LogoutComponent {
-constructor(private router:Router){}
-  onLogout() {
-localStorage.removeItem("authtoken")
-localStorage.removeItem("username")
-this.router.navigate(['login'])
-}
+  private apiUrl = environment.apiUrls.authService + '/auth';
 
+  constructor(private router: Router, private http: HttpClient) {}
+
+  onLogout() {
+    this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe({
+      next: () => {
+        localStorage.removeItem('username');
+        this.router.navigate(['login']);
+      },
+      error: () => {
+        // Even if the server call fails, clear local state and redirect
+        localStorage.removeItem('username');
+        this.router.navigate(['login']);
+      }
+    });
+  }
 }

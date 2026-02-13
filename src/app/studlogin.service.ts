@@ -17,9 +17,7 @@ export class StudloginService {
   tpo_login(user: User):Observable<any>{
     return this.http.post(`${this.apiUrl}/tpo/login`,user)
   }
-logout(){
-  localStorage.removeItem("authtoken")
-}
-  
- 
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true });
+  }
 }

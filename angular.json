@@ -26,6 +26,7 @@
             "outputPath": "dist/tpo-front2",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "baseHref": "/v1/",
             "polyfills": [
               "zone.js"
             ],

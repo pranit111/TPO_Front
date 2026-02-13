@@ -21,9 +21,8 @@ export class TpoLoginComponent {
         console.log("Full Response from API:", response); // Debugging step
         
         // Check if response is valid
-        if (response && typeof response === 'object' && 'token' in response) {
-          const token = response.token; // Extract token
-          localStorage.setItem('authtoken', token); // Store token
+        if (response && typeof response === 'object') {
+          // Cookie-based auth: token is set via HttpOnly cookie by the server
           
           // Handle different roles
           if (response.role === "ADMIN") {

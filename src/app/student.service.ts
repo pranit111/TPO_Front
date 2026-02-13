@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Student } from './student';
 import { Observable } from 'rxjs';
@@ -17,10 +17,6 @@ interface PaginatedResponse<T> {
 })
 export class StudentService {
   private apiUrl = environment.apiUrls.studentService;
-  token = localStorage.getItem("authtoken");
-  headers = new HttpHeaders({
-    'Authorization': `${this.token}`
-  });
 
   downloadExcel(filters?: {
     firstName?: string;
@@ -61,8 +57,7 @@ export class StudentService {
 
     return this.http.post(`${this.apiUrl}/Student/Search/Download`, null, {
       params,
-      responseType: 'blob',
-      headers: this.headers
+      responseType: 'blob'
     });
   }
 
@@ -138,8 +133,7 @@ export class StudentService {
       `${this.apiUrl}/tpo/Student/verify-results/${studentId}`,
       null,
       {
-        params,
-        headers: this.headers
+        params
       }
     );
   }
@@ -147,8 +141,7 @@ export class StudentService {
   // Get student verification status (TPO only)
   getStudentVerificationStatus(studentId: number): Observable<any> {
     return this.http.get(
-      `${this.apiUrl}/tpo/Student/verification-status/${studentId}`,
-      { headers: this.headers }
+      `${this.apiUrl}/tpo/Student/verification-status/${studentId}`
     );
   }
 }

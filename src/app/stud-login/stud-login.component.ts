@@ -13,14 +13,6 @@ import { Router } from '@angular/router';
 export class StudLoginComponent {
   constructor(private studlogin: StudloginService,private error:ErrorService,private router:Router ){}
   user:User =new User
-  ngOnInit(){
-    const token=localStorage.getItem('authtoken')
-    if(token){
-      this.error.setError("User is logged in logout first","bg-blue-600")
-      this.router.navigate(['/logout'])
-    }
-
-  }
   onlogin(form:any) {
     this.user.role = 'STUDENT';
     if ( !this.user.password || !this.user.email) {
@@ -33,9 +25,7 @@ export class StudLoginComponent {
         console.log("Full Response from API:", response); // Debugging step
 
         if (response.status === 'success') {
-          const token = response.token; // Extract token
-          localStorage.setItem('authtoken', token);
-           // Store token
+          // Cookie-based auth: token is set via HttpOnly cookie by the server
           this.error.setError("Login Successful","bg-green-600")
           if(response.HasProfile=='Yes'){
             this.router.navigate(['/profile'])

@@ -36,13 +36,30 @@ ngOnInit() {
       
       // Check if the image exists and is not null or empty
       if (response.profileImageBase64 && response.profileImageBase64.trim() !== '') {
-        // Make sure the base64 string doesn't already include the data URI prefix
-        if (response.profileImageBase64.startsWith('data:')) {
-          this.profileImageUrl = response.profileImageBase64;
-        } else {
-          this.profileImageUrl = `data:image/png;base64,${response.profileImageBase64}`;
+        try {
+          let base64String = response.profileImageBase64;
+          
+          // Fix corrupted UTF-8 encoded base64 (backend issue workaround)
+          if (base64String.includes('77+9') || base64String.includes('e+/v')) {
+            console.warn('Detected corrupted base64 data - attempting to fix...');
+            // Try to decode the UTF-8 corrupted string
+            const bytes = new Uint8Array(
+              atob(base64String).split('').map(c => c.charCodeAt(0))
+            );
+            base64String = btoa(String.fromCharCode(...bytes));
+          }
+          
+          // Make sure the base64 string doesn't already include the data URI prefix
+          if (base64String.startsWith('data:')) {
+            this.profileImageUrl = base64String;
+          } else {
+            this.profileImageUrl = `data:image/jpeg;base64,${base64String}`;
+          }
+          console.log("Image URL set successfully");
+        } catch (error) {
+          console.error("Error processing image:", error);
+          this.profileImageUrl = 'assets/images/default_prof_img.png';
         }
-        console.log("Image URL set to:", this.profileImageUrl.substring(0, 30) + "...");
       } else {
         // Make sure the default image path is correct relative to your application
         this.profileImageUrl = 'assets/images/default_prof_img.png';

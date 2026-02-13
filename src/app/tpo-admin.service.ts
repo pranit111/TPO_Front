@@ -28,7 +28,7 @@ export class TpoAdminService {
   baseUrl = environment.apiUrls.userService;
   dashboardBaseUrl = environment.apiUrls.dashboardService;
   logsBaseUrl = environment.apiUrls.logsService;
-
+  
   companyBaseUrl= environment.apiUrls.companyService;
   constructor(private http:HttpClient) { }
   tpoBaseUrl=environment.apiUrls.tpoService;
